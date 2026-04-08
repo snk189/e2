@@ -1,24 +1,12 @@
 import pandas as pd
 
-# load your csv
-df = pd.read_csv("smart_canteen_final_realistic.csv")
+# Load dataset
+df = pd.read_csv("data.csv")
 
-# get columns
-cols = list(df.columns)
+# Remove peak_hour column
+df = df.drop(columns=["peak_hour"])
 
-# remove column
-cols.remove("is_prebooking")
+# Save updated dataset
+df.to_csv("canteen_no_peak.csv", index=False)
 
-# find index of prebooking_date
-idx = cols.index("prebooking_date")
-
-# insert is_prebooking before it
-cols.insert(idx, "is_prebooking")
-
-# reorder dataframe
-df = df[cols]
-
-# save back
-df.to_csv("updated_dataset.csv", index=False)
-
-print("Done. Column moved.")
+print("peak_hour column removed successfully.")
