@@ -1,6 +1,8 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from datetime import datetime
 import warnings
 import numpy as np
@@ -28,11 +30,32 @@ def main():
     
     available_time_slots = sorted(df['time_slot'].unique())
 
-    X_train = X[['item_encoded', 'time_slot', 'day_of_week', 'is_prebooking']]
-    rf_model = RandomForestRegressor(n_estimators=1000, random_state=42)
-    rf_model.fit(X_train, y)
+    X_full = X[['item_encoded', 'time_slot', 'day_of_week', 'is_prebooking']]
+    y_full = y
     
-    print("\n[✔] Model Trained Successfully.")
+    X_train_split, X_test_split, y_train_split, y_test_split = train_test_split(
+        X_full, y_full, test_size=0.2, random_state=42
+    )
+    
+    rf_eval_model = RandomForestRegressor(n_estimators=1000, random_state=42)
+    rf_eval_model.fit(X_train_split, y_train_split)
+    y_pred = rf_eval_model.predict(X_test_split)
+    
+    r2 = r2_score(y_test_split, y_pred)
+    mae = mean_absolute_error(y_test_split, y_pred)
+    mse = mean_squared_error(y_test_split, y_pred)
+    exact_acc = np.mean(np.round(y_pred) == y_test_split) * 100
+    
+    print(f"\n============= 📊 Model Evaluation on Test Data =============")
+    print(f"R² Score: {r2:.4f}")
+    print(f"Mean Absolute Error (MAE): {mae:.4f}")
+    print(f"Mean Squared Error (MSE): {mse:.4f}")
+    print(f"Exact Integer Match Accuracy: {exact_acc:.2f}%\n")
+    
+    rf_model = RandomForestRegressor(n_estimators=1000, random_state=42)
+    rf_model.fit(X_full, y_full)
+    
+    print("[✔] Final Model Trained Successfully on Full Dataset.")
     
     while True:
         date_input = input("\nEnter a date (YYYY-MM-DD) to forecast demand (or type 'q' to quit): ").strip()
