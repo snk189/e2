@@ -29,7 +29,7 @@ def main():
     available_time_slots = sorted(df['time_slot'].unique())
 
     X_train = X[['item_encoded', 'time_slot', 'day_of_week', 'is_prebooking']]
-    rf_model = RandomForestRegressor(n_estimators=100, random_state=42)
+    rf_model = RandomForestRegressor(n_estimators=1000, random_state=42)
     rf_model.fit(X_train, y)
     
     print("\n[✔] Model Trained Successfully.")
