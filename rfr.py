@@ -21,6 +21,7 @@ def main():
     df = df.sort_values('timestamp').reset_index(drop=True)
     
     df['is_weekend'] = df['day_of_week'].isin([5, 6]).astype(int)
+    df['weekend_prebook_flag'] = df['is_weekend'] * df['is_prebooking']
     
     # 1. Meal Time Categories
     df['is_breakfast'] = df['time_slot'].apply(lambda x: 1 if 8 <= x <= 10 else 0)
@@ -73,9 +74,30 @@ def main():
     hist_avg_dict = historical_avg.set_index(['item', 'day_of_week', 'time_slot'])['item_time_avg_qty'].to_dict()
     item_avg_dict = item_overall_avg.to_dict()
     
+    # 8. Historical Average by Prebooking
+    prebook_avg = df.groupby(['item', 'is_prebooking'])['quantity'].mean().reset_index()
+    prebook_avg = prebook_avg.rename(columns={'quantity': 'item_prebook_avg_qty'})
+    df = df.merge(prebook_avg, on=['item', 'is_prebooking'], how='left')
+    
+    df['item_prebook_avg_qty'] = df.apply(
+        lambda row: item_overall_avg[row['item']] if pd.isna(row['item_prebook_avg_qty']) else row['item_prebook_avg_qty'], 
+        axis=1
+    )
+    
+    prebook_avg_dict = prebook_avg.set_index(['item', 'is_prebooking'])['item_prebook_avg_qty'].to_dict()
+
+    # 9. Recent Momentum (EWMA)
+    df['item_recent_trend'] = df.groupby('item')['quantity'].transform(lambda x: x.shift(1).ewm(span=50, min_periods=1).mean())
+    df['item_recent_trend'] = df.apply(
+        lambda row: item_overall_avg[row['item']] if pd.isna(row['item_recent_trend']) else row['item_recent_trend'], 
+        axis=1
+    )
+    latest_trend_dict = df.groupby('item').last()['item_recent_trend'].to_dict()
+
     feature_cols = [
         'time_slot', 'day_of_week', 'is_prebooking', 'is_weekend', 'prebooking_lead_hours',
-        'item_time_avg_qty',
+        'weekend_prebook_flag', 'item_time_avg_qty', 'item_prebook_avg_qty',
+        'item_recent_trend',
         'is_breakfast', 'is_lunch', 'is_evening',
         'is_beverage', 'is_heavy_meal',
         'is_monday', 'is_friday', 'is_sunday', 'is_pay_week',
@@ -199,6 +221,16 @@ def main():
                     for is_pre in [0, 1]:
                         # Default simulation: 24h lead time for prebooking, 0h for walk-ins
                         sim_lead_hours = 24.0 if is_pre == 1 else 0.0
+                        
+                        lookup_key_pb = (item_str, is_pre)
+                        pb_avg = prebook_avg_dict.get(lookup_key_pb)
+                        if pb_avg is None:
+                            pb_avg = item_avg_dict.get(item_str, 1.0)
+                            
+                        weekend_prebook_flag = is_weekend * is_pre
+                        
+                        recent_trend = latest_trend_dict.get(item_str, item_avg_dict.get(item_str, 1.0))
+                        
                         scenario_dict = {
                             'Item': item_str.title(),
                             'Time Slot': f"{t_slot:02d}:00",
@@ -207,8 +239,11 @@ def main():
                             'day_of_week': day_of_week,
                             'is_prebooking': is_pre,
                             'is_weekend': is_weekend,
+                            'weekend_prebook_flag': weekend_prebook_flag,
                             'prebooking_lead_hours': sim_lead_hours,
                             'item_time_avg_qty': hist_avg,
+                            'item_prebook_avg_qty': pb_avg,
+                            'item_recent_trend': recent_trend,
                             'is_breakfast': is_breakfast,
                             'is_lunch': is_lunch,
                             'is_evening': is_evening,
