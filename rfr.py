@@ -33,18 +33,18 @@ def main():
     X_full = X[['item_encoded', 'time_slot', 'day_of_week', 'is_prebooking']]
     y_full = y
     
-    X_train_split, X_test_split, y_train_split, y_test_split = train_test_split(
+    X_train, X_test, y_train, y_test = train_test_split(
         X_full, y_full, test_size=0.2, random_state=42
     )
     
     rf_eval_model = RandomForestRegressor(n_estimators=1000, random_state=42)
-    rf_eval_model.fit(X_train_split, y_train_split)
-    y_pred = rf_eval_model.predict(X_test_split)
+    rf_eval_model.fit(X_train, y_train)
+    y_pred = rf_eval_model.predict(X_test)
     
-    r2 = r2_score(y_test_split, y_pred)
-    mae = mean_absolute_error(y_test_split, y_pred)
-    mse = mean_squared_error(y_test_split, y_pred)
-    exact_acc = np.mean(np.round(y_pred) == y_test_split) * 100
+    r2 = r2_score(y_test, y_pred)
+    mae = mean_absolute_error(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred)
+    exact_acc = np.mean(np.round(y_pred) == y_test) * 100
     
     print(f"\n============= 📊 Model Evaluation on Test Data =============")
     print(f"R² Score: {r2:.4f}")
