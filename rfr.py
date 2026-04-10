@@ -41,6 +41,13 @@ def main():
     df['day_of_month'] = df['date_obj'].dt.day
     df['is_pay_week'] = df['day_of_month'].apply(lambda x: 1 if x >= 25 or x <= 5 else 0)
     
+    # 4.5. Prebooking Lead Time
+    df['prebooking_datetime_str'] = df['prebooking_date'] + ' ' + df['prebooking_time']
+    df['prebooking_obj'] = pd.to_datetime(df['prebooking_datetime_str'], format='%Y-%m-%d %H:%M:%S', errors='coerce')
+    df['prebooking_lead_hours'] = (df['date_obj'] - df['prebooking_obj']).dt.total_seconds() / 3600.0
+    df['prebooking_lead_hours'] = df['prebooking_lead_hours'].fillna(0).clip(lower=0)
+
+    
     # 5. Seasonality (Month of Year)
     df['month'] = df['date_obj'].dt.month
     df['month_sin'] = np.sin(2 * np.pi * df['month'] / 12.0)
@@ -53,7 +60,7 @@ def main():
     df['day_of_week_cos'] = np.cos(2 * np.pi * df['day_of_week'] / 7.0)
     
     feature_cols = [
-        'time_slot', 'day_of_week', 'is_prebooking', 'is_weekend',
+        'time_slot', 'day_of_week', 'is_prebooking', 'is_weekend', 'prebooking_lead_hours',
         'is_breakfast', 'is_lunch', 'is_evening',
         'is_beverage', 'is_heavy_meal',
         'is_monday', 'is_friday', 'is_sunday', 'is_pay_week',
@@ -170,6 +177,8 @@ def main():
                     time_cos = np.cos(2 * np.pi * t_slot / 24.0)
 
                     for is_pre in [0, 1]:
+                        # Default simulation: 24h lead time for prebooking, 0h for walk-ins
+                        sim_lead_hours = 24.0 if is_pre == 1 else 0.0
                         scenario_dict = {
                             'Item': item_str.title(),
                             'Time Slot': f"{t_slot:02d}:00",
@@ -178,6 +187,7 @@ def main():
                             'day_of_week': day_of_week,
                             'is_prebooking': is_pre,
                             'is_weekend': is_weekend,
+                            'prebooking_lead_hours': sim_lead_hours,
                             'is_breakfast': is_breakfast,
                             'is_lunch': is_lunch,
                             'is_evening': is_evening,
