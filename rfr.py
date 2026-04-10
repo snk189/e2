@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import GridSearchCV
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from datetime import datetime
 import warnings
@@ -130,12 +130,12 @@ def main():
     
     print("\n[⏳] Running GridSearchCV to auto-tune hyper-parameters (this may take a few seconds)...")
     param_grid = {
-        'n_estimators': [100, 300, 500],
-        'max_depth': [None, 10, 20],
-        'min_samples_split': [2, 5, 10]
+        'n_estimators': [100, 300],
+        'max_depth': [3, 5, 7],
+        'learning_rate': [0.05, 0.1]
     }
-    rf_base = RandomForestRegressor(random_state=42)
-    grid_search = GridSearchCV(estimator=rf_base, param_grid=param_grid, cv=3, n_jobs=-1, scoring='neg_mean_absolute_error')
+    gb_base = GradientBoostingRegressor(random_state=42)
+    grid_search = GridSearchCV(estimator=gb_base, param_grid=param_grid, cv=3, n_jobs=-1, scoring='neg_mean_absolute_error')
     grid_search.fit(X_train, y_train)
     
     print(f"[✔] Tuning Complete! Best Model Parameters: {grid_search.best_params_}")
@@ -166,7 +166,7 @@ def main():
         print(f" - {row['Feature']}: {row['Importance']:.4f}")
     print("=====================================================\n")
     
-    rf_model = RandomForestRegressor(**grid_search.best_params_, random_state=42)
+    rf_model = GradientBoostingRegressor(**grid_search.best_params_, random_state=42)
     rf_model.fit(X_full, y_full)
     
     print("[✔] Final Model Trained Successfully on Full Dataset.")
