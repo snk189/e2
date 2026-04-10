@@ -66,6 +66,8 @@ def main():
     df = df.merge(historical_avg, on=['item', 'day_of_week', 'time_slot'], how='left')
     
     item_overall_avg = df.groupby('item')['quantity'].mean()
+    df['item_base_popularity'] = df['item'].map(item_overall_avg)
+    
     df['item_time_avg_qty'] = df.apply(
         lambda row: item_overall_avg[row['item']] if pd.isna(row['item_time_avg_qty']) else row['item_time_avg_qty'], 
         axis=1
@@ -94,10 +96,17 @@ def main():
     )
     latest_trend_dict = df.groupby('item').last()['item_recent_trend'].to_dict()
 
+    # 10. Broad Meal-Time Averages
+    meal_avg = df.groupby(['item', 'is_breakfast', 'is_lunch', 'is_evening'])['quantity'].mean().reset_index()
+    meal_avg = meal_avg.rename(columns={'quantity': 'item_meal_avg_qty'})
+    df = df.merge(meal_avg, on=['item', 'is_breakfast', 'is_lunch', 'is_evening'], how='left')
+    df['item_meal_avg_qty'] = df['item_meal_avg_qty'].fillna(df['item'].map(item_overall_avg))
+    meal_avg_dict = meal_avg.set_index(['item', 'is_breakfast', 'is_lunch', 'is_evening'])['item_meal_avg_qty'].to_dict()
+
     feature_cols = [
         'time_slot', 'day_of_week', 'is_prebooking', 'is_weekend', 'prebooking_lead_hours',
         'weekend_prebook_flag', 'item_time_avg_qty', 'item_prebook_avg_qty',
-        'item_recent_trend',
+        'item_recent_trend', 'item_meal_avg_qty', 'item_base_popularity',
         'is_breakfast', 'is_lunch', 'is_evening',
         'is_beverage', 'is_heavy_meal',
         'is_monday', 'is_friday', 'is_sunday', 'is_pay_week',
@@ -231,6 +240,9 @@ def main():
                         
                         recent_trend = latest_trend_dict.get(item_str, item_avg_dict.get(item_str, 1.0))
                         
+                        lookup_key_meal = (item_str, is_breakfast, is_lunch, is_evening)
+                        meal_avg_val = meal_avg_dict.get(lookup_key_meal, item_avg_dict.get(item_str, 1.0))
+                        
                         scenario_dict = {
                             'Item': item_str.title(),
                             'Time Slot': f"{t_slot:02d}:00",
@@ -244,6 +256,8 @@ def main():
                             'item_time_avg_qty': hist_avg,
                             'item_prebook_avg_qty': pb_avg,
                             'item_recent_trend': recent_trend,
+                            'item_meal_avg_qty': meal_avg_val,
+                            'item_base_popularity': item_avg_dict.get(item_str, 1.0),
                             'is_breakfast': is_breakfast,
                             'is_lunch': is_lunch,
                             'is_evening': is_evening,
