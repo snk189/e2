@@ -59,8 +59,23 @@ def main():
     df['day_of_week_sin'] = np.sin(2 * np.pi * df['day_of_week'] / 7.0)
     df['day_of_week_cos'] = np.cos(2 * np.pi * df['day_of_week'] / 7.0)
     
+    # 7. Historical Average Demand
+    historical_avg = df.groupby(['item', 'day_of_week', 'time_slot'])['quantity'].mean().reset_index()
+    historical_avg = historical_avg.rename(columns={'quantity': 'item_time_avg_qty'})
+    df = df.merge(historical_avg, on=['item', 'day_of_week', 'time_slot'], how='left')
+    
+    item_overall_avg = df.groupby('item')['quantity'].mean()
+    df['item_time_avg_qty'] = df.apply(
+        lambda row: item_overall_avg[row['item']] if pd.isna(row['item_time_avg_qty']) else row['item_time_avg_qty'], 
+        axis=1
+    )
+    
+    hist_avg_dict = historical_avg.set_index(['item', 'day_of_week', 'time_slot'])['item_time_avg_qty'].to_dict()
+    item_avg_dict = item_overall_avg.to_dict()
+    
     feature_cols = [
         'time_slot', 'day_of_week', 'is_prebooking', 'is_weekend', 'prebooking_lead_hours',
+        'item_time_avg_qty',
         'is_breakfast', 'is_lunch', 'is_evening',
         'is_beverage', 'is_heavy_meal',
         'is_monday', 'is_friday', 'is_sunday', 'is_pay_week',
@@ -169,6 +184,11 @@ def main():
                     item_one_hot[f'item_{item_str}'] = 1
                 
                 for t_slot in available_time_slots:
+                    lookup_key = (item_str, day_of_week, t_slot)
+                    hist_avg = hist_avg_dict.get(lookup_key)
+                    if hist_avg is None:
+                        hist_avg = item_avg_dict.get(item_str, 1.0)
+                        
                     is_breakfast = int(8 <= t_slot <= 10)
                     is_lunch = int(11 <= t_slot <= 14)
                     is_evening = int(15 <= t_slot <= 18)
@@ -188,6 +208,7 @@ def main():
                             'is_prebooking': is_pre,
                             'is_weekend': is_weekend,
                             'prebooking_lead_hours': sim_lead_hours,
+                            'item_time_avg_qty': hist_avg,
                             'is_breakfast': is_breakfast,
                             'is_lunch': is_lunch,
                             'is_evening': is_evening,
