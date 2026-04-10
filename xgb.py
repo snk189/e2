@@ -88,6 +88,13 @@ def main():
     )
     
     prebook_avg_dict = prebook_avg.set_index(['item', 'is_prebooking'])['item_prebook_avg_qty'].to_dict()
+    
+    # 8.5 Item Prebooking Ratio
+    item_total_qty = df.groupby('item')['quantity'].sum()
+    item_prebook_qty = df[df['is_prebooking'] == 1].groupby('item')['quantity'].sum()
+    item_prebook_ratio_series = (item_prebook_qty / item_total_qty).fillna(0)
+    df['item_prebook_ratio'] = df['item'].map(item_prebook_ratio_series)
+    item_prebook_ratio_dict = item_prebook_ratio_series.to_dict()
 
     # 9. Recent Momentum (EWMA)
     df['item_recent_trend'] = df.groupby('item')['quantity'].transform(lambda x: x.shift(1).ewm(span=50, min_periods=1).mean())
@@ -108,6 +115,7 @@ def main():
         'time_slot', 'day_of_week', 'is_prebooking', 'is_weekend', 'prebooking_lead_hours',
         'weekend_prebook_flag', 'item_time_avg_qty', 'item_prebook_avg_qty',
         'item_recent_trend', 'item_meal_avg_qty', 'item_base_popularity',
+        'item_prebook_ratio',
         'is_breakfast', 'is_lunch', 'is_evening',
         'is_beverage', 'is_heavy_meal',
         'is_monday', 'is_friday', 'is_sunday', 'is_pay_week',
@@ -239,6 +247,8 @@ def main():
                             
                         weekend_prebook_flag = is_weekend * is_pre
                         
+                        item_prebook_ratio = item_prebook_ratio_dict.get(item_str, 0.0)
+                        
                         recent_trend = latest_trend_dict.get(item_str, item_avg_dict.get(item_str, 1.0))
                         
                         lookup_key_meal = (item_str, is_breakfast, is_lunch, is_evening)
@@ -259,6 +269,7 @@ def main():
                             'item_recent_trend': recent_trend,
                             'item_meal_avg_qty': meal_avg_val,
                             'item_base_popularity': item_avg_dict.get(item_str, 1.0),
+                            'item_prebook_ratio': item_prebook_ratio,
                             'is_breakfast': is_breakfast,
                             'is_lunch': is_lunch,
                             'is_evening': is_evening,
