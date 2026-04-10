@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from datetime import datetime
 import warnings
@@ -16,29 +16,80 @@ def main():
     except FileNotFoundError:
         print(f"Error: File '{file_path}' not found.")
         return
+        
+    # Sort chronologically to prevent future-data leakage
+    df = df.sort_values('timestamp').reset_index(drop=True)
     
-    features = ['item', 'time_slot', 'day_of_week', 'is_prebooking']
+    df['is_weekend'] = df['day_of_week'].isin([5, 6]).astype(int)
+    
+    # 1. Meal Time Categories
+    df['is_breakfast'] = df['time_slot'].apply(lambda x: 1 if 8 <= x <= 10 else 0)
+    df['is_lunch'] = df['time_slot'].apply(lambda x: 1 if 11 <= x <= 14 else 0)
+    df['is_evening'] = df['time_slot'].apply(lambda x: 1 if 15 <= x <= 18 else 0)
+    
+    # 2. Item Categories
+    df['is_beverage'] = df['item'].isin(['tea', 'milkshake']).astype(int)
+    df['is_heavy_meal'] = df['item'].isin(['pizza', 'dosa']).astype(int)
+    
+    # 3. Start/End of Week
+    df['is_monday'] = (df['day_of_week'] == 0).astype(int)
+    df['is_friday'] = (df['day_of_week'] == 4).astype(int)
+    
+    # 4. Time of Month (Pay Week)
+    df['date_obj'] = pd.to_datetime(df['timestamp'], unit='s')
+    df['day_of_month'] = df['date_obj'].dt.day
+    df['is_pay_week'] = df['day_of_month'].apply(lambda x: 1 if x >= 25 or x <= 5 else 0)
+    
+    # 5. Cyclical Time Encoding
+    df['time_slot_sin'] = np.sin(2 * np.pi * df['time_slot'] / 24.0)
+    df['time_slot_cos'] = np.cos(2 * np.pi * df['time_slot'] / 24.0)
+    df['day_of_week_sin'] = np.sin(2 * np.pi * df['day_of_week'] / 7.0)
+    df['day_of_week_cos'] = np.cos(2 * np.pi * df['day_of_week'] / 7.0)
+    
+    feature_cols = [
+        'time_slot', 'day_of_week', 'is_prebooking', 'is_weekend',
+        'is_breakfast', 'is_lunch', 'is_evening',
+        'is_beverage', 'is_heavy_meal',
+        'is_monday', 'is_friday', 'is_pay_week',
+        'time_slot_sin', 'time_slot_cos',
+        'day_of_week_sin', 'day_of_week_cos'
+    ]
+    
+    features = ['item'] + feature_cols
     target = 'quantity'
     
     X = df[features].copy()
     y = df[target]
     
-    label_encoder = LabelEncoder()
     unique_items = sorted(X['item'].unique())
-    X['item_encoded'] = label_encoder.fit_transform(X['item'])
+    item_dummies = pd.get_dummies(X['item'], prefix='item', dtype=int)
+    X = pd.concat([X, item_dummies], axis=1)
     X = X.drop('item', axis=1)
+    item_cols = list(item_dummies.columns)
     
     available_time_slots = sorted(df['time_slot'].unique())
 
-    X_full = X[['item_encoded', 'time_slot', 'day_of_week', 'is_prebooking']]
+    X_full = X[item_cols + feature_cols]
     y_full = y
     
-    X_train, X_test, y_train, y_test = train_test_split(
-        X_full, y_full, test_size=0.2, random_state=42
-    )
+    # Chronological time-series split
+    split_idx = int(len(X_full) * 0.8)
+    X_train, X_test = X_full.iloc[:split_idx], X_full.iloc[split_idx:]
+    y_train, y_test = y_full.iloc[:split_idx], y_full.iloc[split_idx:]
     
-    rf_eval_model = RandomForestRegressor(n_estimators=1000, random_state=42)
-    rf_eval_model.fit(X_train, y_train)
+    print("\n[⏳] Running GridSearchCV to auto-tune hyper-parameters (this may take a few seconds)...")
+    param_grid = {
+        'n_estimators': [100, 300, 500],
+        'max_depth': [None, 10, 20],
+        'min_samples_split': [2, 5, 10]
+    }
+    rf_base = RandomForestRegressor(random_state=42)
+    grid_search = GridSearchCV(estimator=rf_base, param_grid=param_grid, cv=3, n_jobs=-1, scoring='neg_mean_absolute_error')
+    grid_search.fit(X_train, y_train)
+    
+    print(f"[✔] Tuning Complete! Best Model Parameters: {grid_search.best_params_}")
+    
+    rf_eval_model = grid_search.best_estimator_
     y_pred = rf_eval_model.predict(X_test)
     
     r2 = r2_score(y_test, y_pred)
@@ -52,7 +103,19 @@ def main():
     print(f"Mean Squared Error (MSE): {mse:.4f}")
     print(f"Exact Integer Match Accuracy: {exact_acc:.2f}%\n")
     
-    rf_model = RandomForestRegressor(n_estimators=1000, random_state=42)
+    print(f"============= ⭐ Top 5 Important Features =============")
+    importances = rf_eval_model.feature_importances_
+    all_features = item_cols + feature_cols
+    feature_importance_df = pd.DataFrame({
+        'Feature': all_features,
+        'Importance': importances
+    }).sort_values(by='Importance', ascending=False).head(5)
+    
+    for idx, row in feature_importance_df.iterrows():
+        print(f" - {row['Feature']}: {row['Importance']:.4f}")
+    print("=====================================================\n")
+    
+    rf_model = RandomForestRegressor(**grid_search.best_params_, random_state=42)
     rf_model.fit(X_full, y_full)
     
     print("[✔] Final Model Trained Successfully on Full Dataset.")
@@ -65,25 +128,62 @@ def main():
         try:
             target_date = datetime.strptime(date_input, '%Y-%m-%d')
             day_of_week = target_date.weekday()
+            is_weekend = int(day_of_week in [5, 6])
+            is_monday = int(day_of_week == 0)
+            is_friday = int(day_of_week == 4)
+            
+            day_of_month = target_date.day
+            is_pay_week = int(day_of_month >= 25 or day_of_month <= 5)
+            
+            day_sin = np.sin(2 * np.pi * day_of_week / 7.0)
+            day_cos = np.cos(2 * np.pi * day_of_week / 7.0)
+            
             print(f"\n============= 📅 Demand Forecast for {target_date.strftime('%B %d, %Y')} =============")
             
             scenarios = []
             for item_str in unique_items:
-                item_code = label_encoder.transform([item_str])[0]
+                is_beverage = int(item_str in ['tea', 'milkshake'])
+                is_heavy_meal = int(item_str in ['pizza', 'dosa'])
+                
+                item_one_hot = {col: 0 for col in item_cols}
+                if f'item_{item_str}' in item_cols:
+                    item_one_hot[f'item_{item_str}'] = 1
+                
                 for t_slot in available_time_slots:
+                    is_breakfast = int(8 <= t_slot <= 10)
+                    is_lunch = int(11 <= t_slot <= 14)
+                    is_evening = int(15 <= t_slot <= 18)
+                    
+                    time_sin = np.sin(2 * np.pi * t_slot / 24.0)
+                    time_cos = np.cos(2 * np.pi * t_slot / 24.0)
+
                     for is_pre in [0, 1]:
-                        scenarios.append({
+                        scenario_dict = {
                             'Item': item_str.title(),
                             'Time Slot': f"{t_slot:02d}:00",
                             'Order Type': 'Prebooking' if is_pre == 1 else 'Walk-in',
                             'time_slot': t_slot,
-                            'item_encoded': item_code,
                             'day_of_week': day_of_week,
-                            'is_prebooking': is_pre
-                        })
+                            'is_prebooking': is_pre,
+                            'is_weekend': is_weekend,
+                            'is_breakfast': is_breakfast,
+                            'is_lunch': is_lunch,
+                            'is_evening': is_evening,
+                            'is_beverage': is_beverage,
+                            'is_heavy_meal': is_heavy_meal,
+                            'is_monday': is_monday,
+                            'is_friday': is_friday,
+                            'is_pay_week': is_pay_week,
+                            'time_slot_sin': time_sin,
+                            'time_slot_cos': time_cos,
+                            'day_of_week_sin': day_sin,
+                            'day_of_week_cos': day_cos
+                        }
+                        scenario_dict.update(item_one_hot)
+                        scenarios.append(scenario_dict)
             
             forecast_df = pd.DataFrame(scenarios)
-            X_forecast = forecast_df[['item_encoded', 'time_slot', 'day_of_week', 'is_prebooking']]
+            X_forecast = forecast_df[item_cols + feature_cols]
             
             predictions = rf_model.predict(X_forecast)
             
