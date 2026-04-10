@@ -34,13 +34,19 @@ def main():
     # 3. Start/End of Week
     df['is_monday'] = (df['day_of_week'] == 0).astype(int)
     df['is_friday'] = (df['day_of_week'] == 4).astype(int)
+    df['is_sunday'] = (df['day_of_week'] == 6).astype(int)
     
     # 4. Time of Month (Pay Week)
     df['date_obj'] = pd.to_datetime(df['timestamp'], unit='s')
     df['day_of_month'] = df['date_obj'].dt.day
     df['is_pay_week'] = df['day_of_month'].apply(lambda x: 1 if x >= 25 or x <= 5 else 0)
     
-    # 5. Cyclical Time Encoding
+    # 5. Seasonality (Month of Year)
+    df['month'] = df['date_obj'].dt.month
+    df['month_sin'] = np.sin(2 * np.pi * df['month'] / 12.0)
+    df['month_cos'] = np.cos(2 * np.pi * df['month'] / 12.0)
+    
+    # 6. Cyclical Time Encoding
     df['time_slot_sin'] = np.sin(2 * np.pi * df['time_slot'] / 24.0)
     df['time_slot_cos'] = np.cos(2 * np.pi * df['time_slot'] / 24.0)
     df['day_of_week_sin'] = np.sin(2 * np.pi * df['day_of_week'] / 7.0)
@@ -50,9 +56,10 @@ def main():
         'time_slot', 'day_of_week', 'is_prebooking', 'is_weekend',
         'is_breakfast', 'is_lunch', 'is_evening',
         'is_beverage', 'is_heavy_meal',
-        'is_monday', 'is_friday', 'is_pay_week',
+        'is_monday', 'is_friday', 'is_sunday', 'is_pay_week',
         'time_slot_sin', 'time_slot_cos',
-        'day_of_week_sin', 'day_of_week_cos'
+        'day_of_week_sin', 'day_of_week_cos',
+        'month_sin', 'month_cos'
     ]
     
     features = ['item'] + feature_cols
@@ -131,9 +138,14 @@ def main():
             is_weekend = int(day_of_week in [5, 6])
             is_monday = int(day_of_week == 0)
             is_friday = int(day_of_week == 4)
+            is_sunday = int(day_of_week == 6)
             
             day_of_month = target_date.day
             is_pay_week = int(day_of_month >= 25 or day_of_month <= 5)
+            
+            month = target_date.month
+            month_sin = np.sin(2 * np.pi * month / 12.0)
+            month_cos = np.cos(2 * np.pi * month / 12.0)
             
             day_sin = np.sin(2 * np.pi * day_of_week / 7.0)
             day_cos = np.cos(2 * np.pi * day_of_week / 7.0)
@@ -173,11 +185,14 @@ def main():
                             'is_heavy_meal': is_heavy_meal,
                             'is_monday': is_monday,
                             'is_friday': is_friday,
+                            'is_sunday': is_sunday,
                             'is_pay_week': is_pay_week,
                             'time_slot_sin': time_sin,
                             'time_slot_cos': time_cos,
                             'day_of_week_sin': day_sin,
-                            'day_of_week_cos': day_cos
+                            'day_of_week_cos': day_cos,
+                            'month_sin': month_sin,
+                            'month_cos': month_cos
                         }
                         scenario_dict.update(item_one_hot)
                         scenarios.append(scenario_dict)
