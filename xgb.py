@@ -15,7 +15,7 @@ def main():
     try:
         df = pd.read_csv(file_path)
     except FileNotFoundError:
-        print(f"Error: File '{file_path}' not found.")
+        print(f"Error: File '{file_path}' not found")
         return
         
     # Sort chronologically to prevent future-data leakage
