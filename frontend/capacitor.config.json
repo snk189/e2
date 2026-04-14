@@ -1,0 +1,9 @@
+{
+  "appId": "com.bitespeed.app",
+  "appName": "BiteSpeed",
+  "webDir": "dist",
+  "server": {
+    "cleartext": true,
+    "androidScheme": "http"
+  }
+}
