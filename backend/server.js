@@ -21,19 +21,19 @@ app.post('/api/order', (req, res) => {
 
         // Initialize file with header if it doesn't exist
         if (!fs.existsSync(DATA_FILE)) {
-            const header = "item,time_slot,quantity,is_prebooking,day_of_week,prebooking_date,prebooking_time,timestamp\n";
+            const header = "item,time_slot,quantity,timestamp,day_of_week,is_prebooking,prebooking_date,prebooking_time\n";
             fs.writeFileSync(DATA_FILE, header);
         }
 
         let csvData = "";
         orders.forEach(order => {
             const {
-                item, time_slot, quantity, is_prebooking, day_of_week, 
+                item, time_slot, quantity, is_prebooking, day_of_week,
                 prebooking_date = "", prebooking_time = "", timestamp
             } = order;
-            
+
             // Format to CSV line
-            csvData += `${item},${time_slot},${quantity},${is_prebooking},${day_of_week},${prebooking_date},${prebooking_time},${timestamp}\n`;
+            csvData += `${item},${time_slot},${quantity},${timestamp},${day_of_week},${is_prebooking},${prebooking_date},${prebooking_time}\n`;
         });
 
         fs.appendFileSync(DATA_FILE, csvData);
