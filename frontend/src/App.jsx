@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Confetti from 'react-confetti';
 import { MENU_ITEMS } from './data/items';
 import { submitOrder, setApiUrl } from './services/api';
 import Auth from './components/Auth';
@@ -88,8 +89,10 @@ const BookingInterface = ({ onLogout, username }) => {
   const [historyData, setHistoryData] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
 
-  // New states for Toast and Refresh
+  // New states for Toast, Refresh, and Promo Popup
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+  const [showPromoPopup, setShowPromoPopup] = useState(false);
+  const [promoAmount, setPromoAmount] = useState(0);
   const [startY, setStartY] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -162,6 +165,30 @@ const BookingInterface = ({ onLogout, username }) => {
   };
 
   const calculateTotalItems = () => Object.values(quantities).reduce((a, b) => a + b, 0);
+
+  const calculateTotalPrice = () => {
+    let total = 0;
+    Object.keys(quantities).forEach(id => {
+      const item = MENU_ITEMS.find(i => i.id === id);
+      if (item) {
+        const price = parseInt(item.price.replace('₹', ''), 10);
+        total += price * quantities[id];
+      }
+    });
+    return total;
+  };
+
+  React.useEffect(() => {
+    if (orderType === 'prebook' && calculateTotalItems() > 0) {
+      const discount = Math.round(calculateTotalPrice() * 0.05);
+      if (discount > 0) {
+        setPromoAmount(discount);
+        setShowPromoPopup(true);
+        const timer = setTimeout(() => setShowPromoPopup(false), 2000);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [orderType]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -245,6 +272,16 @@ const BookingInterface = ({ onLogout, username }) => {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
+      <style>{`
+        @keyframes burst {
+          0% { transform: scale(0.5) translateY(0); opacity: 1; }
+          50% { transform: scale(1.5) translateY(-30px); opacity: 1; }
+          100% { transform: scale(2) translateY(-50px); opacity: 0; }
+        }
+        .animate-burst {
+          animation: burst 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+      `}</style>
       {/* Toast Notification */}
       {toast.show && (
         <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-full shadow-lg font-bold text-sm animate-in slide-in-from-top-4 fade-in duration-300 backdrop-blur-md ${toast.type === 'error' ? 'bg-red-500/90 text-white border border-red-400' : 'bg-black/90 text-white border border-gray-700'}`}>
@@ -261,6 +298,8 @@ const BookingInterface = ({ onLogout, username }) => {
            </svg>
         </div>
       )}
+
+
 
       <header className="bg-black text-white p-5 rounded-b-3xl shadow-md mb-6">
         <div className="flex justify-between items-center mb-1">
@@ -373,13 +412,53 @@ const BookingInterface = ({ onLogout, username }) => {
         </div>
 
         {/* Submit Button */}
-        <button
-          onClick={handleSubmit}
-          disabled={loading || calculateTotalItems() === 0}
-          className="w-full bg-black text-white font-extrabold text-lg py-5 rounded-2xl shadow-xl hover:bg-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-1 active:translate-y-0"
-        >
-          {loading ? 'Processing Order...' : `Confirm Order (${calculateTotalItems()} items)`}
-        </button>
+        <div className="mt-4 relative">
+          
+          {/* Animated Celebration Burst Overlay */}
+          {showPromoPopup && (
+             <div className="fixed inset-0 z-[100] pointer-events-none">
+                <Confetti 
+                  width={window.innerWidth} 
+                  height={window.innerHeight} 
+                  recycle={false} 
+                  numberOfPieces={400} 
+                  gravity={0.3}
+                  initialVelocityY={20}
+                />
+             </div>
+          )}
+
+          {/* Static Banner */}
+          {orderType === 'prebook' && calculateTotalItems() > 0 && (
+            <div className="flex items-center justify-center space-x-2 mb-3 bg-emerald-50 text-emerald-600 px-4 py-2 rounded-xl text-sm font-bold border border-emerald-100 animate-in fade-in zoom-in slide-in-from-bottom-2 duration-300">
+              <span className="text-xl">🎉</span>
+              <span>Pre-booking Offer Applied! (Saved ₹{Math.round(calculateTotalPrice() * 0.05)})</span>
+            </div>
+          )}
+
+          <button
+            onClick={handleSubmit}
+            disabled={loading || calculateTotalItems() === 0}
+            className="w-full bg-black text-white font-extrabold text-lg py-4 sm:py-5 rounded-2xl shadow-xl hover:bg-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-1 active:translate-y-0 flex flex-col items-center justify-center relative overflow-hidden group"
+          >
+            <span className="flex items-center space-x-2">
+              <span>{loading ? 'Processing Order...' : `Confirm Order (${calculateTotalItems()})`}</span>
+              {!loading && calculateTotalItems() > 0 && (
+                <>
+                  <span className="opacity-50 mx-1">•</span>
+                  {orderType === 'prebook' ? (
+                    <div className="flex items-center space-x-2">
+                      <span className="line-through opacity-60 text-sm">₹{calculateTotalPrice()}</span>
+                      <span className="text-emerald-400 font-black">₹{calculateTotalPrice() - Math.round(calculateTotalPrice() * 0.05)}</span>
+                    </div>
+                  ) : (
+                    <span>₹{calculateTotalPrice()}</span>
+                  )}
+                </>
+              )}
+            </span>
+          </button>
+        </div>
       </main>
 
       {/* History Modal Overlay */}
