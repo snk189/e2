@@ -28,7 +28,6 @@ def get_forecast(df, model, target_date, item_cols, feature_cols, unique_items, 
     
     scenarios = []
     for item_str in unique_items:
-        is_beverage = int(item_str in ['tea', 'milkshake'])
         is_heavy_meal = int(item_str in ['pizza', 'dosa'])
         
         item_one_hot = {col: 0 for col in item_cols}
@@ -76,7 +75,6 @@ def get_forecast(df, model, target_date, item_cols, feature_cols, unique_items, 
                     'is_breakfast': is_breakfast,
                     'is_lunch': is_lunch,
                     'is_evening': is_evening,
-                    'is_beverage': is_beverage,
                     'is_heavy_meal': is_heavy_meal,
                     'is_monday': is_monday,
                     'is_friday': is_friday,

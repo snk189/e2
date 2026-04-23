@@ -14,6 +14,8 @@ export const setApiUrl = (url) => {
     BASE_URL = cleanUrl;
 };
 
+export const getApiUrl = () => BASE_URL;
+
 export const submitOrder = async (ordersArray) => {
     try {
         const response = await axios.post(`${BASE_URL}/order`, ordersArray);

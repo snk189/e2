@@ -110,7 +110,7 @@ def prepare_data(df):
         'item_recent_trend', 'item_meal_avg_qty', 'item_base_popularity',
         'item_prebook_ratio',
         'is_breakfast', 'is_lunch', 'is_evening',
-        'is_beverage', 'is_heavy_meal',
+        'is_heavy_meal',
         'is_monday', 'is_friday', 'is_sunday', 'is_pay_week',
         'time_slot_sin', 'time_slot_cos',
         'day_of_week_sin', 'day_of_week_cos',
@@ -231,7 +231,6 @@ def main():
             
             scenarios = []
             for item_str in unique_items:
-                is_beverage = int(item_str in ['tea', 'milkshake'])
                 is_heavy_meal = int(item_str in ['pizza', 'dosa'])
                 
                 item_one_hot = {col: 0 for col in item_cols}
@@ -285,7 +284,6 @@ def main():
                             'is_breakfast': is_breakfast,
                             'is_lunch': is_lunch,
                             'is_evening': is_evening,
-                            'is_beverage': is_beverage,
                             'is_heavy_meal': is_heavy_meal,
                             'is_monday': is_monday,
                             'is_friday': is_friday,
