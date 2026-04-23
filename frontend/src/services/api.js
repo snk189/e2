@@ -1,12 +1,16 @@
 import axios from 'axios';
 
-let BASE_URL = '/api';
+let BASE_URL = 'https://bitespeed-api-santn.loca.lt/api';
+
+// Pass this header for all requests to bypass the Localtunnel IP reminder screen automatically
+axios.defaults.headers.common['Bypass-Tunnel-Reminder'] = 'true';
+axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true'; // For ngrok compatibility just in case
 
 export const setApiUrl = (url) => {
     let cleanUrl = url.trim();
     if (cleanUrl.endsWith('/')) cleanUrl = cleanUrl.slice(0, -1);
     if (!cleanUrl.endsWith('/api')) cleanUrl += '/api';
-    if (cleanUrl !== '/api' && !cleanUrl.startsWith('http') && !cleanUrl.startsWith('/')) cleanUrl = 'http://' + cleanUrl;
+    if (!cleanUrl.startsWith('http')) cleanUrl = 'http://' + cleanUrl;
     BASE_URL = cleanUrl;
 };
 

@@ -1,9 +1,5 @@
 {
   "appId": "com.bitespeed.app",
   "appName": "BiteSpeed",
-  "webDir": "dist",
-  "server": {
-    "url": "https://bitespeed-app-santn.loca.lt",
-    "cleartext": true
-  }
+  "webDir": "dist"
 }
