@@ -1,13 +1,106 @@
 import React, { useState } from 'react';
 import { MENU_ITEMS } from './data/items';
-import { submitOrder } from './services/api';
+import { submitOrder, setApiUrl } from './services/api';
+import Auth from './components/Auth';
+import Dashboard from './components/Dashboard';
 
 const App = () => {
+  const [networkConfigured, setNetworkConfigured] = useState(false);
+  const [user, setUser] = useState(null);
+  const [userType, setUserType] = useState(null);
+
+  const handleLogin = (username, type) => {
+    setUser(username);
+    setUserType(type);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setUserType(null);
+  };
+
+  if (!networkConfigured) {
+    return <NetworkConfig onConnect={() => setNetworkConfigured(true)} />;
+  }
+
+  if (!user) {
+    return <Auth onLogin={handleLogin} />;
+  }
+
+  if (userType === 'm') {
+    return <Dashboard onLogout={handleLogout} />;
+  }
+
+  // Normal User Booking Interface
+  return <BookingInterface onLogout={handleLogout} username={user} />;
+};
+
+const NetworkConfig = ({ onConnect }) => {
+  const [ip, setIp] = useState('');
+  const DEFAULT_IP = '192.168.0.108:5000';
+
+  const handleConnect = (e) => {
+    e.preventDefault();
+    const finalIp = ip.trim() || DEFAULT_IP;
+    setApiUrl(finalIp);
+    // Could save finalIp to localStorage here for persistence
+    onConnect();
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="bg-white p-8 rounded-3xl shadow-xl w-full max-w-sm border border-gray-100 animate-in fade-in zoom-in duration-300">
+        <div className="w-16 h-16 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <h2 className="text-2xl font-black text-center mb-2 text-gray-800">Connection</h2>
+        <p className="text-center text-sm text-gray-500 mb-6 font-medium">Enter your local network backend IP.</p>
+        
+        <form onSubmit={handleConnect} className="space-y-4">
+          <div>
+            <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">IPv4 Address & Port</label>
+            <input 
+              type="text" 
+              placeholder={`Default: ${DEFAULT_IP}`}
+              value={ip}
+              onChange={(e) => setIp(e.target.value)}
+              className="w-full p-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:bg-white outline-none font-mono text-sm transition-all"
+            />
+          </div>
+          <button type="submit" className="w-full bg-black text-white font-bold py-4 rounded-xl hover:bg-gray-800 transition-colors shadow-lg shadow-gray-200">
+            Connect
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+const BookingInterface = ({ onLogout, username }) => {
   const [quantities, setQuantities] = useState({});
   const [orderType, setOrderType] = useState('dine-in'); // 'dine-in' or 'prebook'
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [historyData, setHistoryData] = useState([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+
+  const fetchHistory = async () => {
+    try {
+      setLoadingHistory(true);
+      const { getHistory } = await import('./services/api');
+      const data = await getHistory(username);
+      setHistoryData(data.reverse()); // latest first
+      setShowHistory(true);
+    } catch (err) {
+      alert("Failed to load history");
+    } finally {
+      setLoadingHistory(false);
+    }
+  };
 
   const handleQuantity = (id, delta) => {
     setQuantities(prev => {
@@ -57,6 +150,7 @@ const App = () => {
 
     const ordersArray = Object.keys(quantities).map(id => {
       return {
+        username: username,
         item: id,
         time_slot: time_slot,
         quantity: quantities[id],
@@ -83,34 +177,54 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-8 font-sans">
-      <header className="bg-black text-white p-5 rounded-b-3xl shadow-md mb-4">
-        <h1 className="text-3xl font-extrabold text-center tracking-tight">BiteSpeed</h1>
+    <div className="min-h-screen bg-gray-50 pb-8 font-sans relative">
+      <header className="bg-black text-white p-5 rounded-b-3xl shadow-md mb-6">
+        <div className="flex justify-between items-center mb-1">
+           <h1 className="text-2xl font-extrabold tracking-tight">BiteSpeed</h1>
+           <div className="flex space-x-2">
+              <button 
+                onClick={fetchHistory} 
+                className="bg-white/10 text-white border border-white/20 px-3 py-1.5 rounded-lg font-bold text-xs shadow-sm hover:bg-white/20 transition-colors backdrop-blur-sm"
+              >
+                {loadingHistory ? 'Wait...' : 'History'}
+              </button>
+              <button 
+                onClick={onLogout} 
+                className="bg-red-500/80 text-white px-3 py-1.5 rounded-lg font-bold text-xs shadow-sm hover:bg-red-600 transition-colors backdrop-blur-sm"
+              >
+                Exit
+              </button>
+           </div>
+        </div>
+        <p className="text-left text-gray-400 text-xs font-medium uppercase tracking-wider">Welcome, <span className="text-white">{username}</span></p>
       </header>
 
       <main className="max-w-md mx-auto px-4">
         
         {/* Menu Section */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-200 mb-6">
-          <h2 className="text-xl font-bold mb-4 border-b pb-2">Menu Items</h2>
+        <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6">
+          <h2 className="text-xl font-bold mb-4 border-b border-gray-100 pb-3 flex items-center justify-between">
+            Menu
+            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{MENU_ITEMS.length} Items</span>
+          </h2>
           <div className="space-y-4">
             {MENU_ITEMS.map(item => (
-              <div key={item.id} className="flex justify-between items-center">
+              <div key={item.id} className="flex justify-between items-center group">
                 <div>
-                  <h3 className="font-bold text-gray-800">{item.name}</h3>
+                  <h3 className="font-bold text-gray-800 drop-shadow-sm">{item.name}</h3>
                   <p className="text-sm font-semibold text-gray-500">{item.price}</p>
                 </div>
-                <div className="flex items-center space-x-3 bg-gray-100 rounded-full py-1 px-2 border border-gray-200">
+                <div className="flex items-center space-x-3 bg-gray-50 rounded-full py-1 px-1.5 border border-gray-200">
                   <button 
                     onClick={() => handleQuantity(item.id, -1)}
-                    className="w-8 h-8 flex items-center justify-center font-bold text-gray-600 bg-white rounded-full shadow-sm"
+                    className="w-8 h-8 flex items-center justify-center font-bold text-gray-600 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-colors"
                   >
                     -
                   </button>
-                  <span className="w-4 text-center font-bold">{quantities[item.id] || 0}</span>
+                  <span className="w-5 text-center font-extrabold text-gray-700">{quantities[item.id] || 0}</span>
                   <button 
                     onClick={() => handleQuantity(item.id, 1)}
-                    className="w-8 h-8 flex items-center justify-center font-bold text-white bg-black rounded-full shadow-sm"
+                    className="w-8 h-8 flex items-center justify-center font-bold text-white bg-black rounded-full shadow-sm hover:bg-gray-800 transition-colors"
                   >
                     +
                   </button>
@@ -121,41 +235,41 @@ const App = () => {
         </div>
 
         {/* Booking Type Section */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-200 mb-6">
-          <h2 className="text-xl font-bold mb-4 border-b pb-2">Order Options</h2>
-          <div className="flex space-x-2 mb-4">
+        <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6">
+          <h2 className="text-xl font-bold mb-4 border-b border-gray-100 pb-3">Ordering Method</h2>
+          <div className="flex space-x-3 mb-4">
             <button
               onClick={() => setOrderType('dine-in')}
-              className={`flex-1 py-3 font-bold rounded-xl ${orderType === 'dine-in' ? 'bg-black text-white' : 'bg-gray-100 text-gray-600'}`}
+              className={`flex-1 py-3 font-bold rounded-2xl transition-colors ${orderType === 'dine-in' ? 'bg-black text-white shadow-md' : 'bg-gray-50 text-gray-500 hover:bg-gray-100 border border-gray-200'}`}
             >
               Dine-In Now
             </button>
             <button
               onClick={() => setOrderType('prebook')}
-              className={`flex-1 py-3 font-bold rounded-xl ${orderType === 'prebook' ? 'bg-black text-white' : 'bg-gray-100 text-gray-600'}`}
+              className={`flex-1 py-3 font-bold rounded-2xl transition-colors ${orderType === 'prebook' ? 'bg-black text-white shadow-md' : 'bg-gray-50 text-gray-500 hover:bg-gray-100 border border-gray-200'}`}
             >
-              Prebook Later
+              Prebook
             </button>
           </div>
 
           {orderType === 'prebook' && (
-            <div className="flex space-x-2 mb-2 p-3 bg-gray-50 rounded-xl border border-gray-200">
+            <div className="flex space-x-3 p-4 bg-gray-50 rounded-2xl border border-gray-200 shadow-inner">
               <div className="flex-1">
-                <label className="block text-xs font-bold text-gray-500 mb-1">Date</label>
+                <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Date</label>
                 <input 
                   type="date" 
                   value={date}
                   onChange={e => setDate(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white"
+                  className="w-full p-2.5 border-2 border-gray-200 rounded-xl text-sm bg-white font-semibold focus:border-black focus:ring-0 outline-none transition-colors"
                 />
               </div>
               <div className="flex-1">
-                <label className="block text-xs font-bold text-gray-500 mb-1">Time</label>
+                <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Time</label>
                 <input 
                   type="time" 
                   value={time}
                   onChange={e => setTime(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white"
+                  className="w-full p-2.5 border-2 border-gray-200 rounded-xl text-sm bg-white font-semibold focus:border-black focus:ring-0 outline-none transition-colors"
                 />
               </div>
             </div>
@@ -166,13 +280,69 @@ const App = () => {
         <button
           onClick={handleSubmit}
           disabled={loading || calculateTotalItems() === 0}
-          className="w-full bg-black text-white font-bold text-lg py-4 rounded-xl shadow-lg disabled:opacity-50"
+          className="w-full bg-black text-white font-extrabold text-lg py-5 rounded-2xl shadow-xl hover:bg-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-1 active:translate-y-0"
         >
-          {loading ? 'Booking...' : `Book Order (${calculateTotalItems()} items)`}
+          {loading ? 'Processing Order...' : `Confirm Order (${calculateTotalItems()} items)`}
         </button>
       </main>
+
+      {/* History Modal Overlay */}
+      {showHistory && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col animate-in slide-in-from-bottom-8 duration-300">
+            <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+              <h2 className="text-xl font-bold flex flex-col">
+                Order History
+                <span className="text-xs text-gray-500 font-medium">Your past cravings</span>
+              </h2>
+              <button onClick={() => setShowHistory(false)} className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center font-bold hover:bg-gray-300 transition-colors">✕</button>
+            </div>
+            
+            <div className="overflow-y-auto p-5 scrollbar-hide flex-1">
+              {historyData.length === 0 ? (
+                <div className="text-center py-10 opacity-50">
+                   <p className="font-bold text-lg">No orders yet</p>
+                   <p className="text-sm">Time to grab a bite!</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {historyData.map((order, idx) => {
+                    const orderDate = new Date(order.timestamp * 1000).toLocaleString(undefined, {
+                       month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                    });
+                    return (
+                      <div key={idx} className="bg-white border border-gray-100 p-4 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="font-black text-lg text-gray-800 capitalize">{order.item}</span>
+                          <span className="font-bold bg-gray-100 text-gray-800 px-2 py-0.5 rounded-md text-sm">x{order.quantity}</span>
+                        </div>
+                        <div className="flex justify-between items-end">
+                           <div className="flex flex-col">
+                             <span className="text-xs font-bold text-gray-400 mb-1">ORDERED ON</span>
+                             <span className="text-xs font-semibold text-gray-600">{orderDate}</span>
+                           </div>
+                           {order.is_prebooking ? (
+                             <span className="text-[10px] uppercase tracking-wider font-extrabold bg-indigo-50 text-indigo-500 px-2.5 py-1 rounded-md border border-indigo-100">
+                               Prebook • {order.prebooking_date}
+                             </span>
+                           ) : (
+                             <span className="text-[10px] uppercase tracking-wider font-extrabold bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-md border border-emerald-100">
+                               Dine-In
+                             </span>
+                           )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default App;
+

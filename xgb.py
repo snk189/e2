@@ -10,14 +10,8 @@ import numpy as np
 
 warnings.filterwarnings('ignore')
 
-def main():
-    file_path = 'data.csv'
-    try:
-        df = pd.read_csv(file_path)
-    except FileNotFoundError:
-        print(f"Error: File '{file_path}' not found.")
-        return
-        
+def prepare_data(df):
+    """Handles all feature engineering for the dataset."""
     # Sort chronologically to prevent future-data leakage
     df = df.sort_values('timestamp').reset_index(drop=True)
     
@@ -39,17 +33,17 @@ def main():
     df['is_sunday'] = (df['day_of_week'] == 6).astype(int)
     
     # 4. Time of Month (Pay Week)
-    df['date_obj'] = pd.to_datetime(df['timestamp'], unit='s')
+    from datetime import datetime
+    df['date_obj'] = df['timestamp'].apply(lambda x: datetime.fromtimestamp(x))
     df['day_of_month'] = df['date_obj'].dt.day
     df['is_pay_week'] = df['day_of_month'].apply(lambda x: 1 if x >= 25 or x <= 5 else 0)
     
     # 4.5. Prebooking Lead Time
-    df['prebooking_datetime_str'] = df['prebooking_date'] + ' ' + df['prebooking_time']
+    df['prebooking_datetime_str'] = df['prebooking_date'].astype(str) + ' ' + df['prebooking_time'].astype(str)
     df['prebooking_obj'] = pd.to_datetime(df['prebooking_datetime_str'], format='%Y-%m-%d %H:%M:%S', errors='coerce')
     df['prebooking_lead_hours'] = (df['date_obj'] - df['prebooking_obj']).dt.total_seconds() / 3600.0
     df['prebooking_lead_hours'] = df['prebooking_lead_hours'].fillna(0).clip(lower=0)
 
-    
     # 5. Seasonality (Month of Year)
     df['month'] = df['date_obj'].dt.month
     df['month_sin'] = np.sin(2 * np.pi * df['month'] / 12.0)
@@ -124,6 +118,9 @@ def main():
         'month_sin', 'month_cos'
     ]
     
+    return df, feature_cols, hist_avg_dict, prebook_avg_dict, item_avg_dict, item_prebook_ratio_dict, latest_trend_dict, meal_avg_dict
+
+def extract_features(df, feature_cols):
     features = ['item'] + feature_cols
     target = 'quantity'
     
@@ -136,13 +133,13 @@ def main():
     X = X.drop('item', axis=1)
     item_cols = list(item_dummies.columns)
     
-    available_time_slots = sorted(df['time_slot'].unique())
+    return X, y, item_cols, unique_items
 
-    X_full = X[item_cols + feature_cols]
-    y_full = y
-    
-    # Chronological time-series split
+def build_and_evaluate_model(X_full, y_full, feature_cols, item_cols):
     split_idx = int(len(X_full) * 0.8)
+    if split_idx == 0:
+        split_idx = 1 # Fallback for very small datasets
+        
     X_train, X_test = X_full.iloc[:split_idx], X_full.iloc[split_idx:]
     y_train, y_test = y_full.iloc[:split_idx], y_full.iloc[split_idx:]
     
@@ -159,18 +156,19 @@ def main():
     print(f"[✔] Tuning Complete! Best Model Parameters: {grid_search.best_params_}")
     
     rf_eval_model = grid_search.best_estimator_
-    y_pred = rf_eval_model.predict(X_test)
     
-    r2 = r2_score(y_test, y_pred)
-    mae = mean_absolute_error(y_test, y_pred)
-    mse = mean_squared_error(y_test, y_pred)
-    exact_acc = np.mean(np.round(y_pred) == y_test) * 100
-    
-    print(f"\n============= 📊 Model Evaluation on Test Data =============")
-    print(f"R² Score: {r2:.4f}")
-    print(f"Mean Absolute Error (MAE): {mae:.4f}")
-    print(f"Mean Squared Error (MSE): {mse:.4f}")
-    print(f"Exact Integer Match Accuracy: {exact_acc:.2f}%\n")
+    if len(X_test) > 0:
+        y_pred = rf_eval_model.predict(X_test)
+        r2 = r2_score(y_test, y_pred)
+        mae = mean_absolute_error(y_test, y_pred)
+        mse = mean_squared_error(y_test, y_pred)
+        exact_acc = np.mean(np.round(y_pred) == y_test) * 100
+        
+        print(f"\n============= 📊 Model Evaluation on Test Data =============")
+        print(f"R² Score: {r2:.4f}")
+        print(f"Mean Absolute Error (MAE): {mae:.4f}")
+        print(f"Mean Squared Error (MSE): {mse:.4f}")
+        print(f"Exact Integer Match Accuracy: {exact_acc:.2f}%\n")
     
     print(f"============= ⭐ Top 5 Important Features =============")
     importances = rf_eval_model.feature_importances_
@@ -188,6 +186,24 @@ def main():
     rf_model.fit(X_full, y_full)
     
     print("[✔] Final Model Trained Successfully on Full Dataset.")
+    return rf_model
+
+def main():
+    file_path = 'data.csv'
+    try:
+        df = pd.read_csv(file_path)
+    except FileNotFoundError:
+        try:
+            df = pd.read_csv('data1.csv') # Fallback if user uses data1
+        except FileNotFoundError:
+            print(f"Error: File '{file_path}' not found.")
+            return
+
+    df, feature_cols, hist_avg_dict, prebook_avg_dict, item_avg_dict, item_prebook_ratio_dict, latest_trend_dict, meal_avg_dict = prepare_data(df)
+    X_full, y_full, item_cols, unique_items = extract_features(df, feature_cols)
+    rf_model = build_and_evaluate_model(X_full, y_full, feature_cols, item_cols)
+    
+    available_time_slots = sorted(df['time_slot'].unique())
     
     while True:
         date_input = input("\nEnter a date (YYYY-MM-DD) to forecast demand (or type 'q' to quit): ").strip()
@@ -237,7 +253,6 @@ def main():
                     time_cos = np.cos(2 * np.pi * t_slot / 24.0)
 
                     for is_pre in [0, 1]:
-                        # Default simulation: 24h lead time for prebooking, 0h for walk-ins
                         sim_lead_hours = 24.0 if is_pre == 1 else 0.0
                         
                         lookup_key_pb = (item_str, is_pre)
@@ -246,9 +261,7 @@ def main():
                             pb_avg = item_avg_dict.get(item_str, 1.0)
                             
                         weekend_prebook_flag = is_weekend * is_pre
-                        
                         item_prebook_ratio = item_prebook_ratio_dict.get(item_str, 0.0)
-                        
                         recent_trend = latest_trend_dict.get(item_str, item_avg_dict.get(item_str, 1.0))
                         
                         lookup_key_meal = (item_str, is_breakfast, is_lunch, is_evening)
@@ -290,7 +303,7 @@ def main():
                         scenarios.append(scenario_dict)
             
             forecast_df = pd.DataFrame(scenarios)
-            X_forecast = forecast_df[item_cols + feature_cols]
+            X_forecast = forecast_df[feature_cols + item_cols]
             
             predictions = rf_model.predict(X_forecast)
             
@@ -304,11 +317,8 @@ def main():
             )
             
             pivot_df.columns.name = None
-            
-            pivot_df['Total Demand'] = pivot_df['Walk-in'] + pivot_df['Prebooking']
-            
+            pivot_df['Total Demand'] = pivot_df.get('Walk-in', 0) + pivot_df.get('Prebooking', 0)
             pivot_df = pivot_df.fillna(0).astype(int)
-            
             pivot_df = pivot_df[pivot_df['Total Demand'] > 0]
             
             if pivot_df.empty:
