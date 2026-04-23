@@ -88,6 +88,36 @@ const BookingInterface = ({ onLogout, username }) => {
   const [historyData, setHistoryData] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
 
+  // New states for Toast and Refresh
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+  const [startY, setStartY] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const showToast = (message, type = 'success') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000);
+  };
+
+  const handleTouchStart = (e) => {
+    if (window.scrollY === 0) setStartY(e.touches[0].clientY);
+  };
+
+  const handleTouchMove = (e) => {
+    if (window.scrollY === 0 && startY > 0) {
+      if (e.touches[0].clientY - startY > 80 && !refreshing) {
+        setRefreshing(true);
+        // Reset quantities to simulate a fresh state
+        setQuantities({});
+        setTimeout(() => setRefreshing(false), 1000);
+        setStartY(0);
+      }
+    }
+  };
+
+  const handleTouchEnd = () => setStartY(0);
+
+  const todayStr = new Date().toISOString().split('T')[0];
+
   const fetchHistory = async () => {
     try {
       setLoadingHistory(true);
@@ -96,7 +126,7 @@ const BookingInterface = ({ onLogout, username }) => {
       setHistoryData(data.reverse()); // latest first
       setShowHistory(true);
     } catch (err) {
-      alert("Failed to load history");
+      showToast("Failed to load history", "error");
     } finally {
       setLoadingHistory(false);
     }
@@ -136,18 +166,34 @@ const BookingInterface = ({ onLogout, username }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (calculateTotalItems() === 0) {
-        alert("Please add at least one item.");
+        showToast("Please add at least one item.", "error");
         return;
     }
 
-    if (orderType === 'prebook' && (!date || !time)) {
-        alert("Please select a date and time for prebooking.");
-        return;
+    const now = new Date();
+
+    if (orderType === 'prebook') {
+        if (!date || !time) {
+            showToast("Please select a date and time for prebooking.", "error");
+            return;
+        }
+        
+        const selectedDateTime = new Date(`${date}T${time}`);
+        
+        if (selectedDateTime <= now) {
+            showToast("Cannot book in the past!", "error");
+            return;
+        }
+        
+        const hour = selectedDateTime.getHours();
+        if (hour < 8 || hour >= 20) {
+            showToast("Canteen operates between 8 AM and 8 PM.", "error");
+            return;
+        }
     }
     
     setLoading(true);
     
-    const now = new Date();
     const timestamp = Math.floor(now.getTime() / 1000);
     
     let time_slot;
@@ -180,12 +226,12 @@ const BookingInterface = ({ onLogout, username }) => {
 
     try {
       await submitOrder(ordersArray);
-      alert("Order booked successfully!");
+      showToast("Order booked successfully!", "success");
       setQuantities({});
       setDate('');
       setTime('');
     } catch (error) {
-      alert(`Backend failed: ${error.message}. Contact the AI if this continues.`);
+      showToast(`Backend failed: ${error.message}. Contact the AI if this continues.`, "error");
       console.error(error);
     } finally {
       setLoading(false);
@@ -193,7 +239,29 @@ const BookingInterface = ({ onLogout, username }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-8 font-sans relative">
+    <div 
+      className="min-h-screen bg-gray-50 pb-8 font-sans relative"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Toast Notification */}
+      {toast.show && (
+        <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-full shadow-lg font-bold text-sm animate-in slide-in-from-top-4 fade-in duration-300 backdrop-blur-md ${toast.type === 'error' ? 'bg-red-500/90 text-white border border-red-400' : 'bg-black/90 text-white border border-gray-700'}`}>
+          {toast.message}
+        </div>
+      )}
+
+      {/* Pull to Refresh Indicator */}
+      {refreshing && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-40 bg-white rounded-full p-2 shadow-md animate-bounce border border-gray-100">
+           <svg className="w-6 h-6 text-indigo-500 animate-spin" fill="none" viewBox="0 0 24 24">
+             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+           </svg>
+        </div>
+      )}
+
       <header className="bg-black text-white p-5 rounded-b-3xl shadow-md mb-6">
         <div className="flex justify-between items-center mb-1">
            <h1 className="text-2xl font-extrabold tracking-tight">BiteSpeed</h1>
@@ -285,6 +353,7 @@ const BookingInterface = ({ onLogout, username }) => {
                 <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Date</label>
                 <input 
                   type="date" 
+                  min={todayStr}
                   value={date}
                   onChange={e => setDate(e.target.value)}
                   className="w-full p-2.5 border-2 border-gray-200 rounded-xl text-sm bg-white font-semibold focus:border-black focus:ring-0 outline-none transition-colors"
