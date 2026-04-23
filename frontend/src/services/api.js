@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-let BASE_URL = 'https://bitespeed-api-santn.loca.lt/api';
+let BASE_URL = '/api';
+
+// If building the Android Capacitor app, replace '/api' with your current Ngrok URL!
+// e.g. BASE_URL = 'https://123abc456.ngrok-free.app/api';
 
 // Pass this header for all requests to bypass the Localtunnel IP reminder screen automatically
 axios.defaults.headers.common['Bypass-Tunnel-Reminder'] = 'true';
@@ -10,7 +13,7 @@ export const setApiUrl = (url) => {
     let cleanUrl = url.trim();
     if (cleanUrl.endsWith('/')) cleanUrl = cleanUrl.slice(0, -1);
     if (!cleanUrl.endsWith('/api')) cleanUrl += '/api';
-    if (!cleanUrl.startsWith('http')) cleanUrl = 'http://' + cleanUrl;
+    if (!cleanUrl.startsWith('http') && !cleanUrl.startsWith('/')) cleanUrl = 'http://' + cleanUrl;
     BASE_URL = cleanUrl;
 };
 

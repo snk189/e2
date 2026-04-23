@@ -6,11 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: true,
-    hmr: {
-      protocol: 'wss',
-      host: 'bitespeed-app-santn.loca.lt',
-      clientPort: 443
-    },
+    allowedHosts: true,
+    // hmr config removed to allow dynamic host (works with ngrok/localtunnel automatically)
     proxy: {
       '/api': {
         target: 'http://localhost:5000',
