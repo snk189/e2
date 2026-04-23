@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-let BASE_URL = 'http://192.168.0.108:5000/api';
+let BASE_URL = '/api';
 
 export const setApiUrl = (url) => {
     let cleanUrl = url.trim();
     if (cleanUrl.endsWith('/')) cleanUrl = cleanUrl.slice(0, -1);
     if (!cleanUrl.endsWith('/api')) cleanUrl += '/api';
-    if (!cleanUrl.startsWith('http')) cleanUrl = 'http://' + cleanUrl;
+    if (cleanUrl !== '/api' && !cleanUrl.startsWith('http') && !cleanUrl.startsWith('/')) cleanUrl = 'http://' + cleanUrl;
     BASE_URL = cleanUrl;
 };
 

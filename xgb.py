@@ -24,7 +24,6 @@ def prepare_data(df):
     df['is_evening'] = df['time_slot'].apply(lambda x: 1 if 15 <= x <= 18 else 0)
     
     # 2. Item Categories
-    df['is_beverage'] = df['item'].isin(['tea', 'milkshake']).astype(int)
     df['is_heavy_meal'] = df['item'].isin(['pizza', 'dosa']).astype(int)
     
     # 3. Start/End of Week
