@@ -115,6 +115,22 @@ const BookingInterface = ({ onLogout, username }) => {
     });
   };
 
+  const handleSetQuantity = (id, value) => {
+    let next = parseInt(value, 10);
+    if (isNaN(next) && value !== '') return;
+    if (value === '') next = 0;
+    if (next < 0) return;
+    
+    setQuantities(prev => {
+      if (next === 0) {
+        const copy = { ...prev };
+        delete copy[id];
+        return copy;
+      }
+      return { ...prev, [id]: next };
+    });
+  };
+
   const calculateTotalItems = () => Object.values(quantities).reduce((a, b) => a + b, 0);
 
   const handleSubmit = async (e) => {
@@ -209,22 +225,33 @@ const BookingInterface = ({ onLogout, username }) => {
           </h2>
           <div className="space-y-4">
             {MENU_ITEMS.map(item => (
-              <div key={item.id} className="flex justify-between items-center group">
-                <div>
-                  <h3 className="font-bold text-gray-800 drop-shadow-sm">{item.name}</h3>
-                  <p className="text-sm font-semibold text-gray-500">{item.price}</p>
+              <div key={item.id} className="flex justify-between items-center group py-2">
+                <div className="flex items-center space-x-3 flex-1 min-w-0 pr-2">
+                  <img src={item.img} alt={item.name} className="w-14 h-14 object-cover rounded-2xl shadow-sm border border-gray-100 shrink-0" />
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-gray-800 drop-shadow-sm truncate text-base sm:text-lg leading-tight">{item.name}</h3>
+                    <p className="text-sm font-semibold text-gray-500 mt-0.5">{item.price}</p>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-3 bg-gray-50 rounded-full py-1 px-1.5 border border-gray-200">
+                <div className="flex items-center space-x-1 sm:space-x-2 bg-gray-50 rounded-full py-1 px-1 sm:px-1.5 border border-gray-200 shadow-sm shrink-0">
                   <button 
                     onClick={() => handleQuantity(item.id, -1)}
-                    className="w-8 h-8 flex items-center justify-center font-bold text-gray-600 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-colors"
+                    className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center font-bold text-gray-600 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-colors"
                   >
                     -
                   </button>
-                  <span className="w-5 text-center font-extrabold text-gray-700">{quantities[item.id] || 0}</span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={quantities[item.id] || ''}
+                    onChange={(e) => handleSetQuantity(item.id, e.target.value)}
+                    placeholder="0"
+                    className="w-6 sm:w-8 text-center font-extrabold text-gray-700 bg-transparent outline-none text-sm sm:text-base"
+                  />
                   <button 
                     onClick={() => handleQuantity(item.id, 1)}
-                    className="w-8 h-8 flex items-center justify-center font-bold text-white bg-black rounded-full shadow-sm hover:bg-gray-800 transition-colors"
+                    className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center font-bold text-white bg-black rounded-full shadow-sm hover:bg-gray-800 transition-colors"
                   >
                     +
                   </button>
