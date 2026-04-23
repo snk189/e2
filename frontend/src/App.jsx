@@ -37,13 +37,13 @@ const App = () => {
 
 const NetworkConfig = ({ onConnect }) => {
   const [ip, setIp] = useState('');
-  const DEFAULT_IP = '192.168.0.108:5000';
+  // Ngrok provides one free static URL! This will be your permanent default internet URL.
+  const LOCAL_FALLBACK = 'https://nondefensible-helminthological-tennie.ngrok-free.dev';
 
   const handleConnect = (e) => {
     e.preventDefault();
-    const finalIp = ip.trim() || DEFAULT_IP;
+    const finalIp = ip.trim() || LOCAL_FALLBACK;
     setApiUrl(finalIp);
-    // Could save finalIp to localStorage here for persistence
     onConnect();
   };
 
@@ -55,15 +55,15 @@ const NetworkConfig = ({ onConnect }) => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
         </div>
-        <h2 className="text-2xl font-black text-center mb-2 text-gray-800">Connection</h2>
-        <p className="text-center text-sm text-gray-500 mb-6 font-medium">Enter your local network backend IP.</p>
+        <h2 className="text-2xl font-black text-center mb-2 text-gray-800">API Connection</h2>
+        <p className="text-center text-sm text-gray-500 mb-6 font-medium">To use the Native App over Mobile Data, paste today's Ngrok URL below!</p>
         
         <form onSubmit={handleConnect} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">IPv4 Address & Port</label>
+            <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">Ngrok API Server URL</label>
             <input 
               type="text" 
-              placeholder={`Default: ${DEFAULT_IP}`}
+              placeholder={`e.g. https://xyz.ngrok-free.app`}
               value={ip}
               onChange={(e) => setIp(e.target.value)}
               className="w-full p-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:bg-white outline-none font-mono text-sm transition-all"

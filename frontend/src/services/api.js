@@ -1,8 +1,5 @@
 import axios from 'axios';
 
-// Bypass Ngrok Free-Tier Browser Warning Interstitial
-axios.defaults.headers.common['ngrok-skip-browser-warning'] = '69420';
-
 let BASE_URL = 'http://192.168.0.108:5000/api';
 
 export const setApiUrl = (url) => {
