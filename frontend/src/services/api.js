@@ -63,3 +63,91 @@ export const getHistory = async (username) => {
         throw error.response?.data || { error: 'Fetching history failed' };
     }
 };
+
+export const getPendingUsers = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/pending_users`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { error: 'Fetching pending users failed' };
+    }
+};
+
+export const approveUser = async (username) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/approve_user`, { username });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { error: 'Approving user failed' };
+    }
+};
+
+export const rejectUser = async (username) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/reject_user`, { username });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { error: 'Rejecting user failed' };
+    }
+};
+
+export const getAdminUsers = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/admin/users`);
+        return response.data;
+    } catch (error) { throw error.response?.data || { error: 'Failed' }; }
+};
+export const adminAddUser = async (username, password, type) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/admin/add_user`, { username, password, type });
+        return response.data;
+    } catch (error) { throw error.response?.data || { error: 'Failed' }; }
+};
+export const adminRemoveUser = async (username) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/admin/remove_user`, { username });
+        return response.data;
+    } catch (error) { throw error.response?.data || { error: 'Failed' }; }
+};
+export const adminBlockUser = async (username) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/admin/block_user`, { username });
+        return response.data;
+    } catch (error) { throw error.response?.data || { error: 'Failed' }; }
+};
+export const adminUnblockUser = async (username) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/admin/unblock_user`, { username });
+        return response.data;
+    } catch (error) { throw error.response?.data || { error: 'Failed' }; }
+};
+export const getAdminBlockedUsers = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/admin/blocked_users`);
+        return response.data;
+    } catch (error) { throw error.response?.data || { error: 'Failed' }; }
+};
+export const getAdminRejectedUsers = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/admin/rejected_users`);
+        return response.data;
+    } catch (error) { throw error.response?.data || { error: 'Failed' }; }
+};
+export const adminUnfreezeUser = async (username) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/admin/unfreeze_user`, { username });
+        return response.data;
+    } catch (error) { throw error.response?.data || { error: 'Failed' }; }
+};
+export const getAdminRecentData = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/admin/recent_data`);
+        return response.data;
+    } catch (error) { throw error.response?.data || { error: 'Failed' }; }
+};
+export const adminRemoveData = async (id) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/admin/remove_data`, { id });
+        return response.data;
+    } catch (error) { throw error.response?.data || { error: 'Failed' }; }
+};

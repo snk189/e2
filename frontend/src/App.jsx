@@ -4,6 +4,7 @@ import { MENU_ITEMS } from './data/items';
 import { submitOrder, setApiUrl } from './services/api';
 import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
+import AdminDashboard from './components/AdminDashboard';
 
 const App = () => {
   const [networkConfigured, setNetworkConfigured] = useState(false);
@@ -26,6 +27,10 @@ const App = () => {
 
   if (!user) {
     return <Auth onLogin={handleLogin} />;
+  }
+
+  if (userType === 'a') {
+    return <AdminDashboard onLogout={handleLogout} />;
   }
 
   if (userType === 'm') {
@@ -138,7 +143,7 @@ const BookingInterface = ({ onLogout, username }) => {
   const handleQuantity = (id, delta) => {
     setQuantities(prev => {
       const current = prev[id] || 0;
-      const next = Math.max(0, current + delta);
+      const next = Math.max(0, Math.min(10, current + delta));
       if (next === 0) {
         const copy = { ...prev };
         delete copy[id];
@@ -153,6 +158,7 @@ const BookingInterface = ({ onLogout, username }) => {
     if (isNaN(next) && value !== '') return;
     if (value === '') next = 0;
     if (next < 0) return;
+    if (next > 10) next = 10;
     
     setQuantities(prev => {
       if (next === 0) {

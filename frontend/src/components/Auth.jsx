@@ -7,6 +7,7 @@ const Auth = ({ onLogin }) => {
   const [password, setPassword] = useState('');
   const [type, setType] = useState('n');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Dynamic Server URL
@@ -60,6 +61,7 @@ const Auth = ({ onLogin }) => {
 
     setLoading(true);
     setError('');
+    setSuccess('');
 
     try {
       if (isLogin) {
@@ -67,7 +69,8 @@ const Auth = ({ onLogin }) => {
         onLogin(data.user || username, data.type || 'n');
       } else {
         const data = await registerUser(username, password, type);
-        onLogin(data.user || username, data.type || 'n');
+        setSuccess(data.message || 'Registration request sent. Waiting for admin approval.');
+        setIsLogin(true); // switch to login so they can wait
       }
     } catch (err) {
       setError(err.error || 'Authentication failed');
@@ -86,6 +89,12 @@ const Auth = ({ onLogin }) => {
         {error && (
           <div className="bg-red-50 text-red-600 p-3 rounded-xl mb-4 text-sm font-semibold border border-red-200">
             {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="bg-green-50 text-green-600 p-3 rounded-xl mb-4 text-sm font-semibold border border-green-200">
+            {success}
           </div>
         )}
 
@@ -152,6 +161,7 @@ const Auth = ({ onLogin }) => {
               >
                 <option value="n">Normal User</option>
                 <option value="m">Management</option>
+                <option value="a">Admin</option>
               </select>
             </div>
           )}
@@ -174,6 +184,7 @@ const Auth = ({ onLogin }) => {
             onClick={() => {
               setIsLogin(!isLogin);
               setError('');
+              setSuccess('');
             }}
             className="text-gray-500 font-semibold hover:text-black transition-colors"
           >

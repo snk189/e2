@@ -1,8 +1,5 @@
 username,password,type
-Aa,a,n
-Bb,b,m
-a,a,m
-b,b,n
+A,a,a
 management,admin,m
 user1,p,n
 user2,pass123,n
@@ -104,3 +101,5 @@ user97,pass123,n
 user98,pass123,n
 user99,pass123,n
 user100,pass123,n
+Aa,a,m
+Bb,b,n

@@ -9,7 +9,7 @@ from xgb import prepare_data, extract_features, build_and_evaluate_model
 
 warnings.filterwarnings('ignore')
 
-def get_forecast(df, model, target_date, item_cols, feature_cols, unique_items, hist_avg_dict, prebook_avg_dict, item_avg_dict, latest_trend_dict, meal_avg_dict, item_prebook_ratio_dict, available_time_slots):
+def get_forecast(df, model, target_date, item_cols, feature_cols, unique_items, hist_avg_dict, prebook_avg_dict, item_avg_dict, latest_trend_dict, meal_avg_dict, item_prebook_ratio_dict, available_time_slots, item_latest_lags, user_avg_mean):
     day_of_week = target_date.weekday()
     is_weekend = int(day_of_week in [5, 6])
     is_monday = int(day_of_week == 0)
@@ -58,6 +58,10 @@ def get_forecast(df, model, target_date, item_cols, feature_cols, unique_items, 
                 lookup_key_meal = (item_str, is_breakfast, is_lunch, is_evening)
                 meal_avg_val = meal_avg_dict.get(lookup_key_meal, item_avg_dict.get(item_str, 1.0))
                 
+                lags = item_latest_lags.get(item_str, {})
+                weekend_lunch = is_weekend * is_lunch
+                momentum = lags.get('rolling_mean_3', 0) - lags.get('rolling_mean_7', 0)
+                
                 scenario_dict = {
                     'Item': item_str,
                     'is_prebooking': is_pre,
@@ -85,7 +89,16 @@ def get_forecast(df, model, target_date, item_cols, feature_cols, unique_items, 
                     'day_of_week_sin': day_sin,
                     'day_of_week_cos': day_cos,
                     'month_sin': month_sin,
-                    'month_cos': month_cos
+                    'month_cos': month_cos,
+                    'prev_qty': lags.get('prev_qty', 0),
+                    'rolling_mean_3': lags.get('rolling_mean_3', 0),
+                    'rolling_mean_7': lags.get('rolling_mean_7', 0),
+                    'lag_7': lags.get('lag_7', 0),
+                    'item_prev_qty': lags.get('item_prev_qty', 0),
+                    'item_roll_3': lags.get('item_roll_3', 0),
+                    'user_avg_qty': user_avg_mean,
+                    'weekend_lunch': weekend_lunch,
+                    'momentum': momentum
                 }
                 scenario_dict.update(item_one_hot)
                 scenarios.append(scenario_dict)
@@ -132,6 +145,24 @@ def main():
         X_full, y_full, item_cols, unique_items = extract_features(df, feature_cols)
         rf_model = build_and_evaluate_model(X_full, y_full, feature_cols, item_cols)
         
+        # Calculate latest lags for forecast
+        item_latest_lags = {}
+        for item_str in unique_items:
+            item_df = df[df['item'] == item_str].sort_values('timestamp')
+            if not item_df.empty:
+                last_row = item_df.iloc[-1]
+                item_latest_lags[item_str] = {
+                    'prev_qty': last_row.get('prev_qty', 0),
+                    'rolling_mean_3': last_row.get('rolling_mean_3', 0),
+                    'rolling_mean_7': last_row.get('rolling_mean_7', 0),
+                    'lag_7': last_row.get('lag_7', 0),
+                    'item_prev_qty': last_row.get('item_prev_qty', 0),
+                    'item_roll_3': last_row.get('item_roll_3', 0),
+                }
+            else:
+                item_latest_lags[item_str] = {}
+        user_avg_mean = df['user_avg_qty'].mean() if 'user_avg_qty' in df else 1.0
+
         # Restrict predictions to hourwise 8am to 6pm (18:00)
         available_time_slots = list(range(8, 19))
     
@@ -149,8 +180,8 @@ def main():
         today_target = datetime.now()
         tomorrow_target = today_target + timedelta(days=1)
         
-        today_pred = get_forecast(df, rf_model, today_target, item_cols, feature_cols, unique_items, hist_avg_dict, prebook_avg_dict, item_avg_dict, latest_trend_dict, meal_avg_dict, item_prebook_ratio_dict, available_time_slots)
-        tomorrow_pred = get_forecast(df, rf_model, tomorrow_target, item_cols, feature_cols, unique_items, hist_avg_dict, prebook_avg_dict, item_avg_dict, latest_trend_dict, meal_avg_dict, item_prebook_ratio_dict, available_time_slots)
+        today_pred = get_forecast(df, rf_model, today_target, item_cols, feature_cols, unique_items, hist_avg_dict, prebook_avg_dict, item_avg_dict, latest_trend_dict, meal_avg_dict, item_prebook_ratio_dict, available_time_slots, item_latest_lags, user_avg_mean)
+        tomorrow_pred = get_forecast(df, rf_model, tomorrow_target, item_cols, feature_cols, unique_items, hist_avg_dict, prebook_avg_dict, item_avg_dict, latest_trend_dict, meal_avg_dict, item_prebook_ratio_dict, available_time_slots, item_latest_lags, user_avg_mean)
         
         # Financials mapping
         price_map = {'dosa': 60, 'pizza': 150, 'sandwich': 50, 'milkshake': 80, 'tea': 20}
