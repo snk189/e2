@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Confetti from 'react-confetti';
+import confetti from 'canvas-confetti';
 import { MENU_ITEMS } from './data/items';
 import { submitOrder, setApiUrl } from './services/api';
 import Auth from './components/Auth';
@@ -91,7 +91,7 @@ const BookingInterface = ({ onLogout, username }) => {
 
   // New states for Toast, Refresh, and Promo Popup
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
-  const [showPromoPopup, setShowPromoPopup] = useState(false);
+  const [offerApplied, setOfferApplied] = useState(false);
   const [promoAmount, setPromoAmount] = useState(0);
   const [startY, setStartY] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
@@ -179,16 +179,31 @@ const BookingInterface = ({ onLogout, username }) => {
   };
 
   React.useEffect(() => {
-    if (orderType === 'prebook' && calculateTotalItems() > 0) {
-      const discount = Math.round(calculateTotalPrice() * 0.05);
-      if (discount > 0) {
-        setPromoAmount(discount);
-        setShowPromoPopup(true);
-        const timer = setTimeout(() => setShowPromoPopup(false), 2000);
-        return () => clearTimeout(timer);
-      }
+    const totalItems = Object.values(quantities).reduce((a, b) => a + b, 0);
+    const hasOffer = orderType === 'prebook' && totalItems > 0;
+    
+    if (hasOffer && !offerApplied) {
+      setOfferApplied(true);
+      // Fire celebration blast!
+      confetti({
+        particleCount: 150,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#10B981', '#34D399', '#FBBF24', '#F59E0B'],
+        zIndex: 9999,
+      });
+      setTimeout(() => {
+        confetti({
+          particleCount: 100,
+          spread: 120,
+          origin: { y: 0.5 },
+          zIndex: 9999,
+        });
+      }, 250);
+    } else if (!hasOffer && offerApplied) {
+      setOfferApplied(false);
     }
-  }, [orderType]);
+  }, [orderType, quantities, offerApplied]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -411,30 +426,54 @@ const BookingInterface = ({ onLogout, username }) => {
           )}
         </div>
 
+        {/* Order Summary Section */}
+        {calculateTotalItems() > 0 && (
+          <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6 animate-in slide-in-from-bottom-4 fade-in duration-300">
+            <h2 className="text-xl font-bold mb-4 border-b border-gray-100 pb-3">Order Summary</h2>
+            <div className="space-y-3 mb-4">
+              {Object.keys(quantities).map(id => {
+                const item = MENU_ITEMS.find(i => i.id === id);
+                if (!item || quantities[id] === 0) return null;
+                const price = parseInt(item.price.replace('₹', ''), 10);
+                const itemTotal = price * quantities[id];
+                return (
+                  <div key={id} className="flex justify-between items-center text-sm font-medium text-gray-700">
+                    <span className="flex-1 truncate pr-4">{item.name} <span className="text-gray-400 ml-1">x{quantities[id]}</span></span>
+                    <span className="shrink-0 font-bold">₹{itemTotal}</span>
+                  </div>
+                );
+              })}
+            </div>
+            
+            <div className="border-t border-dashed border-gray-200 pt-3 space-y-2">
+              <div className="flex justify-between items-center text-sm font-bold text-gray-500">
+                <span>Subtotal</span>
+                <span>₹{calculateTotalPrice()}</span>
+              </div>
+              
+              {orderType === 'prebook' && (
+                <div className="flex justify-between items-center text-sm font-bold text-emerald-600 bg-emerald-50 p-2.5 rounded-xl border border-emerald-100 mt-2">
+                  <span className="flex items-center"><span className="text-lg mr-2">🎉</span> Pre-booking Discount (5%)</span>
+                  <span>- ₹{Math.round(calculateTotalPrice() * 0.05)}</span>
+                </div>
+              )}
+              
+              <div className="flex justify-between items-center text-xl font-black text-gray-800 pt-3 border-t border-gray-100 mt-3">
+                <span>Final Total</span>
+                <span>
+                  ₹{orderType === 'prebook' 
+                    ? calculateTotalPrice() - Math.round(calculateTotalPrice() * 0.05) 
+                    : calculateTotalPrice()}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Submit Button */}
         <div className="mt-4 relative">
           
-          {/* Animated Celebration Burst Overlay */}
-          {showPromoPopup && (
-             <div className="fixed inset-0 z-[100] pointer-events-none">
-                <Confetti 
-                  width={window.innerWidth} 
-                  height={window.innerHeight} 
-                  recycle={false} 
-                  numberOfPieces={400} 
-                  gravity={0.3}
-                  initialVelocityY={20}
-                />
-             </div>
-          )}
-
-          {/* Static Banner */}
-          {orderType === 'prebook' && calculateTotalItems() > 0 && (
-            <div className="flex items-center justify-center space-x-2 mb-3 bg-emerald-50 text-emerald-600 px-4 py-2 rounded-xl text-sm font-bold border border-emerald-100 animate-in fade-in zoom-in slide-in-from-bottom-2 duration-300">
-              <span className="text-xl">🎉</span>
-              <span>Pre-booking Offer Applied! (Saved ₹{Math.round(calculateTotalPrice() * 0.05)})</span>
-            </div>
-          )}
+          {/* Animated Celebration handled by canvas-confetti in useEffect */}
 
           <button
             onClick={handleSubmit}

@@ -177,7 +177,11 @@ const Auth = ({ onLogin }) => {
             }}
             className="text-gray-500 font-semibold hover:text-black transition-colors"
           >
-            {isLogin ? "Don't have an account? Register" : 'Already have an account? Log In'}
+            {isLogin ? (
+              <>Don't have an account? <span className="text-indigo-600 hover:text-indigo-800 transition-colors">Register</span></>
+            ) : (
+              <>Already have an account? <span className="text-indigo-600 hover:text-indigo-800 transition-colors">Log In</span></>
+            )}
           </button>
         </div>
       </div>
