@@ -10,9 +10,7 @@ const PORT = 5000;
 app.use(cors());
 app.use(express.json());
 
-// Points to the data1.csv in the parent project directory
 const DATA_FILE = path.join(__dirname, '../data1.csv');
-const USER_ORDERS_FILE = path.join(__dirname, '../user_orders.csv');
 const USERS_FILE = path.join(__dirname, '../users/users.csv');
 const PENDING_USERS_FILE = path.join(__dirname, '../users/pending_users.csv');
 const BLOCKED_USERS_FILE = path.join(__dirname, '../users/blocked_users.csv');
@@ -32,7 +30,6 @@ const PYTHON_EXEC = "C:/Python313/python.exe";
 const SCRIPT_PATH = path.join(__dirname, '../get_predictions.py');
 
 // Initialize files
-if (!fs.existsSync(USER_ORDERS_FILE)) fs.writeFileSync(USER_ORDERS_FILE, "username,item,time_slot,quantity,timestamp,day_of_week,is_prebooking,prebooking_date,prebooking_time\n");
 if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, "username,password,type\n");
 if (!fs.existsSync(PENDING_USERS_FILE)) fs.writeFileSync(PENDING_USERS_FILE, "username,password,type\n");
 if (!fs.existsSync(BLOCKED_USERS_FILE)) fs.writeFileSync(BLOCKED_USERS_FILE, "username\n");
@@ -198,23 +195,16 @@ app.post('/api/order', (req, res) => {
             return res.status(400).json({ error: 'Expected an array of orders.' });
         }
 
-        if (!fs.existsSync(USER_ORDERS_FILE)) {
-            fs.writeFileSync(USER_ORDERS_FILE, "username,item,time_slot,quantity,timestamp,day_of_week,is_prebooking,prebooking_date,prebooking_time\n");
-        }
         if (!fs.existsSync(DATA_FILE)) {
             fs.writeFileSync(DATA_FILE, "date,item,time_slot,quantity,timestamp,is_holiday,is_bridge_day,season,temperature_celsius,weather,is_exam_week\n");
         }
 
-        let userOrdersData = "";
         let mlDatasetData = "";
         
         orders.forEach(order => {
             const {
-                username = "guest", item, time_slot, quantity, is_prebooking, day_of_week,
-                prebooking_date = "", prebooking_time = "", timestamp
+                item, time_slot, quantity, timestamp
             } = order;
-            
-            userOrdersData += `${username},${item},${time_slot},${quantity},${timestamp},${day_of_week},${is_prebooking},${prebooking_date},${prebooking_time}\n`;
             
             const dObj = new Date(timestamp * 1000);
             const dateStr = [('0' + dObj.getDate()).slice(-2), ('0' + (dObj.getMonth() + 1)).slice(-2), dObj.getFullYear()].join('-');
@@ -233,8 +223,8 @@ app.post('/api/order', (req, res) => {
             mlDatasetData += `${dateStr},${item},${time_slot},${quantity},${timestamp},${is_holiday},${is_bridge_day},${season},${temperature_celsius},${weather},${is_exam_week}\n`;
         });
 
-        fs.appendFileSync(USER_ORDERS_FILE, userOrdersData);
         fs.appendFileSync(DATA_FILE, mlDatasetData);
+        runModelBackground(); // Trigger AI update when new data arrives
         
         res.status(200).json({ message: 'Orders received successfully' });
     } catch (error) {
@@ -245,27 +235,26 @@ app.post('/api/order', (req, res) => {
 
 app.get('/api/history/:username', (req, res) => {
     try {
-        const targetUser = req.params.username;
-        if (!fs.existsSync(USER_ORDERS_FILE)) return res.status(200).json([]);
+        if (!fs.existsSync(DATA_FILE)) return res.status(200).json([]);
         
-        const data = fs.readFileSync(USER_ORDERS_FILE, 'utf8');
+        const data = fs.readFileSync(DATA_FILE, 'utf8');
         const lines = data.split('\n');
         const history = [];
         
-        for (let i = 1; i < lines.length; i++) {
+        // Fetch last 50 orders globally since user_orders.csv is deprecated
+        for (let i = lines.length - 1; i >= 1 && history.length < 50; i--) {
             const line = lines[i].trim();
             if (line) {
                 const parts = line.split(',');
-                const uname = parts[0];
-                if (uname === targetUser && parts.length >= 5) {
+                if (parts.length >= 5) {
                     history.push({
                         item: parts[1],
                         time_slot: parseInt(parts[2]),
                         quantity: parseInt(parts[3]),
                         timestamp: parseInt(parts[4]),
-                        is_prebooking: parseInt(parts[6]) === 1,
-                        prebooking_date: parts[7] || null,
-                        prebooking_time: parts[8] || null
+                        is_prebooking: false,
+                        prebooking_date: null,
+                        prebooking_time: null
                     });
                 }
             }
@@ -587,8 +576,8 @@ app.post('/api/admin/unfreeze_user', (req, res) => {
 
 app.get('/api/admin/recent_data', (req, res) => {
     try {
-        if (!fs.existsSync(USER_ORDERS_FILE)) return res.status(200).json([]);
-        const data = fs.readFileSync(USER_ORDERS_FILE, 'utf8');
+        if (!fs.existsSync(DATA_FILE)) return res.status(200).json([]);
+        const data = fs.readFileSync(DATA_FILE, 'utf8');
         const lines = data.split('\n');
         const recent = [];
         // fetch last 100 entries
@@ -598,7 +587,7 @@ app.get('/api/admin/recent_data', (req, res) => {
                 const parts = line.split(',');
                 recent.push({
                     id: i, // use line index as ID for deletion
-                    username: parts[0],
+                    username: parts[0], // it's 'date' in data1.csv, but UI expects 'username'
                     item: parts[1],
                     time_slot: parts[2],
                     quantity: parts[3],
@@ -615,23 +604,11 @@ app.get('/api/admin/recent_data', (req, res) => {
 app.post('/api/admin/remove_data', (req, res) => {
     try {
         const { id } = req.body; // id is the line index
-        const lines = fs.readFileSync(USER_ORDERS_FILE, 'utf8').split('\n');
+        const lines = fs.readFileSync(DATA_FILE, 'utf8').split('\n');
         if (id >= 1 && id < lines.length) {
-            const removedLine = lines[id];
             lines.splice(id, 1);
-            fs.writeFileSync(USER_ORDERS_FILE, lines.join('\n'));
-            
-            if (removedLine && fs.existsSync(DATA_FILE)) {
-                const ts = removedLine.split(',')[4]; // timestamp is 5th col
-                const mlLines = fs.readFileSync(DATA_FILE, 'utf8').split('\n');
-                const newMlLines = mlLines.filter((mlLine, idx) => {
-                    if (idx === 0) return true;
-                    if (!mlLine.trim()) return false;
-                    return mlLine.split(',')[4] !== ts;
-                });
-                fs.writeFileSync(DATA_FILE, newMlLines.join('\n') + '\n');
-            }
-            
+            fs.writeFileSync(DATA_FILE, lines.join('\n'));
+            runModelBackground(); // Trigger AI update when data is removed
             res.status(200).json({ message: 'Datapoint removed' });
         } else {
             res.status(404).json({ error: 'Datapoint not found' });

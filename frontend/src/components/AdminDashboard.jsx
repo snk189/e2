@@ -33,7 +33,7 @@ const AdminDashboard = ({ onLogout }) => {
   };
 
   const fetchAll = async () => {
-    setLoading(true);
+    // setLoading(true); // Removed to prevent scroll jumping
     setError('');
     try {
       if (activeTab === 'pending') {
@@ -53,12 +53,14 @@ const AdminDashboard = ({ onLogout }) => {
     } catch (err) {
       setError(err.error || 'Failed to fetch data');
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchAll();
+    const interval = setInterval(fetchAll, 5000); // Poll every 5 seconds
+    return () => clearInterval(interval);
   }, [activeTab]);
 
   // Actions

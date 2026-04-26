@@ -1,6 +1,6 @@
 {
-  "is_holiday": 1,
-  "is_bridge_day": 1,
+  "is_holiday": 0,
+  "is_bridge_day": 0,
   "season": "winter",
   "temperature_celsius": 25.3,
   "weather": "rainy",

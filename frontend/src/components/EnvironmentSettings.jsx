@@ -29,11 +29,12 @@ const EnvironmentSettings = () => {
   }, []);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type } = e.target;
     setSettings(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? (checked ? 1 : 0) : 
-              type === 'number' ? parseFloat(value) : value
+      [name]: ['is_holiday', 'is_bridge_day', 'is_exam_week'].includes(name) 
+              ? parseInt(value, 10) 
+              : type === 'number' ? parseFloat(value) : value
     }));
   };
 
@@ -68,38 +69,44 @@ const EnvironmentSettings = () => {
         
         {/* Toggle Switches */}
         <div className="space-y-4">
-          <label className="flex items-center justify-between bg-gray-50 p-3 rounded-2xl cursor-pointer hover:bg-gray-100 transition-colors">
-            <span className="font-semibold text-gray-700">Is Holiday?</span>
-            <input 
-              type="checkbox" 
-              name="is_holiday"
-              checked={settings.is_holiday === 1}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">Is Holiday?</label>
+            <select 
+              name="is_holiday" 
+              value={settings.is_holiday} 
               onChange={handleChange}
-              className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
-            />
-          </label>
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+            >
+              <option value={1}>Yes</option>
+              <option value={0}>No</option>
+            </select>
+          </div>
           
-          <label className="flex items-center justify-between bg-gray-50 p-3 rounded-2xl cursor-pointer hover:bg-gray-100 transition-colors">
-            <span className="font-semibold text-gray-700">Is Bridge Day?</span>
-            <input 
-              type="checkbox" 
-              name="is_bridge_day"
-              checked={settings.is_bridge_day === 1}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">Is Bridge Day?</label>
+            <select 
+              name="is_bridge_day" 
+              value={settings.is_bridge_day} 
               onChange={handleChange}
-              className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
-            />
-          </label>
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+            >
+              <option value={1}>Yes</option>
+              <option value={0}>No</option>
+            </select>
+          </div>
           
-          <label className="flex items-center justify-between bg-gray-50 p-3 rounded-2xl cursor-pointer hover:bg-gray-100 transition-colors">
-            <span className="font-semibold text-gray-700">Is Exam Week?</span>
-            <input 
-              type="checkbox" 
-              name="is_exam_week"
-              checked={settings.is_exam_week === 1}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">Is Exam Week?</label>
+            <select 
+              name="is_exam_week" 
+              value={settings.is_exam_week} 
               onChange={handleChange}
-              className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
-            />
-          </label>
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+            >
+              <option value={1}>Yes</option>
+              <option value={0}>No</option>
+            </select>
+          </div>
         </div>
 
         {/* Inputs & Selects */}

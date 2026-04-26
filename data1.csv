@@ -23892,3 +23892,12 @@ date,item,time_slot,quantity,timestamp,is_holiday,is_bridge_day,season,temperatu
 30-06-2026,panipuri,17,19,1782841406,0,0,monsoon,27.6,rainy,0
 30-06-2026,panipuri,18,4,1782845427,0,0,monsoon,27.6,rainy,0
 
+26-04-2026,samosa,21,1,1777217437,1,1,winter,25.3,rainy,0
+26-04-2026,coffee,22,1,1777222182,0,0,winter,25.3,rainy,0
+26-04-2026,coffee,16,1,1777222298,0,0,winter,25.3,rainy,0
+26-04-2026,sandwich,22,1,1777222698,0,0,winter,25.3,rainy,0
+26-04-2026,coffee,22,1,1777223077,0,0,winter,25.3,rainy,0
+26-04-2026,tea,22,1,1777223077,0,0,winter,25.3,rainy,0
+26-04-2026,panipuri,18,1,1777223283,0,0,winter,25.3,rainy,0
+26-04-2026,panipuri,19,1,1777223291,0,0,winter,25.3,rainy,0
+26-04-2026,coffee,10,1,1777223353,0,0,winter,25.3,rainy,0

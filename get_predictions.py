@@ -26,11 +26,7 @@ def predict_demand_for_date(target_date, df, model, feature_cols, encoded_cat_co
     time_slots = list(range(8, 19))
     res = {}
     
-    if is_weekend == 1 or is_holiday == 1:
-        for item in items:
-            hourly = [{'time': t, 'predicted': 0} for t in time_slots]
-            res[item] = {'total': 0, 'hourly': hourly}
-        return res
+    # We let the XGBoost model handle the weekends/holidays naturally instead of forcing 0
     
     temp = lookups['m_temp'].get(month, 25.0)
     weather = lookups['m_weath'].get(month, 'sunny')

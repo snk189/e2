@@ -27,7 +27,10 @@ const Dashboard = ({ onLogout }) => {
         setLoading(false);
       }
     };
+    
     fetchDemand();
+    const interval = setInterval(fetchDemand, 5000); // refresh every 5s
+    return () => clearInterval(interval);
   }, []);
 
   const showTomorrowOnly = demand && demand.currentHour > 18;
