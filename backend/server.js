@@ -12,6 +12,7 @@ app.use(express.json());
 
 // Points to the data1.csv in the parent project directory
 const DATA_FILE = path.join(__dirname, '../data1.csv');
+const USER_ORDERS_FILE = path.join(__dirname, '../user_orders.csv');
 const USERS_FILE = path.join(__dirname, '../users.csv');
 const PENDING_USERS_FILE = path.join(__dirname, '../pending_users.csv');
 const BLOCKED_USERS_FILE = path.join(__dirname, '../blocked_users.csv');
@@ -21,6 +22,7 @@ const PYTHON_EXEC = "C:/Python313/python.exe";
 const SCRIPT_PATH = path.join(__dirname, '../get_predictions.py');
 
 // Initialize files
+if (!fs.existsSync(USER_ORDERS_FILE)) fs.writeFileSync(USER_ORDERS_FILE, "username,item,time_slot,quantity,timestamp,day_of_week,is_prebooking,prebooking_date,prebooking_time\n");
 if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, "username,password,type\n");
 if (!fs.existsSync(PENDING_USERS_FILE)) fs.writeFileSync(PENDING_USERS_FILE, "username,password,type\n");
 if (!fs.existsSync(BLOCKED_USERS_FILE)) fs.writeFileSync(BLOCKED_USERS_FILE, "username\n");
@@ -166,21 +168,34 @@ app.post('/api/order', (req, res) => {
             return res.status(400).json({ error: 'Expected an array of orders.' });
         }
 
+        if (!fs.existsSync(USER_ORDERS_FILE)) {
+            fs.writeFileSync(USER_ORDERS_FILE, "username,item,time_slot,quantity,timestamp,day_of_week,is_prebooking,prebooking_date,prebooking_time\n");
+        }
         if (!fs.existsSync(DATA_FILE)) {
-            const header = "username,item,time_slot,quantity,timestamp,day_of_week,is_prebooking,prebooking_date,prebooking_time\n";
-            fs.writeFileSync(DATA_FILE, header);
+            fs.writeFileSync(DATA_FILE, "date,item,time_slot,quantity,timestamp,is_holiday,is_bridge_day,season,temperature_celsius,weather,is_exam_week\n");
         }
 
-        let csvData = "";
+        let userOrdersData = "";
+        let mlDatasetData = "";
+        
         orders.forEach(order => {
             const {
                 username = "guest", item, time_slot, quantity, is_prebooking, day_of_week,
                 prebooking_date = "", prebooking_time = "", timestamp
             } = order;
-            csvData += `${username},${item},${time_slot},${quantity},${timestamp},${day_of_week},${is_prebooking},${prebooking_date},${prebooking_time}\n`;
+            
+            userOrdersData += `${username},${item},${time_slot},${quantity},${timestamp},${day_of_week},${is_prebooking},${prebooking_date},${prebooking_time}\n`;
+            
+            const dObj = new Date(timestamp * 1000);
+            const dateStr = [('0' + dObj.getDate()).slice(-2), ('0' + (dObj.getMonth() + 1)).slice(-2), dObj.getFullYear()].join('-');
+            const is_holiday = 0, is_bridge_day = 0, season = 'winter', temp_celsius = 25.0, weather = 'sunny', is_exam_week = 0;
+            
+            mlDatasetData += `${dateStr},${item},${time_slot},${quantity},${timestamp},${is_holiday},${is_bridge_day},${season},${temp_celsius},${weather},${is_exam_week}\n`;
         });
 
-        fs.appendFileSync(DATA_FILE, csvData);
+        fs.appendFileSync(USER_ORDERS_FILE, userOrdersData);
+        fs.appendFileSync(DATA_FILE, mlDatasetData);
+        
         res.status(200).json({ message: 'Orders received successfully' });
     } catch (error) {
         console.error('Error saving order:', error);
@@ -191,9 +206,9 @@ app.post('/api/order', (req, res) => {
 app.get('/api/history/:username', (req, res) => {
     try {
         const targetUser = req.params.username;
-        if (!fs.existsSync(DATA_FILE)) return res.status(200).json([]);
+        if (!fs.existsSync(USER_ORDERS_FILE)) return res.status(200).json([]);
         
-        const data = fs.readFileSync(DATA_FILE, 'utf8');
+        const data = fs.readFileSync(USER_ORDERS_FILE, 'utf8');
         const lines = data.split('\n');
         const history = [];
         
@@ -510,8 +525,8 @@ app.post('/api/admin/unfreeze_user', (req, res) => {
 
 app.get('/api/admin/recent_data', (req, res) => {
     try {
-        if (!fs.existsSync(DATA_FILE)) return res.status(200).json([]);
-        const data = fs.readFileSync(DATA_FILE, 'utf8');
+        if (!fs.existsSync(USER_ORDERS_FILE)) return res.status(200).json([]);
+        const data = fs.readFileSync(USER_ORDERS_FILE, 'utf8');
         const lines = data.split('\n');
         const recent = [];
         // fetch last 100 entries
@@ -538,10 +553,23 @@ app.get('/api/admin/recent_data', (req, res) => {
 app.post('/api/admin/remove_data', (req, res) => {
     try {
         const { id } = req.body; // id is the line index
-        const lines = fs.readFileSync(DATA_FILE, 'utf8').split('\n');
+        const lines = fs.readFileSync(USER_ORDERS_FILE, 'utf8').split('\n');
         if (id >= 1 && id < lines.length) {
+            const removedLine = lines[id];
             lines.splice(id, 1);
-            fs.writeFileSync(DATA_FILE, lines.join('\n'));
+            fs.writeFileSync(USER_ORDERS_FILE, lines.join('\n'));
+            
+            if (removedLine && fs.existsSync(DATA_FILE)) {
+                const ts = removedLine.split(',')[4]; // timestamp is 5th col
+                const mlLines = fs.readFileSync(DATA_FILE, 'utf8').split('\n');
+                const newMlLines = mlLines.filter((mlLine, idx) => {
+                    if (idx === 0) return true;
+                    if (!mlLine.trim()) return false;
+                    return mlLine.split(',')[4] !== ts;
+                });
+                fs.writeFileSync(DATA_FILE, newMlLines.join('\n') + '\n');
+            }
+            
             res.status(200).json({ message: 'Datapoint removed' });
         } else {
             res.status(404).json({ error: 'Datapoint not found' });

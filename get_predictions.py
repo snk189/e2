@@ -5,121 +5,105 @@ import os
 from datetime import datetime, timedelta
 import numpy as np
 import warnings
-from xgb import prepare_data, extract_features, build_and_evaluate_model
+
+# Use user's trained model definition and data preparation correctly
+from xgb import prepare_data, extract_features, build_model, get_meal_type
 
 warnings.filterwarnings('ignore')
 
-def get_forecast(df, model, target_date, item_cols, feature_cols, unique_items, hist_avg_dict, prebook_avg_dict, item_avg_dict, latest_trend_dict, meal_avg_dict, item_prebook_ratio_dict, available_time_slots, item_latest_lags, user_avg_mean):
-    day_of_week = target_date.weekday()
-    is_weekend = int(day_of_week in [5, 6])
-    is_monday = int(day_of_week == 0)
-    is_friday = int(day_of_week == 4)
-    is_sunday = int(day_of_week == 6)
-    
-    day_of_month = target_date.day
-    is_pay_week = int(day_of_month >= 25 or day_of_month <= 5)
-    
+def predict_demand_for_date(target_date, df, model, feature_cols, encoded_cat_cols, lookups):
     month = target_date.month
-    month_sin = np.sin(2 * np.pi * month / 12.0)
-    month_cos = np.cos(2 * np.pi * month / 12.0)
+    day_of_week = target_date.weekday()
+    is_weekend = 1 if day_of_week >= 5 else 0
     
-    day_sin = np.sin(2 * np.pi * day_of_week / 7.0)
-    day_cos = np.cos(2 * np.pi * day_of_week / 7.0)
+    holidays = ['01-01', '14-01', '26-01', '30-03', '03-04', '14-04', '01-05', '15-08', '02-10', '25-12']
+    bridge_days = ['02-01', '23-01', '27-03', '02-04', '13-04', '30-04']
+    
+    is_holiday = 1 if target_date.strftime('%d-%m') in holidays else 0
+    is_bridge_day = 1 if target_date.strftime('%d-%m') in bridge_days else 0
+    
+    items = df['item'].unique()
+    time_slots = list(range(8, 19))
+    res = {}
+    
+    if is_weekend == 1 or is_holiday == 1:
+        for item in items:
+            hourly = [{'time': t, 'predicted': 0} for t in time_slots]
+            res[item] = {'total': 0, 'hourly': hourly}
+        return res
+    
+    temp = lookups['m_temp'].get(month, 25.0)
+    weather = lookups['m_weath'].get(month, 'sunny')
+    season = lookups['m_seas'].get(month, 'winter')
     
     scenarios = []
-    for item_str in unique_items:
-        is_heavy_meal = int(item_str in ['pizza', 'dosa'])
-        
-        item_one_hot = {col: 0 for col in item_cols}
-        if f'item_{item_str}' in item_cols:
-            item_one_hot[f'item_{item_str}'] = 1
-        
-        for t_slot in available_time_slots:
-            lookup_key = (item_str, day_of_week, t_slot)
-            hist_avg = hist_avg_dict.get(lookup_key, item_avg_dict.get(item_str, 1.0))
-                
-            is_breakfast = int(8 <= t_slot <= 10)
-            is_lunch = int(11 <= t_slot <= 14)
-            is_evening = int(15 <= t_slot <= 18)
+    
+    for item in items:
+        item_avg_qty = lookups['item_avg'].get(item, 1.0)
+        for t in time_slots:
+            meal_type = get_meal_type(t)
+            row = {
+                'time_slot': t,
+                'day_of_week': day_of_week,
+                'is_weekend': is_weekend,
+                'is_holiday': is_holiday,
+                'is_bridge_day': is_bridge_day,
+                'month': month,
+                'temperature_celsius': temp,
+                'is_peak_hour': 1 if t in [8,9,13,14] else 0,
+                'is_exam_week': 0,
+                'user_avg_qty': lookups['user_avg_qty'] if 'user_avg_qty' in lookups else 30.0,
+            }
             
-            time_sin = np.sin(2 * np.pi * t_slot / 24.0)
-            time_cos = np.cos(2 * np.pi * t_slot / 24.0)
-
-            for is_pre in [0, 1]:
-                sim_lead_hours = 24.0 if is_pre == 1 else 0.0
+            his_val = lookups['hist_avg'].get((item, day_of_week, t), 0)
+            row['prev_qty'] = his_val
+            row['item_time_avg'] = his_val
+            row['item_meal_avg'] = lookups['item_meal'].get((item, meal_type), 0)
+            row['item_weather_avg'] = lookups['item_weather'].get((item, weather), 0)
+            row['item_season_avg'] = lookups['item_season'].get((item, season), 0)
+            row['item_bridge_avg'] = lookups['item_bridge'].get((item, is_bridge_day), item_avg_qty)
+            
+            row['rolling_mean_3'] = lookups['latest_trend'].get((item, t), 0)
+            row['rolling_mean_7'] = row['rolling_mean_3']
+            row['lag_7'] = lookups['latest_lag7'].get((item, t), 0)
+            row['momentum'] = 0
+            row['weekend_lunch'] = row['is_weekend'] * (1 if meal_type == 'lunch' else 0)
+            
+            row['time_slot_sin'] = np.sin(2 * np.pi * t / 24.0)
+            row['time_slot_cos'] = np.cos(2 * np.pi * t / 24.0)
+            row['day_of_week_sin'] = np.sin(2 * np.pi * day_of_week / 7.0)
+            row['day_of_week_cos'] = np.cos(2 * np.pi * day_of_week / 7.0)
+            row['month_sin'] = np.sin(2 * np.pi * month / 12.0)
+            row['month_cos'] = np.cos(2 * np.pi * month / 12.0)
+            
+            row['item'] = item
+            row['season'] = season
+            row['weather'] = weather
+            row['meal_type'] = meal_type
+            
+            scenarios.append(row)
                 
-                lookup_key_pb = (item_str, is_pre)
-                pb_avg = prebook_avg_dict.get(lookup_key_pb, item_avg_dict.get(item_str, 1.0))
-                    
-                weekend_prebook_flag = is_weekend * is_pre
-                item_prebook_ratio = item_prebook_ratio_dict.get(item_str, 0.0)
-                recent_trend = latest_trend_dict.get(item_str, item_avg_dict.get(item_str, 1.0))
-                
-                lookup_key_meal = (item_str, is_breakfast, is_lunch, is_evening)
-                meal_avg_val = meal_avg_dict.get(lookup_key_meal, item_avg_dict.get(item_str, 1.0))
-                
-                lags = item_latest_lags.get(item_str, {})
-                weekend_lunch = is_weekend * is_lunch
-                momentum = lags.get('rolling_mean_3', 0) - lags.get('rolling_mean_7', 0)
-                
-                scenario_dict = {
-                    'Item': item_str,
-                    'is_prebooking': is_pre,
-                    'time_slot': t_slot,
-                    'day_of_week': day_of_week,
-                    'is_weekend': is_weekend,
-                    'weekend_prebook_flag': weekend_prebook_flag,
-                    'prebooking_lead_hours': sim_lead_hours,
-                    'item_time_avg_qty': hist_avg,
-                    'item_prebook_avg_qty': pb_avg,
-                    'item_recent_trend': recent_trend,
-                    'item_meal_avg_qty': meal_avg_val,
-                    'item_base_popularity': item_avg_dict.get(item_str, 1.0),
-                    'item_prebook_ratio': item_prebook_ratio,
-                    'is_breakfast': is_breakfast,
-                    'is_lunch': is_lunch,
-                    'is_evening': is_evening,
-                    'is_heavy_meal': is_heavy_meal,
-                    'is_monday': is_monday,
-                    'is_friday': is_friday,
-                    'is_sunday': is_sunday,
-                    'is_pay_week': is_pay_week,
-                    'time_slot_sin': time_sin,
-                    'time_slot_cos': time_cos,
-                    'day_of_week_sin': day_sin,
-                    'day_of_week_cos': day_cos,
-                    'month_sin': month_sin,
-                    'month_cos': month_cos,
-                    'prev_qty': lags.get('prev_qty', 0),
-                    'rolling_mean_3': lags.get('rolling_mean_3', 0),
-                    'rolling_mean_7': lags.get('rolling_mean_7', 0),
-                    'lag_7': lags.get('lag_7', 0),
-                    'item_prev_qty': lags.get('item_prev_qty', 0),
-                    'item_roll_3': lags.get('item_roll_3', 0),
-                    'user_avg_qty': user_avg_mean,
-                    'weekend_lunch': weekend_lunch,
-                    'momentum': momentum
-                }
-                scenario_dict.update(item_one_hot)
-                scenarios.append(scenario_dict)
+    scenarios_df = pd.DataFrame(scenarios)
+    scenarios_df_encoded = pd.get_dummies(scenarios_df, columns=['item', 'season', 'weather', 'meal_type'])
     
-    forecast_df = pd.DataFrame(scenarios)
-    X_forecast = forecast_df[feature_cols + item_cols]
+    for col in feature_cols:
+        if col not in scenarios_df_encoded.columns:
+            scenarios_df_encoded[col] = 0
+            
+    X_pred = scenarios_df_encoded[feature_cols].astype(float)
     
-    predictions = model.predict(X_forecast)
-    forecast_df['Predicted'] = np.round(predictions).astype(int).clip(min=0)
+    preds = model.predict(X_pred)
+    scenarios_df['Total Expected Orders'] = np.round(preds).clip(min=0).astype(int)
     
-    res = {}
-    for item in forecast_df['Item'].unique():
-        item_df = forecast_df[forecast_df['Item'] == item]
+    for item in items:
+        item_df = scenarios_df[scenarios_df['item'] == item]
         hourly = []
-        # sum predictions by time_slot
-        slot_groups = item_df.groupby('time_slot')['Predicted'].sum().to_dict()
-        for t_slot in available_time_slots:
+        slot_groups = item_df.groupby('time_slot')['Total Expected Orders'].sum().to_dict()
+        for t_slot in time_slots:
             hourly.append({'time': int(t_slot), 'predicted': int(slot_groups.get(t_slot, 0))})
             
         res[item] = {
-            'total': int(item_df['Predicted'].sum()),
+            'total': int(item_df['Total Expected Orders'].sum()),
             'hourly': hourly
         }
     return res
@@ -128,45 +112,27 @@ def main():
     try:
         script_dir = os.path.dirname(os.path.abspath(__file__))
         data_path = os.path.join(script_dir, 'data1.csv')
-        df = pd.read_csv(data_path)
+        
+        if not os.path.exists(data_path):
+            data_path = os.path.join(script_dir, 'data.csv')
+            
+        raw_df = pd.read_csv(data_path)
     except Exception as e:
         print(json.dumps({"error": str(e)}))
         return
 
-    # To avoid writing stdout to the JSON output by build_and_evaluate_model grid search, 
-    # we redirect stdout temporarily so that only our final JSON is printed.
     import io
     old_stdout = sys.stdout
     sys.stdout = io.StringIO()
 
+    result = {}
     try:
-        # Dynamically import everything from your high-accuracy xgb.py workflow!
-        df, feature_cols, hist_avg_dict, prebook_avg_dict, item_avg_dict, item_prebook_ratio_dict, latest_trend_dict, meal_avg_dict = prepare_data(df)
-        X_full, y_full, item_cols, unique_items = extract_features(df, feature_cols)
-        rf_model = build_and_evaluate_model(X_full, y_full, feature_cols, item_cols)
+        df, lookups = prepare_data(raw_df)
+        X, y, feature_cols, encoded_cat_cols = extract_features(df)
+        xgb_model = build_model(X, y, feature_cols)
         
-        # Calculate latest lags for forecast
-        item_latest_lags = {}
-        for item_str in unique_items:
-            item_df = df[df['item'] == item_str].sort_values('timestamp')
-            if not item_df.empty:
-                last_row = item_df.iloc[-1]
-                item_latest_lags[item_str] = {
-                    'prev_qty': last_row.get('prev_qty', 0),
-                    'rolling_mean_3': last_row.get('rolling_mean_3', 0),
-                    'rolling_mean_7': last_row.get('rolling_mean_7', 0),
-                    'lag_7': last_row.get('lag_7', 0),
-                    'item_prev_qty': last_row.get('item_prev_qty', 0),
-                    'item_roll_3': last_row.get('item_roll_3', 0),
-                }
-            else:
-                item_latest_lags[item_str] = {}
-        user_avg_mean = df['user_avg_qty'].mean() if 'user_avg_qty' in df else 1.0
-
-        # Restrict predictions to hourwise 8am to 6pm (18:00)
-        available_time_slots = list(range(8, 19))
-    
-        # get today's actual
+        unique_items = df['item'].unique()
+        
         today_date_str = datetime.now().strftime('%Y-%m-%d')
         yesterday_date_str = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
         
@@ -180,12 +146,15 @@ def main():
         today_target = datetime.now()
         tomorrow_target = today_target + timedelta(days=1)
         
-        today_pred = get_forecast(df, rf_model, today_target, item_cols, feature_cols, unique_items, hist_avg_dict, prebook_avg_dict, item_avg_dict, latest_trend_dict, meal_avg_dict, item_prebook_ratio_dict, available_time_slots, item_latest_lags, user_avg_mean)
-        tomorrow_pred = get_forecast(df, rf_model, tomorrow_target, item_cols, feature_cols, unique_items, hist_avg_dict, prebook_avg_dict, item_avg_dict, latest_trend_dict, meal_avg_dict, item_prebook_ratio_dict, available_time_slots, item_latest_lags, user_avg_mean)
+        today_pred = predict_demand_for_date(today_target, df, xgb_model, feature_cols, encoded_cat_cols, lookups)
+        tomorrow_pred = predict_demand_for_date(tomorrow_target, df, xgb_model, feature_cols, encoded_cat_cols, lookups)
         
-        # Financials mapping
-        price_map = {'dosa': 60, 'pizza': 150, 'sandwich': 50, 'milkshake': 80, 'tea': 20}
-        cost_map = {'dosa': 25, 'pizza': 70, 'sandwich': 20, 'milkshake': 40, 'tea': 5}
+        # Extended price mappings
+        price_map = {'dosa': 60, 'pizza': 150, 'sandwich': 50, 'milkshake': 80, 'tea': 20, 
+                     'burger': 80, 'idly': 40, 'pulao': 100, 'coffee': 25, 'juice': 45, 'icecream': 50, 'samosa': 15, 'panipuri': 30}
+                     
+        cost_map = {'dosa': 25, 'pizza': 70, 'sandwich': 20, 'milkshake': 40, 'tea': 5, 
+                     'burger': 40, 'idly': 15, 'pulao': 45, 'coffee': 10, 'juice': 20, 'icecream': 20, 'samosa': 5, 'panipuri': 10}
         
         total_revenue = 0
         total_cost = 0
@@ -203,7 +172,6 @@ def main():
             "netProfit": int(net_profit)
         }
         
-        # Format the response
         current_hour = datetime.now().hour
         
         today_list = []
@@ -257,10 +225,12 @@ def main():
             "today": today_list,
             "tomorrow": tomorrow_list
         }
+    except Exception as e:
+        import traceback
+        result = {"error": str(e), "trace": traceback.format_exc()}
     finally:
         sys.stdout = old_stdout
     
-    # Safely print ONLY the JSON back to Node!
     print(json.dumps(result))
 
 if __name__ == "__main__":
