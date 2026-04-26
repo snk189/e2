@@ -1,0 +1,8 @@
+{
+  "is_holiday": 1,
+  "is_bridge_day": 1,
+  "season": "winter",
+  "temperature_celsius": 25.3,
+  "weather": "rainy",
+  "is_exam_week": 0
+}

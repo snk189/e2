@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import EnvironmentSettings from './EnvironmentSettings';
 import { 
   getPendingUsers, approveUser, rejectUser,
   getAdminUsers, adminAddUser, adminRemoveUser, adminBlockUser,
@@ -100,7 +101,8 @@ const AdminDashboard = ({ onLogout }) => {
                 { id: 'users', label: 'Manage Users' },
                 { id: 'blocked', label: 'Blocked / Frozen' },
                 { id: 'dataset', label: 'Dataset' },
-                { id: 'demand', label: 'Demand Analysis' }
+                { id: 'demand', label: 'Demand Analysis' },
+                { id: 'settings', label: 'Env Settings' }
             ].map(tab => (
                 <button
                     key={tab.id}
@@ -248,6 +250,10 @@ const AdminDashboard = ({ onLogout }) => {
                     </div>
                 )}
             </div>
+        )}
+
+        {activeTab === 'settings' && (
+            <EnvironmentSettings />
         )}
 
         {activeTab === 'demand' && (

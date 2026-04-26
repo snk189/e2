@@ -151,3 +151,21 @@ export const adminRemoveData = async (id) => {
         return response.data;
     } catch (error) { throw error.response?.data || { error: 'Failed' }; }
 };
+
+export const getAdminSettings = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/admin/settings`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { error: 'Fetching settings failed' };
+    }
+};
+
+export const updateAdminSettings = async (settings) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/admin/settings`, settings);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { error: 'Updating settings failed' };
+    }
+};

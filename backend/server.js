@@ -13,10 +13,20 @@ app.use(express.json());
 // Points to the data1.csv in the parent project directory
 const DATA_FILE = path.join(__dirname, '../data1.csv');
 const USER_ORDERS_FILE = path.join(__dirname, '../user_orders.csv');
-const USERS_FILE = path.join(__dirname, '../users.csv');
-const PENDING_USERS_FILE = path.join(__dirname, '../pending_users.csv');
-const BLOCKED_USERS_FILE = path.join(__dirname, '../blocked_users.csv');
-const REJECTED_USERS_FILE = path.join(__dirname, '../rejected_users.csv');
+const USERS_FILE = path.join(__dirname, '../users/users.csv');
+const PENDING_USERS_FILE = path.join(__dirname, '../users/pending_users.csv');
+const BLOCKED_USERS_FILE = path.join(__dirname, '../users/blocked_users.csv');
+const REJECTED_USERS_FILE = path.join(__dirname, '../users/rejected_users.csv');
+const MANAGEMENT_SETTINGS_FILE = path.join(__dirname, '../management_settings.json');
+
+const defaultSettings = {
+    is_holiday: 0,
+    is_bridge_day: 0,
+    season: 'winter',
+    temperature_celsius: 25.0,
+    weather: 'sunny',
+    is_exam_week: 0
+};
 
 const PYTHON_EXEC = "C:/Python313/python.exe";
 const SCRIPT_PATH = path.join(__dirname, '../get_predictions.py');
@@ -27,6 +37,7 @@ if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, "username,password,
 if (!fs.existsSync(PENDING_USERS_FILE)) fs.writeFileSync(PENDING_USERS_FILE, "username,password,type\n");
 if (!fs.existsSync(BLOCKED_USERS_FILE)) fs.writeFileSync(BLOCKED_USERS_FILE, "username\n");
 if (!fs.existsSync(REJECTED_USERS_FILE)) fs.writeFileSync(REJECTED_USERS_FILE, "username,reject_count,timestamp\n");
+if (!fs.existsSync(MANAGEMENT_SETTINGS_FILE)) fs.writeFileSync(MANAGEMENT_SETTINGS_FILE, JSON.stringify(defaultSettings, null, 2));
 
 // Background Model Evaluation Cache
 let cachedDemand = null;
@@ -157,6 +168,25 @@ const clearRejectedStatus = (username) => {
     fs.writeFileSync(REJECTED_USERS_FILE, remaining.join('\n') + '\n');
 };
 
+const unfreezeRejectedStatus = (username) => {
+    const data = fs.readFileSync(REJECTED_USERS_FILE, 'utf8');
+    const lines = data.split('\n');
+    const remaining = [lines[0]];
+    for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (line) {
+            const [storedUser, countStr] = line.split(',');
+            if (storedUser === username) {
+                // Keep the strike count but reset timestamp to 0 so cooldown ends
+                remaining.push(`${username},${countStr},0`);
+            } else {
+                remaining.push(line);
+            }
+        }
+    }
+    fs.writeFileSync(REJECTED_USERS_FILE, remaining.join('\n') + '\n');
+};
+
 // ----------------------------------------------------
 // REGULAR ENDPOINTS
 // ----------------------------------------------------
@@ -188,9 +218,19 @@ app.post('/api/order', (req, res) => {
             
             const dObj = new Date(timestamp * 1000);
             const dateStr = [('0' + dObj.getDate()).slice(-2), ('0' + (dObj.getMonth() + 1)).slice(-2), dObj.getFullYear()].join('-');
-            const is_holiday = 0, is_bridge_day = 0, season = 'winter', temp_celsius = 25.0, weather = 'sunny', is_exam_week = 0;
             
-            mlDatasetData += `${dateStr},${item},${time_slot},${quantity},${timestamp},${is_holiday},${is_bridge_day},${season},${temp_celsius},${weather},${is_exam_week}\n`;
+            // Read from management settings
+            let settings = { ...defaultSettings };
+            try {
+                if (fs.existsSync(MANAGEMENT_SETTINGS_FILE)) {
+                    settings = JSON.parse(fs.readFileSync(MANAGEMENT_SETTINGS_FILE, 'utf8'));
+                }
+            } catch (e) {
+                console.error('Error reading settings:', e);
+            }
+            const { is_holiday, is_bridge_day, season, temperature_celsius, weather, is_exam_week } = settings;
+            
+            mlDatasetData += `${dateStr},${item},${time_slot},${quantity},${timestamp},${is_holiday},${is_bridge_day},${season},${temperature_celsius},${weather},${is_exam_week}\n`;
         });
 
         fs.appendFileSync(USER_ORDERS_FILE, userOrdersData);
@@ -297,6 +337,28 @@ app.post('/api/login', (req, res) => {
     } catch (error) {
         console.error('Error logging in:', error);
         res.status(500).json({ error: 'Failed to login' });
+    }
+});
+
+app.get('/api/admin/settings', (req, res) => {
+    try {
+        if (!fs.existsSync(MANAGEMENT_SETTINGS_FILE)) return res.status(200).json(defaultSettings);
+        const data = fs.readFileSync(MANAGEMENT_SETTINGS_FILE, 'utf8');
+        res.status(200).json(JSON.parse(data));
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch settings' });
+    }
+});
+
+app.post('/api/admin/settings', (req, res) => {
+    try {
+        const newSettings = req.body;
+        // Validate or merge
+        const mergedSettings = { ...defaultSettings, ...newSettings };
+        fs.writeFileSync(MANAGEMENT_SETTINGS_FILE, JSON.stringify(mergedSettings, null, 2));
+        res.status(200).json({ message: 'Settings updated successfully', settings: mergedSettings });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update settings' });
     }
 });
 
@@ -516,7 +578,7 @@ app.get('/api/admin/rejected_users', (req, res) => {
 app.post('/api/admin/unfreeze_user', (req, res) => {
     try {
         const { username } = req.body;
-        clearRejectedStatus(username);
+        unfreezeRejectedStatus(username);
         res.status(200).json({ message: 'User unfrozen' });
     } catch (error) {
         res.status(500).json({ error: 'Failed to unfreeze user' });

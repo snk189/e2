@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getDemand } from '../services/api';
+import EnvironmentSettings from './EnvironmentSettings';
 
 const Dashboard = ({ onLogout }) => {
   const [demand, setDemand] = useState(null);
@@ -81,6 +82,8 @@ const Dashboard = ({ onLogout }) => {
 
       <main className="max-w-4xl mx-auto px-4 mt-8 space-y-8">
         
+        <EnvironmentSettings />
+
         {error && !loading && (
            <div className="bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl border border-red-100 flex items-center gap-4 animate-in slide-in-from-top-2">
              <div className="w-12 h-12 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-2xl font-bold">!</div>
