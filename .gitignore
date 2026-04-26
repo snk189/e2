@@ -1,0 +1,20 @@
+# Node / frontend
+node_modules/
+build/
+dist/
+
+# Python
+__pycache__/
+*.pyc
+
+# Env files
+.env
+
+# Large files (YOUR ISSUE)
+jdk.zip
+jdk_extracted/
+*.zip
+
+# OS files
+.DS_Store
+Thumbs.db
