@@ -286,7 +286,7 @@ def predict_demand(target_date_str, df, model, feature_cols, encoded_cat_cols, l
 
 def main():
     print("[1/3] Loading dataset...")
-    df = pd.read_csv('data1.csv.csv')
+    df = pd.read_csv('data1.csv')
     
     df, lookups, split_idx = prepare_data(df)
     
