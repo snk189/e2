@@ -23908,3 +23908,4 @@ date,item,time_slot,quantity,timestamp,is_holiday,is_bridge_day,season,temperatu
 27-04-2026,coffee,10,1,1777305967,1,1,winter,25.3,rainy,0
 27-04-2026,juice,10,1,1777305967,1,1,winter,25.3,rainy,0
 27-04-2026,icecream,10,1,1777305967,1,1,winter,25.3,rainy,0
+28-04-2026,panipuri,10,3,1777353222,0,0,summer,31,sunny,0

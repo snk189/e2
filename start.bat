@@ -9,7 +9,10 @@ echo Open that Ngrok URL on your phone's browser!
 echo ===========================================
 
 :: Start ngrok in a separate window so you can easily copy the URL
-start "Ngrok Tunnel" cmd /k "ngrok http 5173"
+
+:: Clear any cached NGROK_UPDATE variable from previous runs that causes panic
+set "NGROK_UPDATE="
+start "Ngrok Tunnel" cmd /k "ngrok.exe http 5173 --authtoken 36tFxCc1jtMj815lmQkNtd3Q0Ak_32HSVw9KNxX3bLt5xmG7Z"
 
 :: Start the backend and frontend in the current window
 npx --yes concurrently --kill-others -n "BACKEND,FRONTEND" -c "bgBlue.bold,bgMagenta.bold" "cd backend && node server.js" "cd frontend && npm run dev"
