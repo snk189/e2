@@ -17,12 +17,22 @@ def get_meal_type(t):
 
 def prepare_data(df):
     # Dynamic Feature Generation for natively dropped columns
-    df['date_obj'] = pd.to_datetime(df['date'], format='%d-%m-%Y')
+    # Calculate effective_timestamp based on prebooking status
+    df['effective_timestamp'] = np.where(df['is_prebooking'] == 1, df['prebooking_datetime'], df['order_timestamp'])
+    
+    # Convert to datetime and adjust to local time if needed (assuming local timezone or naive works)
+    # We will derive date_obj and time_slot directly from effective_timestamp
+    df['effective_datetime'] = pd.to_datetime(df['effective_timestamp'], unit='s')
+    df['date_obj'] = df['effective_datetime'].dt.normalize()
+    df['time_slot'] = df['effective_datetime'].dt.hour
     
     # Filter dataset strictly to Jan 1, 2026 - Jun 30, 2026
     start_date = pd.to_datetime('01-01-2026', format='%d-%m-%Y')
     end_date = pd.to_datetime('30-06-2026', format='%d-%m-%Y')
     df = df[(df['date_obj'] >= start_date) & (df['date_obj'] <= end_date)]
+    
+    # Enforce Canteen Operating Hours (8 AM to 6 PM)
+    df = df[(df['time_slot'] >= 8) & (df['time_slot'] < 18)]
     
     df['day_of_week'] = df['date_obj'].dt.dayofweek
     df['is_weekend'] = (df['day_of_week'] >= 5).astype(int)

@@ -196,17 +196,18 @@ app.post('/api/order', (req, res) => {
         }
 
         if (!fs.existsSync(DATA_FILE)) {
-            fs.writeFileSync(DATA_FILE, "date,item,time_slot,quantity,timestamp,is_holiday,is_bridge_day,season,temperature_celsius,weather,is_exam_week\n");
+            fs.writeFileSync(DATA_FILE, "user_id,date,item,time_slot,quantity,order_timestamp,is_holiday,is_bridge_day,season,temperature_celsius,weather,is_exam_week,is_prebooking,prebooking_datetime,is_delivered\n");
         }
 
         let mlDatasetData = "";
         
         orders.forEach(order => {
             const {
-                item, time_slot, quantity, timestamp
+                username, item, time_slot, quantity, timestamp, is_prebooking, prebooking_date, prebooking_time
             } = order;
             
-            const dObj = new Date(timestamp * 1000);
+            const ts = timestamp || Math.floor(Date.now() / 1000);
+            const dObj = new Date(ts * 1000);
             const dateStr = [('0' + dObj.getDate()).slice(-2), ('0' + (dObj.getMonth() + 1)).slice(-2), dObj.getFullYear()].join('-');
             
             // Read from management settings
@@ -220,7 +221,21 @@ app.post('/api/order', (req, res) => {
             }
             const { is_holiday, is_bridge_day, season, temperature_celsius, weather, is_exam_week } = settings;
             
-            mlDatasetData += `${dateStr},${item},${time_slot},${quantity},${timestamp},${is_holiday},${is_bridge_day},${season},${temperature_celsius},${weather},${is_exam_week}\n`;
+            let pb_dt = '';
+            // Handle both boolean true and integer 1
+            const isPrebook = is_prebooking === 1 || is_prebooking === true;
+            
+            if (isPrebook) {
+                const pbObj = new Date(`${prebooking_date}T${prebooking_time}`);
+                pb_dt = Math.floor(pbObj.getTime() / 1000);
+                
+                const hour = pbObj.getHours();
+                if (hour < 8 || hour >= 18) {
+                    throw new Error("Canteen operates between 8 AM and 6 PM.");
+                }
+            }
+            
+            mlDatasetData += `${username},${dateStr},${item},${time_slot},${quantity},${ts},${is_holiday},${is_bridge_day},${season},${temperature_celsius},${weather},${is_exam_week},${isPrebook ? 1 : 0},${pb_dt},False\n`;
         });
 
         fs.appendFileSync(DATA_FILE, mlDatasetData);
@@ -246,15 +261,16 @@ app.get('/api/history/:username', (req, res) => {
             const line = lines[i].trim();
             if (line) {
                 const parts = line.split(',');
-                if (parts.length >= 5) {
+                if (parts.length >= 14 && parts[0] === req.params.username) {
+                    if (parseInt(parts[4]) === 0) continue; // Skip zero-quantity orders
                     history.push({
-                        item: parts[1],
-                        time_slot: parseInt(parts[2]),
-                        quantity: parseInt(parts[3]),
-                        timestamp: parseInt(parts[4]),
-                        is_prebooking: false,
-                        prebooking_date: null,
-                        prebooking_time: null
+                        item: parts[2],
+                        time_slot: parseInt(parts[3]),
+                        quantity: parseInt(parts[4]),
+                        timestamp: parseInt(parts[5]),
+                        is_prebooking: parseInt(parts[12]) === 1,
+                        prebooking_datetime: parts[13] ? parseInt(parts[13]) : null,
+                        is_delivered: parts[14] === 'True'
                     });
                 }
             }
@@ -361,6 +377,72 @@ app.get('/api/demand', (req, res) => {
     } catch (error) {
         console.error('Error getting demand:', error);
         res.status(500).json({ error: 'Failed to get demand data' });
+    }
+});
+
+// ----------------------------------------------------
+// ORDERS MANAGEMENT ENDPOINTS
+// ----------------------------------------------------
+
+app.get('/api/admin/today_orders', (req, res) => {
+    try {
+        if (!fs.existsSync(DATA_FILE)) return res.status(200).json([]);
+        const data = fs.readFileSync(DATA_FILE, 'utf8');
+        const lines = data.split('\n');
+        
+        // Define today's range based on effective time
+        const now = new Date();
+        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000;
+        const endOfDay = startOfDay + 86400;
+
+        const todayOrders = [];
+        for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (line) {
+                const parts = line.split(',');
+                if (parseInt(parts[4]) === 0) continue; // Skip zero-quantity orders
+                const is_prebooking = parseInt(parts[12]) === 1;
+                const effective_time = is_prebooking && parts[13] ? parseInt(parts[13]) : parseInt(parts[5]);
+                
+                if (effective_time >= startOfDay && effective_time < endOfDay) {
+                    todayOrders.push({
+                        id: i,
+                        username: parts[0],
+                        item: parts[2],
+                        quantity: parseInt(parts[4]),
+                        order_timestamp: parseInt(parts[5]),
+                        is_prebooking: is_prebooking,
+                        prebooking_datetime: parts[13] ? parseInt(parts[13]) : null,
+                        effective_time: effective_time,
+                        is_delivered: parts[14] === 'True'
+                    });
+                }
+            }
+        }
+
+        todayOrders.sort((a, b) => a.effective_time - b.effective_time);
+        res.status(200).json(todayOrders);
+    } catch (error) {
+        console.error('Error fetching today orders:', error);
+        res.status(500).json({ error: 'Failed to fetch today orders' });
+    }
+});
+
+app.post('/api/admin/update_order_status', (req, res) => {
+    try {
+        const { id, is_delivered } = req.body;
+        const lines = fs.readFileSync(DATA_FILE, 'utf8').split('\n');
+        if (id >= 1 && id < lines.length) {
+            const parts = lines[id].split(',');
+            parts[14] = is_delivered ? 'True' : 'False';
+            lines[id] = parts.join(',');
+            fs.writeFileSync(DATA_FILE, lines.join('\n'));
+            res.status(200).json({ message: 'Order status updated successfully' });
+        } else {
+            res.status(404).json({ error: 'Order not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update order status' });
     }
 });
 
@@ -587,11 +669,11 @@ app.get('/api/admin/recent_data', (req, res) => {
                 const parts = line.split(',');
                 recent.push({
                     id: i, // use line index as ID for deletion
-                    username: parts[0], // it's 'date' in data1.csv, but UI expects 'username'
-                    item: parts[1],
-                    time_slot: parts[2],
-                    quantity: parts[3],
-                    timestamp: parts[4]
+                    username: parts[0],
+                    item: parts[2],
+                    time_slot: parts[3],
+                    quantity: parts[4],
+                    timestamp: parts[5]
                 });
             }
         }

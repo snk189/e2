@@ -169,3 +169,21 @@ export const updateAdminSettings = async (settings) => {
         throw error.response?.data || { error: 'Updating settings failed' };
     }
 };
+
+export const getTodayOrders = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/admin/today_orders`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { error: 'Failed' };
+    }
+};
+
+export const updateOrderStatus = async (id, is_delivered) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/admin/update_order_status`, { id, is_delivered });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { error: 'Failed' };
+    }
+};

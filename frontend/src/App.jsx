@@ -125,6 +125,9 @@ const BookingInterface = ({ onLogout, username }) => {
   const handleTouchEnd = () => setStartY(0);
 
   const todayStr = new Date().toISOString().split('T')[0];
+  const tmr = new Date();
+  tmr.setDate(tmr.getDate() + 1);
+  const tmrStr = tmr.toISOString().split('T')[0];
 
   const fetchHistory = async () => {
     try {
@@ -234,8 +237,8 @@ const BookingInterface = ({ onLogout, username }) => {
         }
         
         const hour = selectedDateTime.getHours();
-        if (hour < 8 || hour >= 20) {
-            showToast("Canteen operates between 8 AM and 8 PM.", "error");
+        if (hour < 8 || hour >= 18) {
+            showToast("Canteen operates between 8 AM and 6 PM.", "error");
             return;
         }
     }
@@ -279,7 +282,7 @@ const BookingInterface = ({ onLogout, username }) => {
       setDate('');
       setTime('');
     } catch (error) {
-      showToast(`Backend failed: ${error.message}. Contact the AI if this continues.`, "error");
+      showToast("Order failed. Please try again.", "error");
       console.error(error);
     } finally {
       setLoading(false);
@@ -408,25 +411,37 @@ const BookingInterface = ({ onLogout, username }) => {
           </div>
 
           {orderType === 'prebook' && (
-            <div className="flex space-x-3 p-4 bg-gray-50 rounded-2xl border border-gray-200 shadow-inner">
-              <div className="flex-1">
-                <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Date</label>
-                <input 
-                  type="date" 
-                  min={todayStr}
-                  value={date}
-                  onChange={e => setDate(e.target.value)}
-                  className="w-full p-2.5 border-2 border-gray-200 rounded-xl text-sm bg-white font-semibold focus:border-black focus:ring-0 outline-none transition-colors"
-                />
+            <div className="flex flex-col space-y-3 p-4 bg-gray-50 rounded-2xl border border-gray-200 shadow-inner">
+              <div className="flex space-x-2">
+                <button onClick={() => setDate(todayStr)} className={`flex-1 py-2 text-xs font-bold rounded-lg border ${date === todayStr ? 'bg-black text-white' : 'bg-white text-gray-600 hover:bg-gray-100 transition-colors'}`}>Today ({new Date(todayStr).toLocaleDateString(undefined, { day: '2-digit', month: 'short' })})</button>
+                <button onClick={() => setDate(tmrStr)} className={`flex-1 py-2 text-xs font-bold rounded-lg border ${date === tmrStr ? 'bg-black text-white' : 'bg-white text-gray-600 hover:bg-gray-100 transition-colors'}`}>Tomorrow ({new Date(tmrStr).toLocaleDateString(undefined, { day: '2-digit', month: 'short' })})</button>
               </div>
-              <div className="flex-1">
-                <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Time</label>
-                <input 
-                  type="time" 
-                  value={time}
-                  onChange={e => setTime(e.target.value)}
-                  className="w-full p-2.5 border-2 border-gray-200 rounded-xl text-sm bg-white font-semibold focus:border-black focus:ring-0 outline-none transition-colors"
-                />
+              <div className="flex space-x-3">
+                <div className="flex-1">
+                  <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Date</label>
+                  <input 
+                    type="date" 
+                    min={todayStr}
+                    value={date}
+                    onChange={e => setDate(e.target.value)}
+                    className="w-full p-2.5 border-2 border-gray-200 rounded-xl text-sm bg-white font-semibold focus:border-black outline-none transition-colors"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Time (8 AM - 5 PM)</label>
+                  <input 
+                    type="time" 
+                    list="time-slots"
+                    value={time}
+                    onChange={e => setTime(e.target.value)}
+                    className="w-full p-2.5 border-2 border-gray-200 rounded-xl text-sm bg-white font-semibold focus:border-black outline-none transition-colors"
+                  />
+                  <datalist id="time-slots">
+                    {Array.from({ length: 10 }, (_, i) => i + 8).map(h => (
+                      <option key={h} value={`${h.toString().padStart(2, '0')}:00`} />
+                    ))}
+                  </datalist>
+                </div>
               </div>
             </div>
           )}
@@ -543,7 +558,7 @@ const BookingInterface = ({ onLogout, username }) => {
                            </div>
                            {order.is_prebooking ? (
                              <span className="text-[10px] uppercase tracking-wider font-extrabold bg-indigo-50 text-indigo-500 px-2.5 py-1 rounded-md border border-indigo-100">
-                               Prebook • {order.prebooking_date}
+                               Prebook • {order.prebooking_datetime ? new Date(order.prebooking_datetime * 1000).toLocaleString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'}) : 'No Date'}
                              </span>
                            ) : (
                              <span className="text-[10px] uppercase tracking-wider font-extrabold bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-md border border-emerald-100">
