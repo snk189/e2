@@ -5,6 +5,8 @@ from xgboost import XGBRegressor
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from datetime import datetime
 import warnings
+import os
+from sqlalchemy import create_engine
 
 warnings.filterwarnings('ignore')
 
@@ -295,8 +297,20 @@ def predict_demand(target_date_str, df, model, feature_cols, encoded_cat_cols, l
         print("========================================================================\n")
 
 def main():
-    print("[1/3] Loading dataset...")
-    df = pd.read_csv('data1.csv')
+    print("[1/3] Fetching dataset from PostgreSQL...")
+    user = os.environ.get('PGUSER', 'postgres')
+    password = os.environ.get('PGPASSWORD', 'postgres')
+    host = os.environ.get('PGHOST', 'localhost')
+    port = os.environ.get('PGPORT', '5432')
+    database = os.environ.get('PGDATABASE', 'bitespeed')
+    
+    try:
+        engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
+        df = pd.read_sql('SELECT * FROM orders', engine)
+    except Exception as e:
+        print(f"Error connecting to database: {e}")
+        return
+        
     
     df, lookups, split_idx = prepare_data(df)
     

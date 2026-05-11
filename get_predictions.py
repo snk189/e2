@@ -8,6 +8,7 @@ import json
 import sys
 import os
 import warnings
+from sqlalchemy import create_engine
 
 warnings.filterwarnings('ignore')
 
@@ -389,9 +390,14 @@ def get_forecast(target_date, df, model, feature_cols, lookups):
 
 def main():
     try:
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        data_path = os.path.join(script_dir, 'data1.csv')
-        df = pd.read_csv(data_path)
+        user = os.environ.get('PGUSER', 'postgres')
+        password = os.environ.get('PGPASSWORD', 'postgres')
+        host = os.environ.get('PGHOST', 'localhost')
+        port = os.environ.get('PGPORT', '5432')
+        database = os.environ.get('PGDATABASE', 'bitespeed')
+        
+        engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
+        df = pd.read_sql('SELECT * FROM orders', engine)
     except Exception as e:
         print(json.dumps({"error": str(e)}))
         return
