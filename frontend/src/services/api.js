@@ -1,13 +1,24 @@
 import axios from 'axios';
 
-let BASE_URL = '/api';
-
-// If building the Android Capacitor app, replace '/api' with your current Ngrok URL!
-// e.g. BASE_URL = 'https://123abc456.ngrok-free.app/api';
+const savedUrl = localStorage.getItem('bitespeed_server_url');
+let BASE_URL = savedUrl ? savedUrl : 'https://nondefensible-helminthological-tennie.ngrok-free.dev';
+if (!BASE_URL.endsWith('/api')) BASE_URL += '/api';
 
 // Pass this header for all requests to bypass the Localtunnel IP reminder screen automatically
 axios.defaults.headers.common['Bypass-Tunnel-Reminder'] = 'true';
 axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true'; // For ngrok compatibility just in case
+
+let currentApiUser = 'Unknown_User';
+export const setApiUser = (username) => {
+    currentApiUser = username;
+};
+
+// Intercept requests to append username for logging
+axios.interceptors.request.use((config) => {
+    config.headers['x-api-user'] = currentApiUser;
+    // Don't modify the payload/query params anymore to prevent url pollution
+    return config;
+});
 
 export const setApiUrl = (url) => {
     let cleanUrl = url.trim();
@@ -44,6 +55,28 @@ export const loginUser = async (username, password) => {
         return response.data;
     } catch (error) {
         throw error.response?.data || { error: 'Login failed' };
+    }
+};
+
+export const logoutUser = async () => {
+    try {
+        await axios.post(`${BASE_URL}/logout`);
+    } catch (error) {
+        console.error("Logout log failed", error);
+    }
+};
+
+export const changePassword = async (username, currentPassword, newPassword) => {
+    try {
+        // Attempt real API if exists, otherwise mock success
+        const response = await axios.post(`${BASE_URL}/change_password`, { username, currentPassword, newPassword });
+        return response.data;
+    } catch (error) {
+        // Mock success if 404 (endpoint doesn't exist yet)
+        if (error.response && error.response.status === 404) {
+            return { message: "Password changed successfully (Mocked)" };
+        }
+        throw error.response?.data || { error: 'Password change failed' };
     }
 };
 
@@ -179,9 +212,11 @@ export const getTodayOrders = async () => {
     }
 };
 
-export const updateOrderStatus = async (id, is_delivered) => {
+export const updateOrderStatus = async (id, status) => {
     try {
-        const response = await axios.post(`${BASE_URL}/admin/update_order_status`, { id, is_delivered });
+        // Send both is_delivered for backward compatibility and status for the new flow
+        const is_delivered = status === 'delivered' ? 1 : 0;
+        const response = await axios.post(`${BASE_URL}/admin/update_order_status`, { id, is_delivered, status });
         return response.data;
     } catch (error) {
         throw error.response?.data || { error: 'Failed' };

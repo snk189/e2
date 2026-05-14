@@ -1,29 +1,31 @@
 import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
 import { MENU_ITEMS } from './data/items';
-import { submitOrder, setApiUrl } from './services/api';
+import { submitOrder, setApiUrl, changePassword, setApiUser, getHistory, logoutUser } from './services/api';
 import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
 import AdminDashboard from './components/AdminDashboard';
 
 const App = () => {
-  const [networkConfigured, setNetworkConfigured] = useState(false);
-  const [user, setUser] = useState(null);
-  const [userType, setUserType] = useState(null);
+  const [user, setUser] = useState(() => localStorage.getItem('bitespeed_user'));
+  const [userType, setUserType] = useState(() => localStorage.getItem('bitespeed_type') || 'n');
+
+  React.useEffect(() => {
+    if (user) setApiUser(user);
+  }, [user]);
 
   const handleLogin = (username, type) => {
     setUser(username);
     setUserType(type);
+    setApiUser(username);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    if (user) await logoutUser();
     setUser(null);
     setUserType(null);
+    setApiUser('Unknown_User');
   };
-
-  if (!networkConfigured) {
-    return <NetworkConfig onConnect={() => setNetworkConfigured(true)} />;
-  }
 
   if (!user) {
     return <Auth onLogin={handleLogin} />;
@@ -41,54 +43,14 @@ const App = () => {
   return <BookingInterface onLogout={handleLogout} username={user} />;
 };
 
-const NetworkConfig = ({ onConnect }) => {
-  const [ip, setIp] = useState('');
-  // Ngrok provides one free static URL! This will be your permanent default internet URL.
-  const LOCAL_FALLBACK = 'https://nondefensible-helminthological-tennie.ngrok-free.dev';
 
-  const handleConnect = (e) => {
-    e.preventDefault();
-    const finalIp = ip.trim() || LOCAL_FALLBACK;
-    setApiUrl(finalIp);
-    onConnect();
-  };
-
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white p-8 rounded-3xl shadow-xl w-full max-w-sm border border-gray-100 animate-in fade-in zoom-in duration-300">
-        <div className="w-16 h-16 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
-        </div>
-        <h2 className="text-2xl font-black text-center mb-2 text-gray-800">API Connection</h2>
-        <p className="text-center text-sm text-gray-500 mb-6 font-medium">To use the Native App over Mobile Data, paste today's Ngrok URL below!</p>
-        
-        <form onSubmit={handleConnect} className="space-y-4">
-          <div>
-            <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">Ngrok API Server URL</label>
-            <input 
-              type="text" 
-              placeholder={`e.g. https://xyz.ngrok-free.app`}
-              value={ip}
-              onChange={(e) => setIp(e.target.value)}
-              className="w-full p-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:bg-white outline-none font-mono text-sm transition-all"
-            />
-          </div>
-          <button type="submit" className="w-full bg-black text-white font-bold py-4 rounded-xl hover:bg-gray-800 transition-colors shadow-lg shadow-gray-200">
-            Connect
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-};
 
 const BookingInterface = ({ onLogout, username }) => {
   const [quantities, setQuantities] = useState({});
-  const [orderType, setOrderType] = useState('dine-in'); // 'dine-in' or 'prebook'
+  const [orderType, setOrderType] = useState('dine-in'); // 'dine-in', 'prebook'
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [historyData, setHistoryData] = useState([]);
@@ -129,19 +91,26 @@ const BookingInterface = ({ onLogout, username }) => {
   tmr.setDate(tmr.getDate() + 1);
   const tmrStr = tmr.toISOString().split('T')[0];
 
-  const fetchHistory = async () => {
+  const fetchHistory = async (silent = false) => {
     try {
-      setLoadingHistory(true);
-      const { getHistory } = await import('./services/api');
+      if (!silent) setLoadingHistory(true);
       const data = await getHistory(username);
-      setHistoryData(data.reverse()); // latest first
-      setShowHistory(true);
+      setHistoryData(data); // Already sorted newest first by backend
+      if (!silent) setShowHistory(true);
     } catch (err) {
-      showToast("Failed to load history", "error");
+      if (!silent) showToast("Failed to load history", "error");
     } finally {
-      setLoadingHistory(false);
+      if (!silent) setLoadingHistory(false);
     }
   };
+
+  React.useEffect(() => {
+    let interval;
+    if (showHistory) {
+      interval = setInterval(() => fetchHistory(true), 5000);
+    }
+    return () => clearInterval(interval);
+  }, [showHistory]);
 
   const handleQuantity = (id, delta) => {
     setQuantities(prev => {
@@ -268,9 +237,12 @@ const BookingInterface = ({ onLogout, username }) => {
         time_slot: time_slot,
         quantity: quantities[id],
         is_prebooking: is_prebooking,
+        takeaway: 0,
         day_of_week: day_of_week,
         prebooking_date: orderType === 'prebook' ? date : '',
         prebooking_time: orderType === 'prebook' ? time : '',
+        notes: notes,
+        status: 'pending',
         timestamp: timestamp
       };
     });
@@ -281,6 +253,7 @@ const BookingInterface = ({ onLogout, username }) => {
       setQuantities({});
       setDate('');
       setTime('');
+      setNotes('');
     } catch (error) {
       showToast("Order failed. Please try again.", "error");
       console.error(error);
@@ -325,96 +298,54 @@ const BookingInterface = ({ onLogout, username }) => {
 
 
 
-      <header className="bg-black text-white p-5 rounded-b-3xl shadow-md mb-6">
-        <div className="flex justify-between items-center mb-1">
-           <h1 className="text-2xl font-extrabold tracking-tight">BiteSpeed</h1>
-           <div className="flex space-x-2">
-              <button 
-                onClick={fetchHistory} 
-                className="bg-white/10 text-white border border-white/20 px-3 py-1.5 rounded-lg font-bold text-xs shadow-sm hover:bg-white/20 transition-colors backdrop-blur-sm"
-              >
-                {loadingHistory ? 'Wait...' : 'History'}
-              </button>
-              <button 
-                onClick={onLogout} 
-                className="bg-red-500/80 text-white px-3 py-1.5 rounded-lg font-bold text-xs shadow-sm hover:bg-red-600 transition-colors backdrop-blur-sm"
-              >
-                Exit
-              </button>
-           </div>
+
+
+      <header className="bg-gradient-to-br from-[#1a1025] to-[#0d0614] text-white pt-6 pb-5 px-5 rounded-b-[2rem] shadow-2xl shadow-indigo-900/20 mb-6 relative z-10 border-b border-indigo-900/50">
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-gray-100 via-gray-300 to-gray-500 drop-shadow-md">BiteSpeed</h1>
+            <p className="text-indigo-200/60 text-sm font-bold mt-0.5 tracking-wide">Hello, <span className="text-white">{username}</span></p>
+          </div>
+          <div className="flex flex-col gap-2.5">
+            <button onClick={() => fetchHistory()} className="bg-white/10 hover:bg-indigo-500/90 text-white px-4 py-2 rounded-xl font-bold text-xs transition-all duration-300 backdrop-blur-sm border border-white/10 shadow-sm text-center">
+              Order History
+            </button>
+            <button onClick={onLogout} className="bg-white/10 hover:bg-red-500/90 text-white px-4 py-2 rounded-xl font-bold text-xs transition-all duration-300 backdrop-blur-sm border border-white/10 shadow-sm text-center">
+              Logout
+            </button>
+          </div>
         </div>
-        <p className="text-left text-gray-400 text-xs font-medium uppercase tracking-wider">Welcome, <span className="text-white">{username}</span></p>
       </header>
 
       <main className="max-w-md mx-auto px-4">
         
-        {/* Menu Section */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6">
-          <h2 className="text-xl font-bold mb-4 border-b border-gray-100 pb-3 flex items-center justify-between">
-            Menu
-            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{MENU_ITEMS.length} Items</span>
-          </h2>
-          <div className="space-y-4">
-            {MENU_ITEMS.map(item => (
-              <div key={item.id} className="flex justify-between items-center group py-2">
-                <div className="flex items-center space-x-3 flex-1 min-w-0 pr-2">
-                  <img src={item.img} alt={item.name} className="w-14 h-14 object-cover rounded-2xl shadow-sm border border-gray-100 shrink-0" />
-                  <div className="min-w-0">
-                    <h3 className="font-bold text-gray-800 drop-shadow-sm truncate text-base sm:text-lg leading-tight">{item.name}</h3>
-                    <p className="text-sm font-semibold text-gray-500 mt-0.5">{item.price}</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-1 sm:space-x-2 bg-gray-50 rounded-full py-1 px-1 sm:px-1.5 border border-gray-200 shadow-sm shrink-0">
-                  <button 
-                    onClick={() => handleQuantity(item.id, -1)}
-                    className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center font-bold text-gray-600 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-colors"
-                  >
-                    -
-                  </button>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    value={quantities[item.id] || ''}
-                    onChange={(e) => handleSetQuantity(item.id, e.target.value)}
-                    placeholder="0"
-                    className="w-6 sm:w-8 text-center font-extrabold text-gray-700 bg-transparent outline-none text-sm sm:text-base"
-                  />
-                  <button 
-                    onClick={() => handleQuantity(item.id, 1)}
-                    className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center font-bold text-white bg-black rounded-full shadow-sm hover:bg-gray-800 transition-colors"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Booking Type Section */}
         <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6">
           <h2 className="text-xl font-bold mb-4 border-b border-gray-100 pb-3">Ordering Method</h2>
-          <div className="flex space-x-3 mb-4">
+          <div className="flex p-1.5 rounded-2xl mb-4 shadow-inner border border-gray-100 bg-gray-50/80 backdrop-blur">
             <button
-              onClick={() => setOrderType('dine-in')}
-              className={`flex-1 py-3 font-bold rounded-2xl transition-colors ${orderType === 'dine-in' ? 'bg-black text-white shadow-md' : 'bg-gray-50 text-gray-500 hover:bg-gray-100 border border-gray-200'}`}
+              onClick={() => { setOrderType('dine-in'); setIsPrebooking(false); }}
+              className={`flex-1 py-3.5 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${orderType === 'dine-in' ? 'bg-[#e23744] text-white shadow-lg shadow-red-500/30 transform scale-[1.02]' : 'bg-transparent text-gray-500 hover:text-gray-800 hover:bg-white'}`}
             >
-              Dine-In Now
+              <div className={`flex items-center justify-center w-7 h-7 rounded-full ${orderType === 'dine-in' ? 'bg-white/25 shadow-sm' : 'bg-gray-200'}`}>🍽️</div> Dine-In
             </button>
             <button
-              onClick={() => setOrderType('prebook')}
-              className={`flex-1 py-3 font-bold rounded-2xl transition-colors ${orderType === 'prebook' ? 'bg-black text-white shadow-md' : 'bg-gray-50 text-gray-500 hover:bg-gray-100 border border-gray-200'}`}
+              onClick={() => {
+                setOrderType('prebook');
+                setIsPrebooking(true);
+                if (navigator.vibrate) navigator.vibrate(50);
+              }}
+              className={`flex-1 py-3.5 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${orderType === 'prebook' ? 'bg-[#fc8019] text-white shadow-lg shadow-orange-500/30 transform scale-[1.02]' : 'bg-transparent text-gray-500 hover:text-gray-800 hover:bg-white'}`}
             >
-              Prebook
+              <div className={`flex items-center justify-center w-7 h-7 rounded-full ${orderType === 'prebook' ? 'bg-white/25 shadow-sm' : 'bg-gray-200'}`}>📅</div> Prebook
             </button>
           </div>
 
-          {orderType === 'prebook' && (
-            <div className="flex flex-col space-y-3 p-4 bg-gray-50 rounded-2xl border border-gray-200 shadow-inner">
+          <div className={`overflow-hidden transition-all duration-300 ${orderType === 'prebook' ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'}`}>
+            <div className="flex flex-col space-y-3 p-4 bg-indigo-50/50 rounded-2xl border border-indigo-100 shadow-inner mt-2">
               <div className="flex space-x-2">
-                <button onClick={() => setDate(todayStr)} className={`flex-1 py-2 text-xs font-bold rounded-lg border ${date === todayStr ? 'bg-black text-white' : 'bg-white text-gray-600 hover:bg-gray-100 transition-colors'}`}>Today ({new Date(todayStr).toLocaleDateString(undefined, { day: '2-digit', month: 'short' })})</button>
-                <button onClick={() => setDate(tmrStr)} className={`flex-1 py-2 text-xs font-bold rounded-lg border ${date === tmrStr ? 'bg-black text-white' : 'bg-white text-gray-600 hover:bg-gray-100 transition-colors'}`}>Tomorrow ({new Date(tmrStr).toLocaleDateString(undefined, { day: '2-digit', month: 'short' })})</button>
+                <button onClick={() => setDate(todayStr)} className={`flex-1 py-2 text-xs font-bold rounded-lg border transition-all ${date === todayStr ? 'bg-indigo-600 text-white shadow-md border-indigo-600' : 'bg-white text-gray-600 hover:bg-gray-50 border-gray-200'}`}>Today ({new Date(todayStr).toLocaleDateString(undefined, { day: '2-digit', month: 'short' })})</button>
+                <button onClick={() => setDate(tmrStr)} className={`flex-1 py-2 text-xs font-bold rounded-lg border transition-all ${date === tmrStr ? 'bg-indigo-600 text-white shadow-md border-indigo-600' : 'bg-white text-gray-600 hover:bg-gray-50 border-gray-200'}`}>Tomorrow ({new Date(tmrStr).toLocaleDateString(undefined, { day: '2-digit', month: 'short' })})</button>
               </div>
               <div className="flex space-x-3">
                 <div className="flex-1">
@@ -424,7 +355,7 @@ const BookingInterface = ({ onLogout, username }) => {
                     min={todayStr}
                     value={date}
                     onChange={e => setDate(e.target.value)}
-                    className="w-full p-2.5 border-2 border-gray-200 rounded-xl text-sm bg-white font-semibold focus:border-black outline-none transition-colors"
+                    className="w-full p-2.5 border-2 border-indigo-100 rounded-xl text-sm bg-white font-semibold focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
                   />
                 </div>
                 <div className="flex-1">
@@ -434,7 +365,7 @@ const BookingInterface = ({ onLogout, username }) => {
                     list="time-slots"
                     value={time}
                     onChange={e => setTime(e.target.value)}
-                    className="w-full p-2.5 border-2 border-gray-200 rounded-xl text-sm bg-white font-semibold focus:border-black outline-none transition-colors"
+                    className="w-full p-2.5 border-2 border-indigo-100 rounded-xl text-sm bg-white font-semibold focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
                   />
                   <datalist id="time-slots">
                     {Array.from({ length: 10 }, (_, i) => i + 8).map(h => (
@@ -444,7 +375,76 @@ const BookingInterface = ({ onLogout, username }) => {
                 </div>
               </div>
             </div>
-          )}
+          </div>
+        </div>
+
+        {/* Menu Section */}
+        <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6">
+          <h2 className="text-xl font-bold mb-4 border-b border-gray-100 pb-3 flex items-center justify-between">
+            Menu
+            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{MENU_ITEMS.length} Items</span>
+          </h2>
+          
+          <div className="space-y-8">
+            {[...new Set(MENU_ITEMS.map(i => i.category || 'Other'))].map((category, idx) => {
+              const colorClass = ['text-white bg-red-500', 'text-white bg-blue-500', 'text-white bg-emerald-500', 'text-white bg-amber-500', 'text-white bg-purple-500'][idx % 5];
+              const lineClass = ['bg-red-200', 'bg-blue-200', 'bg-emerald-200', 'bg-amber-200', 'bg-purple-200'][idx % 5];
+              return (
+              <div key={category} className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <h3 className={`font-black uppercase tracking-widest text-xs px-3 py-1 rounded-md shadow-sm ${colorClass}`}>{category}</h3>
+                  <div className={`h-px flex-1 ${lineClass}`}></div>
+                </div>
+                <div className="space-y-3">
+                  {MENU_ITEMS.filter(i => (i.category || 'Other') === category).map(item => (
+                    <div key={item.id} className="flex justify-between items-center group p-2 sm:p-3 bg-white hover:bg-gray-50 rounded-2xl border border-transparent hover:border-gray-200 transition-all duration-300 hover:shadow-md">
+                      <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0 pr-2">
+                        <img src={item.img} alt={item.name} className="w-16 h-16 object-cover rounded-2xl shadow-sm border border-gray-100 shrink-0 transform group-hover:scale-105 transition-transform duration-300" />
+                        <div className="min-w-0">
+                          <h3 className="font-bold text-gray-800 drop-shadow-sm truncate text-base sm:text-lg leading-tight transition-colors">{item.name}</h3>
+                          <p className="text-sm font-extrabold text-indigo-500 mt-1">{item.price}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-1 sm:space-x-2 bg-gray-100 rounded-full py-1.5 px-1.5 sm:px-2 border border-gray-200 shadow-inner shrink-0 transform transition-transform group-hover:scale-105">
+                        <button 
+                          onClick={() => handleQuantity(item.id, -1)}
+                          className="w-8 h-8 flex items-center justify-center font-bold text-gray-700 bg-white rounded-full shadow-sm hover:bg-gray-200 transition-colors active:scale-95"
+                        >
+                          -
+                        </button>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          value={quantities[item.id] || ''}
+                          onChange={(e) => handleSetQuantity(item.id, e.target.value)}
+                          placeholder="0"
+                          className="w-6 sm:w-8 text-center font-extrabold text-gray-700 bg-transparent outline-none text-sm sm:text-base"
+                        />
+                        <button 
+                          onClick={() => handleQuantity(item.id, 1)}
+                          className="w-8 h-8 flex items-center justify-center font-bold text-white bg-black rounded-full shadow-md hover:bg-gray-800 transition-colors active:scale-95"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )})}
+          </div>
+        </div>
+
+        {/* Notes Section */}
+        <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6">
+          <h2 className="text-sm font-bold text-gray-800 mb-2">Special Instructions</h2>
+          <textarea
+            placeholder="Any notes for the chef?"
+            value={notes}
+            onChange={e => setNotes(e.target.value)}
+            className="w-full p-3 bg-gray-50 border-2 border-gray-100 rounded-xl outline-none focus:border-indigo-500 focus:bg-white transition-colors text-sm font-medium resize-none h-20"
+          />
         </div>
 
         {/* Order Summary Section */}
@@ -478,7 +478,7 @@ const BookingInterface = ({ onLogout, username }) => {
                   <span>- ₹{Math.round(calculateTotalPrice() * 0.05)}</span>
                 </div>
               )}
-              
+
               <div className="flex justify-between items-center text-xl font-black text-gray-800 pt-3 border-t border-gray-100 mt-3">
                 <span>Final Total</span>
                 <span>
@@ -511,6 +511,8 @@ const BookingInterface = ({ onLogout, username }) => {
                       <span className="line-through opacity-60 text-sm">₹{calculateTotalPrice()}</span>
                       <span className="text-emerald-400 font-black">₹{calculateTotalPrice() - Math.round(calculateTotalPrice() * 0.05)}</span>
                     </div>
+                  ) : orderType === 'takeaway' ? (
+                    <span className="text-red-300 font-black">₹{calculateTotalPrice()}</span>
                   ) : (
                     <span>₹{calculateTotalPrice()}</span>
                   )}
@@ -528,7 +530,7 @@ const BookingInterface = ({ onLogout, username }) => {
             <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
               <h2 className="text-xl font-bold flex flex-col">
                 Order History
-                <span className="text-xs text-gray-500 font-medium">Your past cravings</span>
+                <span className="text-xs text-gray-500 font-medium mt-1">Your past cravings</span>
               </h2>
               <button onClick={() => setShowHistory(false)} className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center font-bold hover:bg-gray-300 transition-colors">✕</button>
             </div>
@@ -536,8 +538,8 @@ const BookingInterface = ({ onLogout, username }) => {
             <div className="overflow-y-auto p-5 scrollbar-hide flex-1">
               {historyData.length === 0 ? (
                 <div className="text-center py-10 opacity-50">
-                   <p className="font-bold text-lg">No orders yet</p>
-                   <p className="text-sm">Time to grab a bite!</p>
+                   <p className="font-bold text-lg text-gray-800">No orders yet</p>
+                   <p className="text-sm text-gray-500">Time to grab a bite!</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -556,15 +558,24 @@ const BookingInterface = ({ onLogout, username }) => {
                              <span className="text-xs font-bold text-gray-400 mb-1">ORDERED ON</span>
                              <span className="text-xs font-semibold text-gray-600">{orderDate}</span>
                            </div>
-                           {order.is_prebooking ? (
-                             <span className="text-[10px] uppercase tracking-wider font-extrabold bg-indigo-50 text-indigo-500 px-2.5 py-1 rounded-md border border-indigo-100">
-                               Prebook • {order.prebooking_datetime ? new Date(order.prebooking_datetime * 1000).toLocaleString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'}) : 'No Date'}
+                           <div className="flex flex-col items-end">
+                             {order.is_prebooking ? (
+                               <span className="text-[10px] uppercase tracking-wider font-extrabold bg-indigo-50 text-indigo-500 px-2.5 py-1 rounded-md border border-indigo-100 mb-1">
+                                 Prebook
+                               </span>
+                             ) : order.takeaway ? (
+                               <span className="text-[10px] uppercase tracking-wider font-extrabold bg-orange-50 text-orange-600 px-2.5 py-1 rounded-md border border-orange-100 mb-1">
+                                 Takeaway
+                               </span>
+                             ) : (
+                               <span className="text-[10px] uppercase tracking-wider font-extrabold bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-md border border-emerald-100 mb-1">
+                                 Dine-In
+                               </span>
+                             )}
+                             <span className={`text-[10px] uppercase tracking-wider font-extrabold px-2.5 py-1 rounded-md border ${(order.status === 'delivered' || order.is_delivered) ? 'bg-gray-100 text-gray-500 border-gray-200' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
+                               {(order.status || (order.is_delivered ? 'delivered' : 'pending')).replace(/_/g, ' ')}
                              </span>
-                           ) : (
-                             <span className="text-[10px] uppercase tracking-wider font-extrabold bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-md border border-emerald-100">
-                               Dine-In
-                             </span>
-                           )}
+                           </div>
                         </div>
                       </div>
                     );

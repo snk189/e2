@@ -11,6 +11,7 @@ const Dashboard = ({ onLogout }) => {
   const [expandedToday, setExpandedToday] = useState(null);
   const [expandedTomorrow, setExpandedTomorrow] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const rowRefs = React.useRef([]);
 
   const fetchData = async () => {
     try {
@@ -39,9 +40,18 @@ const Dashboard = ({ onLogout }) => {
     return () => clearInterval(interval);
   }, [activeTab]);
 
-  const handleUpdateOrderStatus = async (id, status) => {
+  const handleUpdateOrderStatus = async (id, currentStatus, direction = 1) => {
+    const STATUSES = ['pending', 'preparing', 'ready', 'delivered'];
+    const idx = STATUSES.indexOf(currentStatus || 'pending');
+    let nextIdx = idx + direction;
+    if (nextIdx < 0) nextIdx = 0;
+    if (nextIdx >= STATUSES.length) nextIdx = STATUSES.length - 1;
+    const nextStatus = STATUSES[nextIdx];
+    
+    if (nextStatus === currentStatus) return;
+
     try {
-      await updateOrderStatus(id, status);
+      await updateOrderStatus(id, nextStatus);
       fetchData();
     } catch (err) {
       setError('Failed to update status');
@@ -57,15 +67,29 @@ const Dashboard = ({ onLogout }) => {
 
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        setSelectedIndex(prev => (prev < todayOrders.length - 1 ? prev + 1 : prev));
+        setSelectedIndex(prev => {
+          const next = prev < todayOrders.length - 1 ? prev + 1 : prev;
+          if (rowRefs.current[next]) rowRefs.current[next].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          return next;
+        });
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        setSelectedIndex(prev => (prev > 0 ? prev - 1 : prev));
-      } else if (e.key === 'Enter' || e.key === ' ') {
+        setSelectedIndex(prev => {
+          const next = prev > 0 ? prev - 1 : prev;
+          if (rowRefs.current[next]) rowRefs.current[next].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          return next;
+        });
+      } else if (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         const order = todayOrders[selectedIndex];
         if (order) {
-          handleUpdateOrderStatus(order.id, !order.is_delivered);
+          handleUpdateOrderStatus(order.id, order.status || (order.is_delivered ? 'delivered' : 'pending'), 1);
+        }
+      } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+        e.preventDefault();
+        const order = todayOrders[selectedIndex];
+        if (order) {
+          handleUpdateOrderStatus(order.id, order.status || (order.is_delivered ? 'delivered' : 'pending'), -1);
         }
       }
     };
@@ -103,22 +127,25 @@ const Dashboard = ({ onLogout }) => {
       
       {/* Premium Header */}
       <header className="bg-white/70 backdrop-blur-2xl border-b border-white/50 sticky top-0 z-40 shadow-sm">
-        <div className="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 shadow-lg shadow-indigo-200 flex items-center justify-center text-white font-black text-xl">
-              M
+        <div className="max-w-4xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center justify-between w-full sm:w-auto">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 shadow-lg shadow-indigo-200 flex items-center justify-center text-white font-black text-xl">
+                M
+              </div>
+              <div>
+                <h1 className="text-2xl font-black text-gray-900 tracking-tight leading-none">Management</h1>
+                <p className="text-sm font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500 mt-0.5">Control Center</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-black text-gray-900 tracking-tight leading-none">Management</h1>
-              <p className="text-sm font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500 mt-0.5">Control Center</p>
-            </div>
+            <button onClick={onLogout} className="sm:hidden px-4 py-2 bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 rounded-xl font-bold text-sm transition-all">Logout</button>
           </div>
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1">
-             <button onClick={() => setActiveTab('orders')} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${activeTab === 'orders' ? 'bg-black text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}>Order Management</button>
-             <button onClick={() => setActiveTab('demand')} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${activeTab === 'demand' ? 'bg-black text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}>Demand Analysis</button>
-             <button onClick={() => setActiveTab('settings')} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${activeTab === 'settings' ? 'bg-black text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}>Environment Variables</button>
-             <button onClick={onLogout} className="px-4 py-2 bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 rounded-xl font-bold text-sm transition-all ml-2">Exit</button>
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1 w-full sm:w-auto flex-1 sm:flex-none">
+             <button onClick={() => setActiveTab('orders')} className={`whitespace-nowrap px-4 py-2 rounded-xl text-sm font-bold transition-all ${activeTab === 'orders' ? 'bg-black text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}>Order Management</button>
+             <button onClick={() => setActiveTab('demand')} className={`whitespace-nowrap px-4 py-2 rounded-xl text-sm font-bold transition-all ${activeTab === 'demand' ? 'bg-black text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}>Demand Analysis</button>
+             <button onClick={() => setActiveTab('settings')} className={`whitespace-nowrap px-4 py-2 rounded-xl text-sm font-bold transition-all ${activeTab === 'settings' ? 'bg-black text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}>Environment Variables</button>
           </div>
+          <button onClick={onLogout} className="hidden sm:block px-4 py-2 bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 rounded-xl font-bold text-sm transition-all ml-auto">Logout</button>
         </div>
       </header>
 
@@ -156,18 +183,44 @@ const Dashboard = ({ onLogout }) => {
                                   const timeStr = new Date(d.effective_time * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                                   const isSelected = selectedIndex === i;
                                   return (
-                                  <tr key={i} className={`transition-colors ${isSelected ? 'bg-indigo-50 border-l-4 border-indigo-500 shadow-sm' : 'hover:bg-gray-50'} ${d.is_delivered ? 'opacity-50' : ''}`}>
+                                  <tr 
+                                      key={i} 
+                                      ref={el => rowRefs.current[i] = el}
+                                      onClick={() => setSelectedIndex(i)}
+                                      className={`transition-colors cursor-pointer ${isSelected ? 'bg-indigo-50 border-l-4 border-indigo-500 shadow-sm' : 'hover:bg-gray-50'} ${d.is_delivered || d.status === 'delivered' ? 'opacity-50' : ''}`}
+                                  >
                                       <td className="p-3 font-medium text-gray-800">{timeStr}</td>
                                       <td className="p-3 font-medium text-gray-800">{d.username}</td>
-                                      <td className="p-3 text-gray-600 capitalize">{d.item}</td>
+                                      <td className="p-3 text-gray-600 capitalize">
+                                        {d.item}
+                                        {d.notes && <div className="text-xs text-amber-600 font-medium mt-1">Note: {d.notes}</div>}
+                                      </td>
                                       <td className="p-3"><span className="bg-gray-200 text-gray-800 px-2 py-0.5 rounded font-bold text-xs">{d.quantity}</span></td>
                                       <td className="p-3">
                                           {d.is_prebooking ? <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded font-bold text-xs">Prebook</span> : <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-bold text-xs">Dine-In</span>}
                                       </td>
                                       <td className="p-3 text-right">
-                                          <button onClick={() => handleUpdateOrderStatus(d.id, !d.is_delivered)} className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${d.is_delivered ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' : 'bg-amber-100 text-amber-700 hover:bg-amber-200'}`}>
-                                              {d.is_delivered ? 'Delivered' : 'Pending'}
-                                          </button>
+                                            <div className="flex justify-end gap-2 items-center">
+                                              <span className="text-xs font-bold text-gray-500 uppercase mr-2">
+                                                {(d.status || (d.is_delivered ? 'delivered' : 'pending')).replace(/_/g, ' ')}
+                                              </span>
+                                              {(d.status || (d.is_delivered ? 'delivered' : 'pending')) !== 'pending' && (
+                                                <button 
+                                                  onClick={(e) => { e.stopPropagation(); handleUpdateOrderStatus(d.id, d.status || (d.is_delivered ? 'delivered' : 'pending'), -1); }} 
+                                                  className="px-2 py-1 rounded-lg text-xs font-bold transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                                >
+                                                    ⬅ Prev
+                                                </button>
+                                              )}
+                                              {(d.status || (d.is_delivered ? 'delivered' : 'pending')) !== 'delivered' && (
+                                                <button 
+                                                  onClick={(e) => { e.stopPropagation(); handleUpdateOrderStatus(d.id, d.status || (d.is_delivered ? 'delivered' : 'pending'), 1); }} 
+                                                  className="px-2 py-1 rounded-lg text-xs font-bold transition-colors bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+                                                >
+                                                    Next ➔
+                                                </button>
+                                              )}
+                                            </div>
                                       </td>
                                   </tr>
                               )})}

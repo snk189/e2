@@ -119,7 +119,7 @@ const AdminDashboard = ({ onLogout }) => {
       <header className="bg-black text-white p-5 rounded-b-3xl shadow-md mb-6">
         <div className="flex justify-between items-center mb-1">
            <h1 className="text-2xl font-extrabold tracking-tight">Admin Console</h1>
-           <button onClick={onLogout} className="bg-red-500/80 text-white px-3 py-1.5 rounded-lg font-bold text-xs shadow-sm hover:bg-red-600 transition-colors backdrop-blur-sm">Exit</button>
+           <button onClick={onLogout} className="bg-red-500/80 text-white px-3 py-1.5 rounded-lg font-bold text-xs shadow-sm hover:bg-red-600 transition-colors backdrop-blur-sm">Logout</button>
         </div>
         
         {/* Tabs */}
@@ -286,10 +286,13 @@ const AdminDashboard = ({ onLogout }) => {
                                     <tr key={i} className="hover:bg-gray-50 transition-colors">
                                         <td className="p-3 font-medium text-gray-800">{timeStr}</td>
                                         <td className="p-3 font-medium text-gray-800">{d.username}</td>
-                                        <td className="p-3 text-gray-600 capitalize">{d.item}</td>
+                                        <td className="p-3 text-gray-600 capitalize">
+                                          {d.item}
+                                          {d.notes && <div className="text-xs text-amber-600 font-medium mt-1">Note: {d.notes}</div>}
+                                        </td>
                                         <td className="p-3"><span className="bg-gray-200 text-gray-800 px-2 py-0.5 rounded font-bold text-xs">{d.quantity}</span></td>
                                         <td className="p-3">
-                                            {d.is_prebooking ? <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded font-bold text-xs">Prebook</span> : <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-bold text-xs">Dine-In</span>}
+                                            {d.is_prebooking ? <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded font-bold text-xs">Prebook</span> : d.takeaway ? <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded font-bold text-xs">Takeaway</span> : <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-bold text-xs">Dine-In</span>}
                                         </td>
                                         <td className="p-3 text-right flex justify-end items-center">
                                             <button onClick={() => doAction(() => adminRemoveData(d.id), 'Removed')} className="text-red-500 hover:text-red-700 font-bold text-xs bg-red-50 hover:bg-red-100 px-3 py-1 rounded-lg transition-colors">Remove</button>

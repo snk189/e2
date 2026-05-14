@@ -1,35 +1,15 @@
-Dataset 
-dont show the orders where quantity is 0 in the user history of booking and also in the management,admin orders history.just that it shudnt be displayed anywhere. but in the data1.csv it should be there for the ML prediction
-
-Order API Error (Dine-in Logic)
-Issue:
-POST /api/order → 500 error still occurs
-Possible cause:
-Canteen timing restriction applied incorrectly
-Fix:
-Apply timing restriction only for prebooking
-Dine-in orders:
-Must be allowed any time (no restriction)
-Ensure:
-Backend does not reject dine-in due to timing
-
-Management Orders UI Interaction
-In Order Management tab:
-Required behavior:
-Orders displayed as selectable rows/cards
-Add a movable selection box:
-User can move:
-Down → next order
-Up → previous order
-Controls:
-Arrow Down → move selection down
-Arrow Up → move selection up
-Enter or Space → toggle:
-Delivered ↔ Pending
-
-Management Permissions Update
-In Management panel:
-Remove:
-“Remove order” option
-Only allow:
-Delivered / Pending toggle
+if i click on pink in starting it shows unknown user
+/api/admin/settings(both get and post),/api/admin/today_orders-even if i login this is shown unknown user and this is from management
+for admin-[2026-05-14T14:48:09.687Z] USER: Unknown_User | METHOD: GET | ENDPOINT: /api/admin/today_orders
+[2026-05-14T14:48:11.865Z] USER: Unknown_User | METHOD: GET | ENDPOINT: /api/pending_users
+[2026-05-14T14:48:15.679Z] USER: Unknown_User | METHOD: GET | ENDPOINT: /api/admin/users
+[2026-05-14T14:48:16.688Z] USER: Unknown_User | METHOD: GET | ENDPOINT: /api/admin/blocked_users
+[2026-05-14T14:48:16.764Z] USER: Unknown_User | METHOD: GET | ENDPOINT: /api/admin/rejected_users
+[2026-05-14T14:48:18.170Z] USER: Unknown_User | METHOD: GET | ENDPOINT: /api/pending_users
+[2026-05-14T14:48:23.303Z] USER: Unknown_User | METHOD: GET | ENDPOINT: /api/pending_users
+these are shown unknown users
+for normal booking user-/api/order this is shownn unknown user
+i want logout in management in top bro not as a tab
+order history isnt coming for normal user.
+bro things like demand prediction runs automatically so no need of saving that here in logs.i want login logout history and wat all thy do inside that session timing
+remove 1st page of entering that url.ill directly enter the url if needed in that top itself in next login page as usual.let the default thing be ngrok thing alwways
