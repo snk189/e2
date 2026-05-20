@@ -50,7 +50,7 @@ const BookingInterface = ({ onLogout, username }) => {
   const [orderType, setOrderType] = useState('dine-in'); // 'dine-in', 'prebook'
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
-  const [notes, setNotes] = useState('');
+  const [instructions, setInstructions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [historyData, setHistoryData] = useState([]);
@@ -78,6 +78,7 @@ const BookingInterface = ({ onLogout, username }) => {
         setRefreshing(true);
         // Reset quantities to simulate a fresh state
         setQuantities({});
+        setInstructions([]);
         setTimeout(() => setRefreshing(false), 1000);
         setStartY(0);
       }
@@ -231,6 +232,11 @@ const BookingInterface = ({ onLogout, username }) => {
     const is_prebooking = orderType === 'prebook' ? 1 : 0;
 
     const ordersArray = Object.keys(quantities).map(id => {
+      const itemInstructions = instructions
+        .filter(inst => inst.items.includes(id) && inst.text.trim() !== '')
+        .map(inst => inst.text.trim())
+        .join(' | ');
+
       return {
         username: username,
         item: id,
@@ -241,7 +247,7 @@ const BookingInterface = ({ onLogout, username }) => {
         day_of_week: day_of_week,
         prebooking_date: orderType === 'prebook' ? date : '',
         prebooking_time: orderType === 'prebook' ? time : '',
-        notes: notes,
+        notes: itemInstructions,
         status: 'pending',
         timestamp: timestamp
       };
@@ -251,9 +257,9 @@ const BookingInterface = ({ onLogout, username }) => {
       await submitOrder(ordersArray);
       showToast("Order booked successfully!", "success");
       setQuantities({});
+      setInstructions([]);
       setDate('');
       setTime('');
-      setNotes('');
     } catch (error) {
       showToast("Order failed. Please try again.", "error");
       console.error(error);
@@ -436,16 +442,77 @@ const BookingInterface = ({ onLogout, username }) => {
           </div>
         </div>
 
-        {/* Notes Section */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6">
-          <h2 className="text-sm font-bold text-gray-800 mb-2">Special Instructions</h2>
-          <textarea
-            placeholder="Any notes for the chef?"
-            value={notes}
-            onChange={e => setNotes(e.target.value)}
-            className="w-full p-3 bg-gray-50 border-2 border-gray-100 rounded-xl outline-none focus:border-indigo-500 focus:bg-white transition-colors text-sm font-medium resize-none h-20"
-          />
-        </div>
+        {/* Special Instructions Section */}
+        {calculateTotalItems() > 0 && (
+          <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-sm font-bold text-gray-800">Special Instructions</h2>
+              {instructions.length < 5 && (
+                <button 
+                  onClick={() => setInstructions([...instructions, { text: '', items: [] }])}
+                  className="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-100 transition-colors"
+                >
+                  + Add Instruction
+                </button>
+              )}
+            </div>
+            
+            {instructions.length === 0 && (
+              <p className="text-xs text-gray-400 font-medium italic">No special instructions added.</p>
+            )}
+
+            <div className="space-y-4">
+              {instructions.map((inst, index) => (
+                <div key={index} className="bg-gray-50 border border-gray-100 p-4 rounded-2xl relative">
+                  <button 
+                    onClick={() => {
+                      const newInst = [...instructions];
+                      newInst.splice(index, 1);
+                      setInstructions(newInst);
+                    }}
+                    className="absolute top-3 right-3 text-red-400 hover:text-red-600 bg-red-50 hover:bg-red-100 rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs"
+                  >
+                    ×
+                  </button>
+                  <input
+                    type="text"
+                    placeholder="e.g. Extra spicy, No onion..."
+                    value={inst.text}
+                    onChange={(e) => {
+                      const newInst = [...instructions];
+                      newInst[index].text = e.target.value;
+                      setInstructions(newInst);
+                    }}
+                    className="w-full p-2.5 bg-white border-2 border-indigo-50 rounded-xl outline-none focus:border-indigo-400 text-sm font-bold mb-3 pr-8"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    {Object.keys(quantities).filter(id => quantities[id] > 0).map(id => {
+                      const itemName = MENU_ITEMS.find(m => m.id === id)?.name || id;
+                      const isSelected = inst.items.includes(id);
+                      return (
+                        <button
+                          key={id}
+                          onClick={() => {
+                            const newInst = [...instructions];
+                            if (isSelected) {
+                              newInst[index].items = newInst[index].items.filter(i => i !== id);
+                            } else {
+                              newInst[index].items.push(id);
+                            }
+                            setInstructions(newInst);
+                          }}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 border-2 ${isSelected ? 'bg-indigo-100 border-indigo-400 text-indigo-700' : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'}`}
+                        >
+                          {itemName} {isSelected && '✓'}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Order Summary Section */}
         {calculateTotalItems() > 0 && (

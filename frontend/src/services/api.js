@@ -208,7 +208,20 @@ export const getTodayOrders = async () => {
         const response = await axios.get(`${BASE_URL}/admin/today_orders`);
         return response.data;
     } catch (error) {
-        throw error.response?.data || { error: 'Failed' };
+        throw error.response?.data || error;
+    }
+};
+
+export const getOrdersByDate = async (dateStr, username = '') => {
+    try {
+        let url = `${BASE_URL}/admin/orders_by_date?`;
+        if (dateStr) url += `date=${dateStr}&`;
+        if (username) url += `username=${username}`;
+        
+        const response = await axios.get(url);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || error;
     }
 };
 

@@ -1,4 +1,4 @@
-user_id,date,item,time_slot,quantity,order_timestamp,is_holiday,is_bridge_day,season,temperature_celsius,weather,is_exam_week,is_prebooking,prebooking_datetime,is_delivered,status
+user_id,date,item,time_slot,quantity,order_timestamp,is_holiday,is_bridge_day,season,temperature_celsius,weather,is_exam_week,is_prebooking,prebooking_datetime,is_delivered,status,instructions
 user194,01-01-2026,pizza,8,0,1767256807,1,0,winter,19.1,sunny,0,0,,False
 user323,01-01-2026,pizza,9,0,1767258107,1,0,winter,19.1,sunny,0,0,,False
 user177,01-01-2026,pizza,10,0,1767262635,1,0,winter,19.1,sunny,0,0,,False
@@ -18313,7 +18313,7 @@ user54,19-05-2026,juice,14,49,1779201796,0,0,summer,29.5,sunny,0,0,,False
 user386,19-05-2026,juice,15,27,1779206195,0,0,summer,29.5,sunny,0,0,,False
 user61,19-05-2026,juice,16,42,1779207930,0,0,summer,29.5,sunny,0,0,,False
 user110,19-05-2026,juice,17,32,1779210551,0,0,summer,29.5,sunny,0,0,,False
-user300,19-05-2026,juice,18,6,1779215698,0,0,summer,29.5,sunny,0,0,,False
+user300,19-05-2026,juice,18,6,1779215698,0,0,summer,29.5,sunny,0,0,,False,ready
 user200,19-05-2026,icecream,8,5,1779178770,0,0,summer,29.5,sunny,0,1,,False
 user147,19-05-2026,icecream,9,6,1779184095,0,0,summer,29.5,sunny,0,0,,False
 user350,19-05-2026,icecream,10,18,1779185644,0,0,summer,29.5,sunny,0,0,,False
@@ -23901,3 +23901,9 @@ Bb,14-05-2026,dosa,20,2,1778769983,0,0,summer,31,sunny,0,0,,False,pending
 Bb,14-05-2026,dosa,14,2,1778770021,0,0,summer,31,sunny,0,1,1778833800,False,pending
 Bb,14-05-2026,dosa,22,1,1778778529,0,0,summer,31,sunny,0,0,,False,pending
 Bb,14-05-2026,dosa,11,1,1778778550,0,0,summer,31,sunny,0,1,1778823000,False,pending
+Bb,20-05-2026,dosa,21,1,1779292866,0,0,summer,31,sunny,0,0,,False
+Bb,20-05-2026,pizza,21,1,1779292866,0,0,summer,31,sunny,0,0,,False
+Bb,20-05-2026,dosa,22,2,1779296435,0,0,summer,31,sunny,0,0,,False,pending,more chutney
+Bb,20-05-2026,idly,22,1,1779296435,0,0,summer,31,sunny,0,0,,False,pending,more chutney
+Bb,20-05-2026,sandwich,22,1,1779296435,0,0,summer,31,sunny,0,0,,False,pending,less cspice
+Bb,20-05-2026,coffee,22,1,1779296435,0,0,summer,31,sunny,0,0,,False,pending,less sugar

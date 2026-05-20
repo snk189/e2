@@ -40,6 +40,33 @@ if (!fs.existsSync(MANAGEMENT_SETTINGS_FILE)) fs.writeFileSync(MANAGEMENT_SETTIN
 let cachedDemand = null;
 let isModelRunning = false;
 
+// ----------------------------------------------------
+// LOGGER MIDDLEWARE
+// ----------------------------------------------------
+const LOG_FILE = path.join(__dirname, 'api_logs.txt');
+app.use((req, res, next) => {
+    if (req.method === 'OPTIONS' || req.url.includes('/api/demand')) {
+        return next();
+    }
+    const timestamp = new Date().toISOString();
+    // Try to extract user from custom header first, but ignore if it's 'Unknown_User'
+    let user = req.headers['x-api-user'];
+    if (!user || user === 'Unknown_User') {
+        user = req.body?.username || req.query?.username || req.params?.username || 'Unknown_User';
+    }
+    const logEntry = `[${timestamp}] USER: ${user} | METHOD: ${req.method} | ENDPOINT: ${req.url}\n`;
+
+    fs.appendFile(LOG_FILE, logEntry, (err) => {
+        if (err) console.error("Failed to write to log file:", err);
+    });
+    next();
+});
+
+// Logout endpoint for logging
+app.post('/api/logout', (req, res) => {
+    res.status(200).json({ message: 'Logged out successfully' });
+});
+
 // Function to run the AI Model in the background
 const runModelBackground = () => {
     if (isModelRunning) return; // Prevent overlapping runs
@@ -196,14 +223,14 @@ app.post('/api/order', (req, res) => {
         }
 
         if (!fs.existsSync(DATA_FILE)) {
-            fs.writeFileSync(DATA_FILE, "user_id,date,item,time_slot,quantity,order_timestamp,is_holiday,is_bridge_day,season,temperature_celsius,weather,is_exam_week,is_prebooking,prebooking_datetime,is_delivered\n");
+            fs.writeFileSync(DATA_FILE, "user_id,date,item,time_slot,quantity,order_timestamp,is_holiday,is_bridge_day,season,temperature_celsius,weather,is_exam_week,is_prebooking,prebooking_datetime,is_delivered,status,instructions\n");
         }
 
         let mlDatasetData = "";
         
         orders.forEach(order => {
             const {
-                username, item, time_slot, quantity, timestamp, is_prebooking, prebooking_date, prebooking_time
+                username, item, time_slot, quantity, timestamp, is_prebooking, prebooking_date, prebooking_time, notes, status
             } = order;
             
             const ts = timestamp || Math.floor(Date.now() / 1000);
@@ -235,7 +262,7 @@ app.post('/api/order', (req, res) => {
                 }
             }
             
-            mlDatasetData += `${username},${dateStr},${item},${time_slot},${quantity},${ts},${is_holiday},${is_bridge_day},${season},${temperature_celsius},${weather},${is_exam_week},${isPrebook ? 1 : 0},${pb_dt},False\n`;
+            mlDatasetData += `${username},${dateStr},${item},${time_slot},${quantity},${ts},${is_holiday},${is_bridge_day},${season},${temperature_celsius},${weather},${is_exam_week},${isPrebook ? 1 : 0},${pb_dt},False,${status || 'pending'},${(notes || '').replace(/,/g, ' ')}\n`;
         });
 
         fs.appendFileSync(DATA_FILE, mlDatasetData);
@@ -270,7 +297,9 @@ app.get('/api/history/:username', (req, res) => {
                         timestamp: parseInt(parts[5]),
                         is_prebooking: parseInt(parts[12]) === 1,
                         prebooking_datetime: parts[13] ? parseInt(parts[13]) : null,
-                        is_delivered: parts[14] === 'True'
+                        is_delivered: parts[14] === 'True',
+                        status: parts[15] ? parts[15].trim() : (parts[14] === 'True' ? 'delivered' : 'pending'),
+                        notes: parts.length > 16 ? parts[16].trim() : ''
                     });
                 }
             }
@@ -414,7 +443,9 @@ app.get('/api/admin/today_orders', (req, res) => {
                         is_prebooking: is_prebooking,
                         prebooking_datetime: parts[13] ? parseInt(parts[13]) : null,
                         effective_time: effective_time,
-                        is_delivered: parts[14] === 'True'
+                        is_delivered: parts[14] === 'True',
+                        status: parts[15] ? parts[15].trim() : (parts[14] === 'True' ? 'delivered' : 'pending'),
+                        notes: parts.length > 16 ? parts[16].trim() : ''
                     });
                 }
             }
@@ -428,13 +459,75 @@ app.get('/api/admin/today_orders', (req, res) => {
     }
 });
 
+app.get('/api/admin/orders_by_date', (req, res) => {
+    try {
+        const queryDateStr = req.query.date;
+        const queryUsername = req.query.username;
+        
+        if (!queryDateStr && !queryUsername) return res.status(400).json({ error: 'Date or username is required' });
+        
+        if (!fs.existsSync(DATA_FILE)) return res.status(200).json([]);
+        const data = fs.readFileSync(DATA_FILE, 'utf8');
+        const lines = data.split('\n');
+        
+        let startOfDay, endOfDay;
+        if (queryDateStr) {
+            const [year, month, day] = queryDateStr.split('-');
+            startOfDay = new Date(year, month - 1, day).getTime() / 1000;
+            endOfDay = startOfDay + 86400;
+        }
+
+        const dateOrders = [];
+        for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (line) {
+                const parts = line.split(',');
+                if (parseInt(parts[4]) === 0) continue;
+                const is_prebooking = parseInt(parts[12]) === 1;
+                const effective_time = is_prebooking && parts[13] ? parseInt(parts[13]) : parseInt(parts[5]);
+                
+                const matchesUsername = queryUsername ? (parts[0] === queryUsername) : true;
+                const matchesDate = queryDateStr ? (effective_time >= startOfDay && effective_time < endOfDay) : true;
+                
+                if (matchesUsername && matchesDate) {
+                    dateOrders.push({
+                        id: i,
+                        username: parts[0],
+                        item: parts[2],
+                        quantity: parseInt(parts[4]),
+                        order_timestamp: parseInt(parts[5]),
+                        is_prebooking: is_prebooking,
+                        prebooking_datetime: parts[13] ? parseInt(parts[13]) : null,
+                        effective_time: effective_time,
+                        is_delivered: parts[14] === 'True',
+                        status: parts[15] ? parts[15].trim() : (parts[14] === 'True' ? 'delivered' : 'pending'),
+                        notes: parts.length > 16 ? parts[16].trim() : '',
+                        dateStr: parts[1] // Original order date string
+                    });
+                }
+            }
+        }
+
+        dateOrders.sort((a, b) => a.effective_time - b.effective_time);
+        res.status(200).json(dateOrders);
+    } catch (error) {
+        console.error('Error fetching orders by date:', error);
+        res.status(500).json({ error: 'Failed to fetch orders' });
+    }
+});
+
 app.post('/api/admin/update_order_status', (req, res) => {
     try {
-        const { id, is_delivered } = req.body;
+        const { id, is_delivered, status } = req.body;
         const lines = fs.readFileSync(DATA_FILE, 'utf8').split('\n');
         if (id >= 1 && id < lines.length) {
             const parts = lines[id].split(',');
             parts[14] = is_delivered ? 'True' : 'False';
+            if (status) {
+                parts[15] = status;
+            } else {
+                parts[15] = is_delivered ? 'delivered' : 'pending';
+            }
             lines[id] = parts.join(',');
             fs.writeFileSync(DATA_FILE, lines.join('\n'));
             res.status(200).json({ message: 'Order status updated successfully' });

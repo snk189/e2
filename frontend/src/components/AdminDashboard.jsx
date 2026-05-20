@@ -5,9 +5,10 @@ import {
   getAdminUsers, adminAddUser, adminRemoveUser, adminBlockUser,
   adminUnblockUser, getAdminBlockedUsers, getAdminRejectedUsers,
   adminUnfreezeUser, adminRemoveData, getDemand,
-  getTodayOrders
+  getTodayOrders, getOrdersByDate
 } from '../services/api';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { MENU_ITEMS } from '../data/items';
 
 const AdminDashboard = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState('demand');
@@ -21,6 +22,12 @@ const AdminDashboard = ({ onLogout }) => {
   const [demandData, setDemandData] = useState(null);
   const [todayOrders, setTodayOrders] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [maintenanceDate, setMaintenanceDate] = useState(() => {
+      const d = new Date();
+      d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+      return d.toISOString().split('T')[0];
+  });
+  const [maintenanceUserId, setMaintenanceUserId] = useState('');
 
   const [error, setError] = useState('');
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
@@ -50,7 +57,7 @@ const AdminDashboard = ({ onLogout }) => {
         if (data && data.error) setError(data.error);
         else setDemandData(data);
       } else if (activeTab === 'orders') {
-        setTodayOrders(await getTodayOrders());
+        setTodayOrders(await getOrdersByDate(maintenanceDate, maintenanceUserId));
       }
     } catch (err) {
       setError(err.error || 'Failed to fetch data');
@@ -61,7 +68,7 @@ const AdminDashboard = ({ onLogout }) => {
     fetchAll();
     const interval = setInterval(fetchAll, 5000); // Poll every 5 seconds
     return () => clearInterval(interval);
-  }, [activeTab, userTab]);
+  }, [activeTab, userTab, maintenanceDate, maintenanceUserId]);
 
   // Actions
   const doAction = async (actionFn, successMsg) => {
@@ -261,16 +268,100 @@ const AdminDashboard = ({ onLogout }) => {
         )}
 
         {activeTab === 'orders' && (
+            (() => {
+                const cost_map = { 'dosa': 25, 'pizza': 70, 'sandwich': 20, 'milkshake': 40, 'tea': 5, 'samosa': 5, 'panipuri': 10, 'burger': 40, 'idly': 15, 'pulao': 50, 'coffee': 10, 'juice': 20, 'icecream': 25 };
+
+                let totalCost = 0;
+                let totalRevenue = 0;
+                let totalOrders = 0;
+
+                todayOrders.forEach(o => {
+                    const itemKey = o.item.toLowerCase();
+                    const qty = o.quantity;
+                    const menuItem = MENU_ITEMS.find(m => m.id.toLowerCase() === itemKey);
+                    const price = menuItem ? parseInt(menuItem.price.replace('₹', ''), 10) : 0;
+                    const cost = cost_map[itemKey] || (price * 0.4); // default 40% cost if missing
+                    
+                    totalOrders += qty;
+                    totalRevenue += price * qty;
+                    totalCost += cost * qty;
+                });
+                const netProfit = totalRevenue - totalCost;
+
+                // Sort orders: unfinished first, then finished, then by effective_time
+                const sortedOrders = [...todayOrders].sort((a, b) => {
+                    if (a.is_delivered !== b.is_delivered) return a.is_delivered ? 1 : -1;
+                    return b.effective_time - a.effective_time;
+                });
+
+                const setPresetDate = (daysOffset) => {
+                    const d = new Date();
+                    d.setDate(d.getDate() + daysOffset);
+                    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                    setMaintenanceDate(d.toISOString().split('T')[0]);
+                };
+
+                return (
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 overflow-hidden">
                 <div className="flex justify-between items-center border-b pb-4 mb-4">
                     <h2 className="text-xl font-bold">Data Maintenance</h2>
                     <button onClick={fetchAll} className="bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">Refresh</button>
                 </div>
-                {todayOrders.length === 0 ? <div className="text-gray-500 text-sm font-bold opacity-50 text-center py-10">No orders to maintain.</div> : (
+                
+                <div className="flex flex-col sm:flex-row justify-between items-center bg-gray-50 p-4 rounded-2xl border border-gray-200 mb-6 gap-4">
+                    <div className="flex space-x-2">
+                        <button onClick={() => setPresetDate(-1)} className={`px-3 py-1.5 border rounded-lg text-sm font-bold shadow-sm transition-colors ${new Date(maintenanceDate).getDate() === new Date(Date.now() - 86400000).getDate() ? 'bg-black text-white border-black' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-100'}`}>Yesterday</button>
+                        <button onClick={() => setPresetDate(0)} className={`px-3 py-1.5 border rounded-lg text-sm font-bold shadow-sm transition-colors ${new Date(maintenanceDate).getDate() === new Date().getDate() ? 'bg-black text-white border-black' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-100'}`}>Today</button>
+                        <button onClick={() => setPresetDate(1)} className={`px-3 py-1.5 border rounded-lg text-sm font-bold shadow-sm transition-colors ${new Date(maintenanceDate).getDate() === new Date(Date.now() + 86400000).getDate() ? 'bg-black text-white border-black' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-100'}`}>Tomorrow</button>
+                    </div>
+                    <div className="flex items-center space-x-3 flex-wrap gap-y-2">
+                        <div className="flex items-center space-x-2">
+                            <span className="text-sm font-bold text-gray-600">User ID:</span>
+                            <input 
+                                type="text" 
+                                placeholder="All Users"
+                                value={maintenanceUserId} 
+                                onChange={(e) => setMaintenanceUserId(e.target.value)} 
+                                className="bg-white border-2 border-indigo-100 rounded-xl px-3 py-1.5 text-sm font-bold focus:border-indigo-500 outline-none transition-colors w-28"
+                            />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span className="text-sm font-bold text-gray-600">Date:</span>
+                            <input 
+                                type="date" 
+                                value={maintenanceDate} 
+                                onChange={(e) => setMaintenanceDate(e.target.value)} 
+                                className="bg-white border-2 border-indigo-100 rounded-xl px-3 py-1.5 text-sm font-bold focus:border-indigo-500 outline-none transition-colors"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
+                    <div className="bg-gradient-to-br from-indigo-50 to-blue-50 p-4 rounded-2xl border border-indigo-100 shadow-sm text-center hover:shadow-md transition-shadow">
+                        <p className="text-[10px] text-indigo-500 font-bold uppercase tracking-wider mb-1">Total Items</p>
+                        <p className="text-2xl font-black text-indigo-900">{totalOrders}</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-indigo-50 to-blue-50 p-4 rounded-2xl border border-indigo-100 shadow-sm text-center hover:shadow-md transition-shadow">
+                        <p className="text-[10px] text-indigo-500 font-bold uppercase tracking-wider mb-1">Total Revenue</p>
+                        <p className="text-2xl font-black text-indigo-900">₹{totalRevenue}</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-red-50 to-orange-50 p-4 rounded-2xl border border-red-100 shadow-sm text-center hover:shadow-md transition-shadow">
+                        <p className="text-[10px] text-red-500 font-bold uppercase tracking-wider mb-1">Total Cost</p>
+                        <p className="text-2xl font-black text-red-900">₹{totalCost}</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-4 rounded-2xl border border-emerald-100 shadow-sm text-center hover:shadow-md transition-shadow">
+                        <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider mb-1">{netProfit >= 0 ? 'Net Profit' : 'Net Loss'}</p>
+                        <p className="text-2xl font-black text-emerald-900">₹{Math.abs(netProfit)}</p>
+                    </div>
+                </div>
+
+                {todayOrders.length === 0 ? <div className="text-gray-500 text-sm font-bold opacity-50 text-center py-10">No orders found for this date.</div> : (
                     <div className="overflow-x-auto max-h-[600px] overflow-y-auto rounded-xl border border-gray-100 shadow-inner">
                         <table className="w-full text-left text-sm whitespace-nowrap">
                             <thead className="bg-gray-50 text-gray-500 sticky top-0 backdrop-blur-md">
                                 <tr>
+                                    <th className="p-3 font-bold uppercase tracking-wider text-xs">Date</th>
                                     <th className="p-3 font-bold uppercase tracking-wider text-xs">Time</th>
                                     <th className="p-3 font-bold uppercase tracking-wider text-xs">User</th>
                                     <th className="p-3 font-bold uppercase tracking-wider text-xs">Item</th>
@@ -280,10 +371,11 @@ const AdminDashboard = ({ onLogout }) => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                                {todayOrders.map((d, i) => {
+                                {sortedOrders.map((d, i) => {
                                     const timeStr = new Date(d.effective_time * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                                     return (
-                                    <tr key={i} className="hover:bg-gray-50 transition-colors">
+                                    <tr key={i} className={`transition-colors ${d.is_delivered ? 'bg-gray-100 opacity-60' : 'hover:bg-gray-50'}`}>
+                                        <td className="p-3 font-medium text-gray-800">{d.dateStr}</td>
                                         <td className="p-3 font-medium text-gray-800">{timeStr}</td>
                                         <td className="p-3 font-medium text-gray-800">{d.username}</td>
                                         <td className="p-3 text-gray-600 capitalize">
@@ -304,6 +396,8 @@ const AdminDashboard = ({ onLogout }) => {
                     </div>
                 )}
             </div>
+                );
+            })()
         )}
 
         {activeTab === 'demand' && (
