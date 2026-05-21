@@ -179,7 +179,14 @@ const Dashboard = ({ onLogout }) => {
                               </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-100">
-                              {todayOrders.map((d, i) => {
+                              {(() => {
+                                  const sortedOrders = [...todayOrders].sort((a, b) => {
+                                      const aFinished = a.is_delivered || a.status === 'delivered';
+                                      const bFinished = b.is_delivered || b.status === 'delivered';
+                                      if (aFinished !== bFinished) return aFinished ? 1 : -1;
+                                      return a.effective_time - b.effective_time;
+                                  });
+                                  return sortedOrders.map((d, i) => {
                                   const timeStr = new Date(d.effective_time * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                                   const isSelected = selectedIndex === i;
                                   return (
@@ -223,7 +230,7 @@ const Dashboard = ({ onLogout }) => {
                                             </div>
                                       </td>
                                   </tr>
-                              )})}
+                              )})})()}
                           </tbody>
                       </table>
                   </div>

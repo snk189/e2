@@ -28,6 +28,7 @@ const AdminDashboard = ({ onLogout }) => {
       return d.toISOString().split('T')[0];
   });
   const [maintenanceUserId, setMaintenanceUserId] = useState('');
+  const [showAllDays, setShowAllDays] = useState(false);
 
   const [error, setError] = useState('');
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
@@ -57,7 +58,7 @@ const AdminDashboard = ({ onLogout }) => {
         if (data && data.error) setError(data.error);
         else setDemandData(data);
       } else if (activeTab === 'orders') {
-        setTodayOrders(await getOrdersByDate(maintenanceDate, maintenanceUserId));
+        setTodayOrders(await getOrdersByDate(showAllDays ? '' : maintenanceDate, maintenanceUserId));
       }
     } catch (err) {
       setError(err.error || 'Failed to fetch data');
@@ -68,7 +69,7 @@ const AdminDashboard = ({ onLogout }) => {
     fetchAll();
     const interval = setInterval(fetchAll, 5000); // Poll every 5 seconds
     return () => clearInterval(interval);
-  }, [activeTab, userTab, maintenanceDate, maintenanceUserId]);
+  }, [activeTab, userTab, maintenanceDate, maintenanceUserId, showAllDays]);
 
   // Actions
   const doAction = async (actionFn, successMsg) => {
@@ -310,9 +311,9 @@ const AdminDashboard = ({ onLogout }) => {
                 
                 <div className="flex flex-col sm:flex-row justify-between items-center bg-gray-50 p-4 rounded-2xl border border-gray-200 mb-6 gap-4">
                     <div className="flex space-x-2">
-                        <button onClick={() => setPresetDate(-1)} className={`px-3 py-1.5 border rounded-lg text-sm font-bold shadow-sm transition-colors ${new Date(maintenanceDate).getDate() === new Date(Date.now() - 86400000).getDate() ? 'bg-black text-white border-black' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-100'}`}>Yesterday</button>
-                        <button onClick={() => setPresetDate(0)} className={`px-3 py-1.5 border rounded-lg text-sm font-bold shadow-sm transition-colors ${new Date(maintenanceDate).getDate() === new Date().getDate() ? 'bg-black text-white border-black' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-100'}`}>Today</button>
-                        <button onClick={() => setPresetDate(1)} className={`px-3 py-1.5 border rounded-lg text-sm font-bold shadow-sm transition-colors ${new Date(maintenanceDate).getDate() === new Date(Date.now() + 86400000).getDate() ? 'bg-black text-white border-black' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-100'}`}>Tomorrow</button>
+                        <button onClick={() => { setShowAllDays(false); setPresetDate(-1); }} className={`px-3 py-1.5 border rounded-lg text-sm font-bold shadow-sm transition-colors ${!showAllDays && new Date(maintenanceDate).getDate() === new Date(Date.now() - 86400000).getDate() ? 'bg-black text-white border-black' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-100'}`}>Yesterday</button>
+                        <button onClick={() => { setShowAllDays(false); setPresetDate(0); }} className={`px-3 py-1.5 border rounded-lg text-sm font-bold shadow-sm transition-colors ${!showAllDays && new Date(maintenanceDate).getDate() === new Date().getDate() ? 'bg-black text-white border-black' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-100'}`}>Today</button>
+                        <button onClick={() => { setShowAllDays(false); setPresetDate(1); }} className={`px-3 py-1.5 border rounded-lg text-sm font-bold shadow-sm transition-colors ${!showAllDays && new Date(maintenanceDate).getDate() === new Date(Date.now() + 86400000).getDate() ? 'bg-black text-white border-black' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-100'}`}>Tomorrow</button>
                     </div>
                     <div className="flex items-center space-x-3 flex-wrap gap-y-2">
                         <div className="flex items-center space-x-2">
@@ -326,13 +327,23 @@ const AdminDashboard = ({ onLogout }) => {
                             />
                         </div>
                         <div className="flex items-center space-x-2">
-                            <span className="text-sm font-bold text-gray-600">Date:</span>
-                            <input 
-                                type="date" 
-                                value={maintenanceDate} 
-                                onChange={(e) => setMaintenanceDate(e.target.value)} 
-                                className="bg-white border-2 border-indigo-100 rounded-xl px-3 py-1.5 text-sm font-bold focus:border-indigo-500 outline-none transition-colors"
-                            />
+                            <label className="flex items-center space-x-1 cursor-pointer">
+                                <input 
+                                    type="checkbox" 
+                                    checked={showAllDays} 
+                                    onChange={(e) => setShowAllDays(e.target.checked)} 
+                                    className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4"
+                                />
+                                <span className="text-sm font-bold text-gray-600">All Days</span>
+                            </label>
+                            {!showAllDays && (
+                                <input 
+                                    type="date" 
+                                    value={maintenanceDate} 
+                                    onChange={(e) => setMaintenanceDate(e.target.value)} 
+                                    className="bg-white border-2 border-indigo-100 rounded-xl px-3 py-1.5 text-sm font-bold focus:border-indigo-500 outline-none transition-colors ml-2"
+                                />
+                            )}
                         </div>
                     </div>
                 </div>

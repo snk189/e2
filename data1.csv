@@ -18434,7 +18434,7 @@ user104,20-05-2026,tea,14,15,1779287842,0,0,summer,27.2,cloudy,0,0,,False
 user157,20-05-2026,tea,15,14,1779290127,0,0,summer,27.2,cloudy,0,0,,False
 user146,20-05-2026,tea,16,26,1779295709,0,0,summer,27.2,cloudy,0,0,,False
 user143,20-05-2026,tea,17,19,1779298842,0,0,summer,27.2,cloudy,0,0,,False
-user187,20-05-2026,tea,18,6,1779301840,0,0,summer,27.2,cloudy,0,0,,False
+user187,20-05-2026,tea,18,6,1779301840,0,0,summer,27.2,cloudy,0,0,,True,delivered
 user122,20-05-2026,juice,8,5,1779267475,0,0,summer,27.2,cloudy,0,0,,False
 user94,20-05-2026,juice,9,6,1779270735,0,0,summer,27.2,cloudy,0,0,,False
 user100,20-05-2026,juice,10,19,1779272262,0,0,summer,27.2,cloudy,0,0,,False
