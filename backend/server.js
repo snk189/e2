@@ -10,12 +10,12 @@ const PORT = 5000;
 app.use(cors());
 app.use(express.json());
 
-const DATA_FILE = path.join(__dirname, '../data1.csv');
+const DATA_FILE = path.join(__dirname, '../ml/data1.csv');
 const USERS_FILE = path.join(__dirname, '../users/users.csv');
 const PENDING_USERS_FILE = path.join(__dirname, '../users/pending_users.csv');
 const BLOCKED_USERS_FILE = path.join(__dirname, '../users/blocked_users.csv');
 const REJECTED_USERS_FILE = path.join(__dirname, '../users/rejected_users.csv');
-const MANAGEMENT_SETTINGS_FILE = path.join(__dirname, '../management_settings.json');
+const MANAGEMENT_SETTINGS_FILE = path.join(__dirname, 'management_settings.json');
 
 const defaultSettings = {
     is_holiday: 0,
@@ -27,7 +27,7 @@ const defaultSettings = {
 };
 
 const PYTHON_EXEC = "C:/Python313/python.exe";
-const SCRIPT_PATH = path.join(__dirname, '../get_predictions.py');
+const SCRIPT_PATH = path.join(__dirname, '../ml/get_predictions.py');
 
 // Initialize files
 if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, "username,password,type\n");

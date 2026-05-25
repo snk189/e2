@@ -240,7 +240,7 @@ const COSTS = {
 };
 
 const DemandView = ({ demand, loading, onRefresh, todayOrders }) => {
-  const showTomorrowOnly = demand && demand.currentHour > 18;
+  const isClosed = demand ? (demand.currentHour < 8 || demand.currentHour >= 18) : true;
   const tomorrow = useMemo(() => {
     const rawTomorrow = demand?.tomorrow || [];
     return rawTomorrow.map(item => {
@@ -333,9 +333,9 @@ const DemandView = ({ demand, loading, onRefresh, todayOrders }) => {
           </button>
         </div>
         <div className="relative z-10 mt-5 flex flex-wrap gap-3">
-          <span className={`cn-chip ${showTomorrowOnly ? '!bg-red-100 !text-red-700 !border-red-200' : 'cn-chip-success'}`}>
-            <span className="pulse-dot" style={{ backgroundColor: showTomorrowOnly ? '#dc2626' : undefined }} />
-            {showTomorrowOnly ? 'Canteen closed' : 'Canteen open'}
+          <span className={`cn-chip ${isClosed ? '!bg-red-100 !text-red-700 !border-red-200' : 'cn-chip-success'}`}>
+            <span className="pulse-dot" style={{ backgroundColor: isClosed ? '#dc2626' : undefined }} />
+            {isClosed ? 'Canteen closed' : 'Canteen open'}
           </span>
           <span className="cn-chip"><Clock size={14} /> Hour {demand?.currentHour ?? '--'}:00</span>
         </div>
