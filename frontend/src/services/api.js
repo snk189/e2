@@ -1,9 +1,11 @@
 import axios from 'axios';
 
-const savedUrl = localStorage.getItem('bitespeed_server_url');
-let BASE_URL = savedUrl ? savedUrl : 'https://nondefensible-helminthological-tennie.ngrok-free.dev';
+let savedUrl = localStorage.getItem('bitespeed_server_url');
+if (!savedUrl || savedUrl === '/api' || savedUrl === 'http://localhost/api' || savedUrl === 'http://localhost:5000/api') {
+    savedUrl = 'https://nondefensible-helminthological-tennie.ngrok-free.dev';
+}
+let BASE_URL = savedUrl;
 if (!BASE_URL.endsWith('/api')) BASE_URL += '/api';
-
 // Pass this header for all requests to bypass the Localtunnel IP reminder screen automatically
 axios.defaults.headers.common['Bypass-Tunnel-Reminder'] = 'true';
 axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true'; // For ngrok compatibility just in case
@@ -35,8 +37,7 @@ export const submitOrder = async (ordersArray) => {
         const response = await axios.post(`${BASE_URL}/order`, ordersArray);
         return response.data;
     } catch (error) {
-        console.error("Error submitting order:", error);
-        throw error;
+        throw error.response?.data || { error: 'Order submission failed' };
     }
 };
 
@@ -61,8 +62,8 @@ export const loginUser = async (username, password) => {
 export const logoutUser = async () => {
     try {
         await axios.post(`${BASE_URL}/logout`);
-    } catch (error) {
-        console.error("Logout log failed", error);
+    } catch {
+        return { message: 'Logged out locally' };
     }
 };
 
@@ -133,6 +134,12 @@ export const getAdminUsers = async () => {
 export const adminAddUser = async (username, password, type) => {
     try {
         const response = await axios.post(`${BASE_URL}/admin/add_user`, { username, password, type });
+        return response.data;
+    } catch (error) { throw error.response?.data || { error: 'Failed' }; }
+};
+export const adminChangePassword = async (username, newPassword) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/admin/change_password`, { username, newPassword });
         return response.data;
     } catch (error) { throw error.response?.data || { error: 'Failed' }; }
 };
@@ -214,6 +221,10 @@ export const getTodayOrders = async () => {
 
 export const getOrdersByDate = async (dateStr, username = '') => {
     try {
+        if (!dateStr && !username) {
+            const response = await axios.get(`${BASE_URL}/admin/recent_data`);
+            return response.data;
+        }
         let url = `${BASE_URL}/admin/orders_by_date?`;
         if (dateStr) url += `date=${dateStr}&`;
         if (username) url += `username=${username}`;

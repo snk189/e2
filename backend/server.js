@@ -650,6 +650,34 @@ app.post('/api/admin/add_user', (req, res) => {
     }
 });
 
+app.post('/api/admin/change_password', (req, res) => {
+    try {
+        const { username, newPassword } = req.body;
+        if (!username || !newPassword) return res.status(400).json({ error: 'Username and new password are required' });
+
+        const lines = fs.readFileSync(USERS_FILE, 'utf8').split('\n');
+        let found = false;
+        for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (line) {
+                const parts = line.split(',');
+                if (parts[0] === username) {
+                    parts[1] = newPassword;
+                    lines[i] = parts.join(',');
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) return res.status(404).json({ error: 'User not found' });
+        fs.writeFileSync(USERS_FILE, lines.join('\n'));
+        res.status(200).json({ message: 'Password updated successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update password' });
+    }
+});
+
 app.post('/api/admin/remove_user', (req, res) => {
     try {
         const { username } = req.body;

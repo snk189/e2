@@ -1,16 +1,41 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import confetti from 'canvas-confetti';
+import {
+  Calendar,
+  Check,
+  Clock,
+  History,
+  LogOut,
+  Minus,
+  Plus,
+  Receipt,
+  RefreshCw,
+  ShoppingBag,
+  X,
+} from 'lucide-react';
+import iconImg from '../assets/icon.png';
 import { MENU_ITEMS } from './data/items';
-import { submitOrder, setApiUrl, changePassword, setApiUser, getHistory, logoutUser } from './services/api';
+import { submitOrder, setApiUser, getHistory, logoutUser } from './services/api';
 import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
 import AdminDashboard from './components/AdminDashboard';
 
-const App = () => {
-  const [user, setUser] = useState(() => localStorage.getItem('bitespeed_user'));
-  const [userType, setUserType] = useState(() => localStorage.getItem('bitespeed_type') || 'n');
+const priceValue = (price) => parseInt(String(price).replace(/\D/g, ''), 10) || 0;
+const money = (value) => `Rs. ${value}`;
+const categories = [...new Set(MENU_ITEMS.map((item) => item.category || 'Other'))];
+const categoryStyles = {
+  'Main Course': { id: 'main-course', tone: 'main', color: '#dc2626' },
+  'Fast Food': { id: 'fast-food', tone: 'fast', color: '#ea580c' },
+  Beverages: { id: 'beverages', tone: 'bev', color: '#059669' },
+  Dessert: { id: 'dessert', tone: 'dessert', color: '#db2777' },
+  Snacks: { id: 'snacks', tone: 'snacks', color: '#4f46e5' },
+};
 
-  React.useEffect(() => {
+const App = () => {
+  const [user, setUser] = useState(null);
+  const [userType, setUserType] = useState(null);
+
+  useEffect(() => {
     if (user) setApiUser(user);
   }, [user]);
 
@@ -22,32 +47,43 @@ const App = () => {
 
   const handleLogout = async () => {
     if (user) await logoutUser();
+    localStorage.removeItem('bitespeed_user');
+    localStorage.removeItem('bitespeed_type');
     setUser(null);
     setUserType(null);
     setApiUser('Unknown_User');
   };
 
-  if (!user) {
-    return <Auth onLogin={handleLogin} />;
-  }
-
-  if (userType === 'a') {
-    return <AdminDashboard onLogout={handleLogout} />;
-  }
-
-  if (userType === 'm') {
-    return <Dashboard onLogout={handleLogout} />;
-  }
-
-  // Normal User Booking Interface
+  if (!user) return <Auth onLogin={handleLogin} />;
+  if (userType === 'a') return <AdminDashboard onLogout={handleLogout} />;
+  if (userType === 'm') return <Dashboard onLogout={handleLogout} />;
   return <BookingInterface onLogout={handleLogout} username={user} />;
 };
 
+const AppHeader = ({ title = 'BiteSpeed', subtitle, actions }) => (
+  <header className="cn-topbar">
+    <div className="cn-topbar-inner">
+      <div className="brand-lockup">
+        <div className="flex items-center justify-center bg-white rounded-full p-1.5 shadow-sm w-12 h-12">
+          <img src={iconImg} alt="Logo" className="w-full h-full object-contain" />
+        </div>
+        <div className="min-w-0">
+          <h1 className="brand-title truncate">{title}</h1>
+          {subtitle && <p className="brand-subtitle truncate">{subtitle}</p>}
+        </div>
+      </div>
+      <div className="topbar-actions">{actions}</div>
+    </div>
+  </header>
+);
 
+const Toast = ({ toast }) => (
+  <div className={`cn-toast ${toast.show ? 'show' : ''}`}>{toast.message}</div>
+);
 
 const BookingInterface = ({ onLogout, username }) => {
   const [quantities, setQuantities] = useState({});
-  const [orderType, setOrderType] = useState('dine-in'); // 'dine-in', 'prebook'
+  const [orderType, setOrderType] = useState('dine-in');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [instructions, setInstructions] = useState([]);
@@ -55,68 +91,85 @@ const BookingInterface = ({ onLogout, username }) => {
   const [showHistory, setShowHistory] = useState(false);
   const [historyData, setHistoryData] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
-
-  // New states for Toast, Refresh, and Promo Popup
-  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
-  const [offerApplied, setOfferApplied] = useState(false);
-  const [promoAmount, setPromoAmount] = useState(0);
-  const [startY, setStartY] = useState(0);
+  const [toast, setToast] = useState({ show: false, message: '' });
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeMobileView, setActiveMobileView] = useState('menu');
   const [refreshing, setRefreshing] = useState(false);
+  const [startY, setStartY] = useState(0);
+  const [startX, setStartX] = useState(0);
+  const [offerApplied, setOfferApplied] = useState(false);
+  const [showTrayPopup, setShowTrayPopup] = useState(false);
 
-  const showToast = (message, type = 'success') => {
-    setToast({ show: true, message, type });
-    setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000);
+  const hourOfDay = new Date().getHours();
+  const isLive = hourOfDay >= 8 && hourOfDay < 18;
+
+  const todayStr = useMemo(() => new Date().toISOString().split('T')[0], []);
+  const tomorrowStr = useMemo(() => {
+    const next = new Date();
+    next.setDate(next.getDate() + 1);
+    return next.toISOString().split('T')[0];
+  }, []);
+
+  const selectedItems = useMemo(
+    () => Object.entries(quantities)
+      .filter(([, qty]) => qty > 0)
+      .map(([id, qty]) => ({ item: MENU_ITEMS.find((entry) => entry.id === id), qty }))
+      .filter(({ item }) => Boolean(item)),
+    [quantities],
+  );
+
+  const totalItems = selectedItems.reduce((sum, { qty }) => sum + qty, 0);
+  const subtotal = selectedItems.reduce((sum, { item, qty }) => sum + priceValue(item.price) * qty, 0);
+  const discount = orderType === 'prebook' ? Math.round(subtotal * 0.05) : 0;
+  const finalTotal = subtotal - discount;
+  const groupedMenu = categories.map((category) => ({
+    category,
+    items: MENU_ITEMS.filter((item) => item.category === category),
+  }));
+
+  const showToast = (message) => {
+    setToast({ show: true, message });
+    window.setTimeout(() => setToast({ show: false, message: '' }), 2600);
   };
 
-  const handleTouchStart = (e) => {
-    if (window.scrollY === 0) setStartY(e.touches[0].clientY);
-  };
-
-  const handleTouchMove = (e) => {
-    if (window.scrollY === 0 && startY > 0) {
-      if (e.touches[0].clientY - startY > 80 && !refreshing) {
-        setRefreshing(true);
-        // Reset quantities to simulate a fresh state
-        setQuantities({});
-        setInstructions([]);
-        setTimeout(() => setRefreshing(false), 1000);
-        setStartY(0);
-      }
-    }
-  };
-
-  const handleTouchEnd = () => setStartY(0);
-
-  const todayStr = new Date().toISOString().split('T')[0];
-  const tmr = new Date();
-  tmr.setDate(tmr.getDate() + 1);
-  const tmrStr = tmr.toISOString().split('T')[0];
-
-  const fetchHistory = async (silent = false) => {
+  const fetchHistory = useCallback(async (silent = false) => {
     try {
       if (!silent) setLoadingHistory(true);
       const data = await getHistory(username);
-      setHistoryData(data); // Already sorted newest first by backend
+      setHistoryData(Array.isArray(data) ? data : []);
       if (!silent) setShowHistory(true);
-    } catch (err) {
-      if (!silent) showToast("Failed to load history", "error");
+    } catch {
+      if (!silent) showToast('Could not load order history.');
     } finally {
       if (!silent) setLoadingHistory(false);
     }
-  };
+  }, [username]);
 
-  React.useEffect(() => {
-    let interval;
-    if (showHistory) {
-      interval = setInterval(() => fetchHistory(true), 5000);
-    }
-    return () => clearInterval(interval);
-  }, [showHistory]);
+  useEffect(() => {
+    if (!showHistory) return undefined;
+    const interval = window.setInterval(() => fetchHistory(true), 5000);
+    return () => window.clearInterval(interval);
+  }, [fetchHistory, showHistory]);
+
+  useEffect(() => {
+    if (orderType !== 'prebook' || totalItems === 0 || offerApplied) return;
+    setOfferApplied(true);
+    confetti({
+      particleCount: 90,
+      spread: 70,
+      origin: { y: 0.64 },
+      colors: ['#006c49', '#4edea3', '#f59e0b', '#855300'],
+      zIndex: 9999,
+    });
+  }, [offerApplied, orderType, totalItems]);
+
+  useEffect(() => {
+    if (orderType !== 'prebook' || totalItems === 0) setOfferApplied(false);
+  }, [orderType, totalItems]);
 
   const handleQuantity = (id, delta) => {
-    setQuantities(prev => {
-      const current = prev[id] || 0;
-      const next = Math.max(0, Math.min(10, current + delta));
+    setQuantities((prev) => {
+      const next = Math.max(0, Math.min(10, (prev[id] || 0) + delta));
       if (next === 0) {
         const copy = { ...prev };
         delete copy[id];
@@ -127,535 +180,551 @@ const BookingInterface = ({ onLogout, username }) => {
   };
 
   const handleSetQuantity = (id, value) => {
-    let next = parseInt(value, 10);
-    if (isNaN(next) && value !== '') return;
-    if (value === '') next = 0;
-    if (next < 0) return;
-    if (next > 10) next = 10;
-    
-    setQuantities(prev => {
-      if (next === 0) {
+    if (value === '') {
+      setQuantities((prev) => {
         const copy = { ...prev };
         delete copy[id];
         return copy;
-      }
-      return { ...prev, [id]: next };
-    });
-  };
-
-  const calculateTotalItems = () => Object.values(quantities).reduce((a, b) => a + b, 0);
-
-  const calculateTotalPrice = () => {
-    let total = 0;
-    Object.keys(quantities).forEach(id => {
-      const item = MENU_ITEMS.find(i => i.id === id);
-      if (item) {
-        const price = parseInt(item.price.replace('₹', ''), 10);
-        total += price * quantities[id];
-      }
-    });
-    return total;
-  };
-
-  React.useEffect(() => {
-    const totalItems = Object.values(quantities).reduce((a, b) => a + b, 0);
-    const hasOffer = orderType === 'prebook' && totalItems > 0;
-    
-    if (hasOffer && !offerApplied) {
-      setOfferApplied(true);
-      // Fire celebration blast!
-      confetti({
-        particleCount: 150,
-        spread: 80,
-        origin: { y: 0.6 },
-        colors: ['#10B981', '#34D399', '#FBBF24', '#F59E0B'],
-        zIndex: 9999,
       });
-      setTimeout(() => {
-        confetti({
-          particleCount: 100,
-          spread: 120,
-          origin: { y: 0.5 },
-          zIndex: 9999,
-        });
-      }, 250);
-    } else if (!hasOffer && offerApplied) {
-      setOfferApplied(false);
+      return;
     }
-  }, [orderType, quantities, offerApplied]);
+    const parsed = Number.parseInt(value, 10);
+    if (Number.isNaN(parsed)) return;
+    setQuantities((prev) => ({ ...prev, [id]: Math.max(0, Math.min(10, parsed)) }));
+  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (calculateTotalItems() === 0) {
-        showToast("Please add at least one item.", "error");
-        return;
+  const jumpToCategory = (category) => {
+    setActiveCategory(category);
+    const target = category === 'All'
+      ? document.getElementById('booking-menu')
+      : document.getElementById(`cat-${categoryStyles[category]?.id || category.toLowerCase().replace(/\s+/g, '-')}`);
+    target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const handleTouchStart = (event) => {
+    if (window.scrollY === 0) setStartY(event.touches[0].clientY);
+    setStartX(event.touches[0].clientX);
+  };
+
+  const handleTouchMove = (event) => {
+    if (window.scrollY !== 0 || startY <= 0 || refreshing) return;
+    if (event.touches[0].clientY - startY > 86) {
+      setRefreshing(true);
+      setQuantities({});
+      setInstructions([]);
+      window.setTimeout(() => setRefreshing(false), 900);
+      setStartY(0);
+    }
+  };
+
+  const handleTouchEnd = (event) => {
+    if (startX > 0) {
+      const endX = event.changedTouches[0].clientX;
+      const diffX = startX - endX;
+      if (diffX > 50) {
+        setOrderType('prebook');
+        if (!date) setDate(todayStr);
+        if (!time) setTime('13:00');
+      } else if (diffX < -50) {
+        setOrderType('dine-in');
+      }
+    }
+    setStartY(0);
+    setStartX(0);
+  };
+
+  const addInstruction = () => {
+    if (instructions.length >= 5) return;
+    setInstructions((prev) => [...prev, { text: '', items: [] }]);
+  };
+
+  const handleSubmit = async (event) => {
+    event?.preventDefault();
+    if (totalItems === 0) {
+      showToast('Add at least one item to continue.');
+      return;
     }
 
     const now = new Date();
-
     if (orderType === 'prebook') {
-        if (!date || !time) {
-            showToast("Please select a date and time for prebooking.", "error");
-            return;
-        }
-        
-        const selectedDateTime = new Date(`${date}T${time}`);
-        
-        if (selectedDateTime <= now) {
-            showToast("Cannot book in the past!", "error");
-            return;
-        }
-        
-        const hour = selectedDateTime.getHours();
-        if (hour < 8 || hour >= 18) {
-            showToast("Canteen operates between 8 AM and 6 PM.", "error");
-            return;
-        }
+      if (!date || !time) {
+        showToast('Choose a date and time for prebooking.');
+        return;
+      }
+      const selectedDateTime = new Date(`${date}T${time}`);
+      if (selectedDateTime <= now) {
+        showToast('Prebook time must be in the future.');
+        return;
+      }
+      const hour = selectedDateTime.getHours();
+      if (hour < 8 || hour >= 18) {
+        showToast('Canteen operates between 8 AM and 6 PM.');
+        return;
+      }
     }
-    
+
     setLoading(true);
-    
     const timestamp = Math.floor(now.getTime() / 1000);
-    
-    let time_slot;
-    let day_of_week;
-
-    if (orderType === 'prebook') {
-        const prebookDateObj = new Date(date);
-        day_of_week = prebookDateObj.getDay();
-        time_slot = parseInt(time.split(':')[0], 10);
-    } else {
-        time_slot = now.getHours();
-        day_of_week = now.getDay();
-    }
-    
-    const is_prebooking = orderType === 'prebook' ? 1 : 0;
-
-    const ordersArray = Object.keys(quantities).map(id => {
+    const prebookDate = orderType === 'prebook' ? new Date(date) : null;
+    const ordersArray = selectedItems.map(({ item, qty }) => {
       const itemInstructions = instructions
-        .filter(inst => inst.items.includes(id) && inst.text.trim() !== '')
-        .map(inst => inst.text.trim())
+        .filter((inst) => inst.items.includes(item.id) && inst.text.trim())
+        .map((inst) => inst.text.trim())
         .join(' | ');
 
       return {
-        username: username,
-        item: id,
-        time_slot: time_slot,
-        quantity: quantities[id],
-        is_prebooking: is_prebooking,
+        username,
+        item: item.id,
+        time_slot: orderType === 'prebook' ? Number.parseInt(time.split(':')[0], 10) : now.getHours(),
+        quantity: qty,
+        is_prebooking: orderType === 'prebook' ? 1 : 0,
         takeaway: 0,
-        day_of_week: day_of_week,
+        day_of_week: orderType === 'prebook' ? prebookDate.getDay() : now.getDay(),
         prebooking_date: orderType === 'prebook' ? date : '',
         prebooking_time: orderType === 'prebook' ? time : '',
         notes: itemInstructions,
         status: 'pending',
-        timestamp: timestamp
+        timestamp,
       };
     });
 
+
     try {
       await submitOrder(ordersArray);
-      showToast("Order booked successfully!", "success");
+      showToast('Order booked successfully.');
       setQuantities({});
       setInstructions([]);
       setDate('');
       setTime('');
-    } catch (error) {
-      showToast("Order failed. Please try again.", "error");
-      console.error(error);
+    } catch {
+      showToast('Order failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div 
-      className="min-h-screen bg-gray-50 pb-8 font-sans relative"
+    <div
+      className="app-bg"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <style>{`
-        @keyframes burst {
-          0% { transform: scale(0.5) translateY(0); opacity: 1; }
-          50% { transform: scale(1.5) translateY(-30px); opacity: 1; }
-          100% { transform: scale(2) translateY(-50px); opacity: 0; }
-        }
-        .animate-burst {
-          animation: burst 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-      `}</style>
-      {/* Toast Notification */}
-      {toast.show && (
-        <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-full shadow-lg font-bold text-sm animate-in slide-in-from-top-4 fade-in duration-300 backdrop-blur-md ${toast.type === 'error' ? 'bg-red-500/90 text-white border border-red-400' : 'bg-black/90 text-white border border-gray-700'}`}>
-          {toast.message}
-        </div>
-      )}
-
-      {/* Pull to Refresh Indicator */}
+      <Toast toast={toast} />
       {refreshing && (
-        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-40 bg-white rounded-full p-2 shadow-md animate-bounce border border-gray-100">
-           <svg className="w-6 h-6 text-indigo-500 animate-spin" fill="none" viewBox="0 0 24 24">
-             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-           </svg>
+        <div className="fixed left-1/2 top-24 z-50 -translate-x-1/2 rounded-full bg-white/90 p-3 shadow-lg">
+          <RefreshCw className="animate-spin text-[var(--primary)]" size={20} />
         </div>
       )}
 
-
-
-
-
-      <header className="bg-gradient-to-br from-[#1a1025] to-[#0d0614] text-white pt-6 pb-5 px-5 rounded-b-[2rem] shadow-2xl shadow-indigo-900/20 mb-6 relative z-10 border-b border-indigo-900/50">
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-gray-100 via-gray-300 to-gray-500 drop-shadow-md">BiteSpeed</h1>
-            <p className="text-indigo-200/60 text-sm font-bold mt-0.5 tracking-wide">Hello, <span className="text-white">{username}</span></p>
-          </div>
-          <div className="flex flex-col gap-2.5">
-            <button onClick={() => fetchHistory()} className="bg-white/10 hover:bg-indigo-500/90 text-white px-4 py-2 rounded-xl font-bold text-xs transition-all duration-300 backdrop-blur-sm border border-white/10 shadow-sm text-center">
-              Order History
+      <AppHeader
+        title="BiteSpeed Co."
+        subtitle={`Hello, ${username}`}
+        actions={(
+          <>
+            <span className={`cn-chip ${isLive ? 'cn-chip-success' : 'cn-chip-danger'} text-[11px] sm:text-sm max-w-[150px] sm:max-w-none overflow-hidden text-ellipsis whitespace-nowrap`}>
+              {isLive ? <span className="pulse-dot" /> : null}
+              {isLive ? 'Live' : 'Offline'}
+            </span>
+            <button className="cn-button cn-button-danger cn-icon-button" onClick={onLogout} type="button" aria-label="Logout">
+              <LogOut size={17} />
             </button>
-            <button onClick={onLogout} className="bg-white/10 hover:bg-red-500/90 text-white px-4 py-2 rounded-xl font-bold text-xs transition-all duration-300 backdrop-blur-sm border border-white/10 shadow-sm text-center">
-              Logout
-            </button>
-          </div>
-        </div>
-      </header>
+          </>
+        )}
+      />
 
-      <main className="max-w-md mx-auto px-4">
-        
-        {/* Booking Type Section */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6">
-          <h2 className="text-xl font-bold mb-4 border-b border-gray-100 pb-3">Ordering Method</h2>
-          <div className="flex p-1.5 rounded-2xl mb-4 shadow-inner border border-gray-100 bg-gray-50/80 backdrop-blur">
-            <button
-              onClick={() => { setOrderType('dine-in'); setIsPrebooking(false); }}
-              className={`flex-1 py-3.5 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${orderType === 'dine-in' ? 'bg-[#e23744] text-white shadow-lg shadow-red-500/30 transform scale-[1.02]' : 'bg-transparent text-gray-500 hover:text-gray-800 hover:bg-white'}`}
-            >
-              <div className={`flex items-center justify-center w-7 h-7 rounded-full ${orderType === 'dine-in' ? 'bg-white/25 shadow-sm' : 'bg-gray-200'}`}>🍽️</div> Dine-In
-            </button>
-            <button
-              onClick={() => {
-                setOrderType('prebook');
-                setIsPrebooking(true);
-                if (navigator.vibrate) navigator.vibrate(50);
-              }}
-              className={`flex-1 py-3.5 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${orderType === 'prebook' ? 'bg-[#fc8019] text-white shadow-lg shadow-orange-500/30 transform scale-[1.02]' : 'bg-transparent text-gray-500 hover:text-gray-800 hover:bg-white'}`}
-            >
-              <div className={`flex items-center justify-center w-7 h-7 rounded-full ${orderType === 'prebook' ? 'bg-white/25 shadow-sm' : 'bg-gray-200'}`}>📅</div> Prebook
-            </button>
-          </div>
-
-          <div className={`overflow-hidden transition-all duration-300 ${orderType === 'prebook' ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'}`}>
-            <div className="flex flex-col space-y-3 p-4 bg-indigo-50/50 rounded-2xl border border-indigo-100 shadow-inner mt-2">
-              <div className="flex space-x-2">
-                <button onClick={() => setDate(todayStr)} className={`flex-1 py-2 text-xs font-bold rounded-lg border transition-all ${date === todayStr ? 'bg-indigo-600 text-white shadow-md border-indigo-600' : 'bg-white text-gray-600 hover:bg-gray-50 border-gray-200'}`}>Today ({new Date(todayStr).toLocaleDateString(undefined, { day: '2-digit', month: 'short' })})</button>
-                <button onClick={() => setDate(tmrStr)} className={`flex-1 py-2 text-xs font-bold rounded-lg border transition-all ${date === tmrStr ? 'bg-indigo-600 text-white shadow-md border-indigo-600' : 'bg-white text-gray-600 hover:bg-gray-50 border-gray-200'}`}>Tomorrow ({new Date(tmrStr).toLocaleDateString(undefined, { day: '2-digit', month: 'short' })})</button>
-              </div>
-              <div className="flex space-x-3">
-                <div className="flex-1">
-                  <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Date</label>
-                  <input 
-                    type="date" 
-                    min={todayStr}
-                    value={date}
-                    onChange={e => setDate(e.target.value)}
-                    className="w-full p-2.5 border-2 border-indigo-100 rounded-xl text-sm bg-white font-semibold focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
-                  />
-                </div>
-                <div className="flex-1">
-                  <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Time (8 AM - 5 PM)</label>
-                  <input 
-                    type="time" 
-                    list="time-slots"
-                    value={time}
-                    onChange={e => setTime(e.target.value)}
-                    className="w-full p-2.5 border-2 border-indigo-100 rounded-xl text-sm bg-white font-semibold focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
-                  />
-                  <datalist id="time-slots">
-                    {Array.from({ length: 10 }, (_, i) => i + 8).map(h => (
-                      <option key={h} value={`${h.toString().padStart(2, '0')}:00`} />
-                    ))}
-                  </datalist>
-                </div>
+      {activeMobileView === 'menu' && (
+      <main className="app-shell max-w-md mx-auto">
+        <section className="mb-6">
+          <aside className="glass-card p-5">
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <h2 className="section-title text-2xl">Ordering Method</h2>
+                <p className="section-copy">
+                  {orderType === 'prebook' ? 'Reserve ahead and save 5%.' : 'Immediate prep for dine-in.'}
+                </p>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Menu Section */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6">
-          <h2 className="text-xl font-bold mb-4 border-b border-gray-100 pb-3 flex items-center justify-between">
-            Menu
-            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{MENU_ITEMS.length} Items</span>
-          </h2>
-          
-          <div className="space-y-8">
-            {[...new Set(MENU_ITEMS.map(i => i.category || 'Other'))].map((category, idx) => {
-              const colorClass = ['text-white bg-red-500', 'text-white bg-blue-500', 'text-white bg-emerald-500', 'text-white bg-amber-500', 'text-white bg-purple-500'][idx % 5];
-              const lineClass = ['bg-red-200', 'bg-blue-200', 'bg-emerald-200', 'bg-amber-200', 'bg-purple-200'][idx % 5];
-              return (
-              <div key={category} className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <h3 className={`font-black uppercase tracking-widest text-xs px-3 py-1 rounded-md shadow-sm ${colorClass}`}>{category}</h3>
-                  <div className={`h-px flex-1 ${lineClass}`}></div>
-                </div>
-                <div className="space-y-3">
-                  {MENU_ITEMS.filter(i => (i.category || 'Other') === category).map(item => (
-                    <div key={item.id} className="flex justify-between items-center group p-2 sm:p-3 bg-white hover:bg-gray-50 rounded-2xl border border-transparent hover:border-gray-200 transition-all duration-300 hover:shadow-md">
-                      <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0 pr-2">
-                        <img src={item.img} alt={item.name} className="w-16 h-16 object-cover rounded-2xl shadow-sm border border-gray-100 shrink-0 transform group-hover:scale-105 transition-transform duration-300" />
-                        <div className="min-w-0">
-                          <h3 className="font-bold text-gray-800 drop-shadow-sm truncate text-base sm:text-lg leading-tight transition-colors">{item.name}</h3>
-                          <p className="text-sm font-extrabold text-indigo-500 mt-1">{item.price}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-1 sm:space-x-2 bg-gray-100 rounded-full py-1.5 px-1.5 sm:px-2 border border-gray-200 shadow-inner shrink-0 transform transition-transform group-hover:scale-105">
-                        <button 
-                          onClick={() => handleQuantity(item.id, -1)}
-                          className="w-8 h-8 flex items-center justify-center font-bold text-gray-700 bg-white rounded-full shadow-sm hover:bg-gray-200 transition-colors active:scale-95"
-                        >
-                          -
-                        </button>
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          pattern="[0-9]*"
-                          value={quantities[item.id] || ''}
-                          onChange={(e) => handleSetQuantity(item.id, e.target.value)}
-                          placeholder="0"
-                          className="w-6 sm:w-8 text-center font-extrabold text-gray-700 bg-transparent outline-none text-sm sm:text-base"
-                        />
-                        <button 
-                          onClick={() => handleQuantity(item.id, 1)}
-                          className="w-8 h-8 flex items-center justify-center font-bold text-white bg-black rounded-full shadow-md hover:bg-gray-800 transition-colors active:scale-95"
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )})}
-          </div>
-        </div>
-
-        {/* Special Instructions Section */}
-        {calculateTotalItems() > 0 && (
-          <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-sm font-bold text-gray-800">Special Instructions</h2>
-              {instructions.length < 5 && (
-                <button 
-                  onClick={() => setInstructions([...instructions, { text: '', items: [] }])}
-                  className="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-100 transition-colors"
-                >
-                  + Add Instruction
-                </button>
-              )}
+            <div className="cn-segmented">
+              <button
+                className={`cn-segment cn-segment-dine ${orderType === 'dine-in' ? 'active' : ''}`}
+                onClick={() => setOrderType('dine-in')}
+                type="button"
+              >
+                <img src={iconImg} alt="" className="w-4 h-4 object-contain brightness-0 invert" />
+                Dine-In
+              </button>
+              <button
+                className={`cn-segment cn-segment-prebook ${orderType === 'prebook' ? 'active' : ''}`}
+                onClick={() => {
+                  setOrderType('prebook');
+                  if (!date) setDate(todayStr);
+                  if (!time) setTime('13:00');
+                  if (navigator.vibrate) navigator.vibrate(35);
+                }}
+                type="button"
+              >
+                <Calendar size={16} />
+                Prebook
+              </button>
             </div>
-            
-            {instructions.length === 0 && (
-              <p className="text-xs text-gray-400 font-medium italic">No special instructions added.</p>
-            )}
 
-            <div className="space-y-4">
-              {instructions.map((inst, index) => (
-                <div key={index} className="bg-gray-50 border border-gray-100 p-4 rounded-2xl relative">
-                  <button 
-                    onClick={() => {
-                      const newInst = [...instructions];
-                      newInst.splice(index, 1);
-                      setInstructions(newInst);
-                    }}
-                    className="absolute top-3 right-3 text-red-400 hover:text-red-600 bg-red-50 hover:bg-red-100 rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs"
-                  >
-                    ×
-                  </button>
-                  <input
-                    type="text"
-                    placeholder="e.g. Extra spicy, No onion..."
-                    value={inst.text}
-                    onChange={(e) => {
-                      const newInst = [...instructions];
-                      newInst[index].text = e.target.value;
-                      setInstructions(newInst);
-                    }}
-                    className="w-full p-2.5 bg-white border-2 border-indigo-50 rounded-xl outline-none focus:border-indigo-400 text-sm font-bold mb-3 pr-8"
-                  />
-                  <div className="flex flex-wrap gap-2">
-                    {Object.keys(quantities).filter(id => quantities[id] > 0).map(id => {
-                      const itemName = MENU_ITEMS.find(m => m.id === id)?.name || id;
-                      const isSelected = inst.items.includes(id);
-                      return (
-                        <button
-                          key={id}
-                          onClick={() => {
-                            const newInst = [...instructions];
-                            if (isSelected) {
-                              newInst[index].items = newInst[index].items.filter(i => i !== id);
-                            } else {
-                              newInst[index].items.push(id);
-                            }
-                            setInstructions(newInst);
-                          }}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 border-2 ${isSelected ? 'bg-indigo-100 border-indigo-400 text-indigo-700' : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'}`}
-                        >
-                          {itemName} {isSelected && '✓'}
-                        </button>
-                      );
-                    })}
+            {orderType === 'prebook' && (
+              <div className="mt-4 flex flex-col gap-4">
+                <div className="flex gap-2">
+                  <button className="cn-button cn-button-secondary flex-1" onClick={() => setDate(todayStr)} type="button">Today</button>
+                  <button className="cn-button cn-button-secondary flex-1" onClick={() => setDate(tomorrowStr)} type="button">Tomorrow</button>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <label className="form-label" htmlFor="order-date">Date</label>
+                    <input
+                      id="order-date"
+                      className="form-input"
+                      type="date"
+                      min={todayStr}
+                      value={date}
+                      onChange={(event) => setDate(event.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label" htmlFor="order-time">Time</label>
+                    <input
+                      id="order-time"
+                      className="form-input"
+                      type="time"
+                      min="08:00"
+                      max="18:00"
+                      value={time}
+                      onChange={(event) => setTime(event.target.value)}
+                    />
                   </div>
                 </div>
+              </div>
+            )}
+          </aside>
+        </section>
+
+        <section className="mb-6">
+          <div>
+            <div className="flex justify-between items-end mb-4" id="booking-menu">
+              <h3 className="font-display-lg text-2xl text-[var(--on-surface)] m-0">Menu</h3>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded text-[var(--on-surface-variant)]/70 uppercase">
+                 {MENU_ITEMS.length} Items Total
+              </span>
+            </div>
+            
+            <div className="sticky top-[64px] z-40 bg-white/90 backdrop-blur-md border-b border-[var(--surface-container-high)] flex overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 mb-4">
+                {['All', ...categories].map((category) => {
+                  const isActive = activeCategory === category;
+                  const tone = category === 'All' ? 'main' : (categoryStyles[category]?.tone || 'main');
+                  const colorVar = category === 'All' ? 'var(--on-surface)' : (categoryStyles[category]?.color || 'var(--on-surface)');
+                  return (
+                    <button
+                      key={category}
+                      className={`font-righteous flex-shrink-0 px-4 py-3 text-[14px] uppercase tracking-wider active:scale-95 transition-all relative group ${isActive ? 'opacity-100' : 'opacity-60 hover:opacity-100'}`}
+                      style={{ color: colorVar }}
+                      onClick={() => jumpToCategory(category)}
+                      type="button"
+                    >
+                      {category}
+                      <div className={`absolute bottom-0 left-4 right-4 h-[3px] rounded-t-full transition-all ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-50'} ${category === 'All' ? 'bg-[var(--on-surface)]' : `gradient-${tone}`}`}></div>
+                    </button>
+                  );
+                })}
+            </div>
+
+            <div className="menu-category-stack">
+              {groupedMenu.map(({ category, items }) => (
+                <section
+                  className="menu-category"
+                  id={`cat-${categoryStyles[category]?.id || category.toLowerCase().replace(/\s+/g, '-')}`}
+                  key={category}
+                >
+                  <div className="category-line">
+                    <span className={`ultra-pro-header font-black uppercase tracking-[0.15em] text-white px-5 rounded-full text-sm py-2 gradient-${categoryStyles[category]?.tone || 'main'}`}>{category}</span>
+                  </div>
+                  <div className="menu-list">
+                    {items.map((item, index) => (
+                      <MenuRow
+                        key={item.id}
+                        item={item}
+                        index={index}
+                        quantity={quantities[item.id] || 0}
+                        onQuantity={handleQuantity}
+                        onSetQuantity={handleSetQuantity}
+                      />
+                    ))}
+                  </div>
+                </section>
               ))}
             </div>
           </div>
-        )}
+        </section>
 
-        {/* Order Summary Section */}
-        {calculateTotalItems() > 0 && (
-          <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6 animate-in slide-in-from-bottom-4 fade-in duration-300">
-            <h2 className="text-xl font-bold mb-4 border-b border-gray-100 pb-3">Order Summary</h2>
-            <div className="space-y-3 mb-4">
-              {Object.keys(quantities).map(id => {
-                const item = MENU_ITEMS.find(i => i.id === id);
-                if (!item || quantities[id] === 0) return null;
-                const price = parseInt(item.price.replace('₹', ''), 10);
-                const itemTotal = price * quantities[id];
-                return (
-                  <div key={id} className="flex justify-between items-center text-sm font-medium text-gray-700">
-                    <span className="flex-1 truncate pr-4">{item.name} <span className="text-gray-400 ml-1">x{quantities[id]}</span></span>
-                    <span className="shrink-0 font-bold">₹{itemTotal}</span>
-                  </div>
-                );
-              })}
-            </div>
-            
-            <div className="border-t border-dashed border-gray-200 pt-3 space-y-2">
-              <div className="flex justify-between items-center text-sm font-bold text-gray-500">
-                <span>Subtotal</span>
-                <span>₹{calculateTotalPrice()}</span>
+        <section className="mt-8 space-y-5 pb-12">
+
+
+          {totalItems > 0 && (
+            <aside className="glass-card p-5">
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="section-title text-xl">Special Instructions</h2>
+                <button className="cn-button cn-button-secondary" onClick={addInstruction} type="button">Add</button>
               </div>
-              
-              {orderType === 'prebook' && (
-                <div className="flex justify-between items-center text-sm font-bold text-emerald-600 bg-emerald-50 p-2.5 rounded-xl border border-emerald-100 mt-2">
-                  <span className="flex items-center"><span className="text-lg mr-2">🎉</span> Pre-booking Discount (5%)</span>
-                  <span>- ₹{Math.round(calculateTotalPrice() * 0.05)}</span>
-                </div>
-              )}
+              <div className="space-y-3">
+                {instructions.length === 0 && (
+                  <p className="m-0 text-sm font-semibold text-[var(--on-surface-variant)]">No special instructions added.</p>
+                )}
+                {instructions.map((inst, index) => (
+                  <InstructionCard
+                    key={`${index}-${inst.items.join('-')}`}
+                    inst={inst}
+                    index={index}
+                    quantities={quantities}
+                    setInstructions={setInstructions}
+                  />
+                ))}
+              </div>
+            </aside>
+          )}
 
-              <div className="flex justify-between items-center text-xl font-black text-gray-800 pt-3 border-t border-gray-100 mt-3">
-                <span>Final Total</span>
-                <span>
-                  ₹{orderType === 'prebook' 
-                    ? calculateTotalPrice() - Math.round(calculateTotalPrice() * 0.05) 
-                    : calculateTotalPrice()}
-                </span>
+          <aside className="glass-card p-5 mt-8 border-t-4 border-[var(--primary)] shadow-xl">
+            <h2 className="section-title text-2xl mb-4">Order Summary</h2>
+            <div className="space-y-3">
+              <SummaryLine label="Items selected" value={totalItems} />
+              <SummaryLine label="Subtotal" value={money(subtotal)} />
+              {orderType === 'prebook' && totalItems > 0 && (
+                <SummaryLine className="cn-chip-success rounded-2xl p-3" label="Prebook discount" value={`- ${money(discount)}`} />
+              )}
+              <div className="flex items-center justify-between border-t border-dashed border-[var(--outline-variant)] pt-4 text-xl font-bold">
+                <span>Total</span>
+                <span>{money(finalTotal)}</span>
               </div>
             </div>
-          </div>
-        )}
 
-        {/* Submit Button */}
-        <div className="mt-4 relative">
-          
-          {/* Animated Celebration handled by canvas-confetti in useEffect */}
-
-          <button
-            onClick={handleSubmit}
-            disabled={loading || calculateTotalItems() === 0}
-            className="w-full bg-black text-white font-extrabold text-lg py-4 sm:py-5 rounded-2xl shadow-xl hover:bg-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-1 active:translate-y-0 flex flex-col items-center justify-center relative overflow-hidden group"
-          >
-            <span className="flex items-center space-x-2">
-              <span>{loading ? 'Processing Order...' : `Confirm Order (${calculateTotalItems()})`}</span>
-              {!loading && calculateTotalItems() > 0 && (
-                <>
-                  <span className="opacity-50 mx-1">•</span>
-                  {orderType === 'prebook' ? (
-                    <div className="flex items-center space-x-2">
-                      <span className="line-through opacity-60 text-sm">₹{calculateTotalPrice()}</span>
-                      <span className="text-emerald-400 font-black">₹{calculateTotalPrice() - Math.round(calculateTotalPrice() * 0.05)}</span>
-                    </div>
-                  ) : orderType === 'takeaway' ? (
-                    <span className="text-red-300 font-black">₹{calculateTotalPrice()}</span>
-                  ) : (
-                    <span>₹{calculateTotalPrice()}</span>
-                  )}
-                </>
-              )}
-            </span>
-          </button>
-        </div>
+            <button className="cn-button cn-button-primary mt-5 w-full text-lg h-14 shadow-lg" disabled={loading || totalItems === 0} onClick={handleSubmit} type="button">
+              <Check size={20} />
+              {loading ? 'Processing...' : `Confirm Order (${totalItems})`}
+            </button>
+          </aside>
+        </section>
       </main>
-
-      {/* History Modal Overlay */}
-      {showHistory && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col animate-in slide-in-from-bottom-8 duration-300">
-            <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-              <h2 className="text-xl font-bold flex flex-col">
-                Order History
-                <span className="text-xs text-gray-500 font-medium mt-1">Your past cravings</span>
-              </h2>
-              <button onClick={() => setShowHistory(false)} className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center font-bold hover:bg-gray-300 transition-colors">✕</button>
-            </div>
-            
-            <div className="overflow-y-auto p-5 scrollbar-hide flex-1">
-              {historyData.length === 0 ? (
-                <div className="text-center py-10 opacity-50">
-                   <p className="font-bold text-lg text-gray-800">No orders yet</p>
-                   <p className="text-sm text-gray-500">Time to grab a bite!</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {historyData.map((order, idx) => {
-                    const orderDate = new Date(order.timestamp * 1000).toLocaleString(undefined, {
-                       month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                    });
-                    return (
-                      <div key={idx} className="bg-white border border-gray-100 p-4 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                        <div className="flex justify-between items-start mb-2">
-                          <span className="font-black text-lg text-gray-800 capitalize">{order.item}</span>
-                          <span className="font-bold bg-gray-100 text-gray-800 px-2 py-0.5 rounded-md text-sm">x{order.quantity}</span>
-                        </div>
-                        <div className="flex justify-between items-end">
-                           <div className="flex flex-col">
-                             <span className="text-xs font-bold text-gray-400 mb-1">ORDERED ON</span>
-                             <span className="text-xs font-semibold text-gray-600">{orderDate}</span>
-                           </div>
-                           <div className="flex flex-col items-end">
-                             {order.is_prebooking ? (
-                               <span className="text-[10px] uppercase tracking-wider font-extrabold bg-indigo-50 text-indigo-500 px-2.5 py-1 rounded-md border border-indigo-100 mb-1">
-                                 Prebook
-                               </span>
-                             ) : order.takeaway ? (
-                               <span className="text-[10px] uppercase tracking-wider font-extrabold bg-orange-50 text-orange-600 px-2.5 py-1 rounded-md border border-orange-100 mb-1">
-                                 Takeaway
-                               </span>
-                             ) : (
-                               <span className="text-[10px] uppercase tracking-wider font-extrabold bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-md border border-emerald-100 mb-1">
-                                 Dine-In
-                               </span>
-                             )}
-                             <span className={`text-[10px] uppercase tracking-wider font-extrabold px-2.5 py-1 rounded-md border ${(order.status === 'delivered' || order.is_delivered) ? 'bg-gray-100 text-gray-500 border-gray-200' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
-                               {(order.status || (order.is_delivered ? 'delivered' : 'pending')).replace(/_/g, ' ')}
-                             </span>
-                           </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
       )}
+
+      {activeMobileView === 'orders' && (
+        <main className="mx-auto max-w-md pt-24 pb-32 px-4 animate-in fade-in duration-500 relative z-10">
+          <div className="glass-card p-6 border-t-4 border-[var(--primary)] shadow-2xl rounded-[32px]">
+            <h2 className="font-['Righteous'] text-3xl mb-6 text-[var(--on-surface)] flex items-center justify-center gap-3">
+              <History size={28} className="text-[var(--primary)]" />
+              History
+            </h2>
+            {loadingHistory ? (
+              <div className="text-center py-12 text-[var(--on-surface-variant)] animate-pulse">
+                <div className="inline-block w-12 h-12 rounded-full border-4 border-[var(--primary)] border-t-transparent animate-spin mb-4"></div>
+                <p>Loading your past orders...</p>
+              </div>
+            ) : historyData.length === 0 ? (
+              <div className="text-center py-12 text-[var(--on-surface-variant)] bg-[var(--surface-container-low)] rounded-3xl border border-dashed border-[var(--outline-variant)]">
+                <Receipt size={48} className="mx-auto mb-4 opacity-50" />
+                <p className="text-lg font-bold mb-2">No orders yet</p>
+                <p className="opacity-70 text-sm">When you place an order, it will appear here.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {historyData.map((order, i) => (
+                  <div key={i} className="bg-white/80 backdrop-blur-sm p-4 rounded-[20px] border border-white/60 shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)] transition-all relative overflow-hidden flex flex-col gap-3">
+                    <div className={`absolute top-0 left-0 w-full h-1 ${order.status === 'completed' ? 'bg-emerald-500' : 'bg-yellow-400'}`}></div>
+                    
+                    <div className="flex justify-between items-start mt-1">
+                      <div className="flex flex-col">
+                        <span className="font-['Righteous'] text-xl text-slate-800 tracking-wide">{order.item}</span>
+                        <span className="text-xs text-slate-500 font-semibold mt-0.5"><Clock size={12} className="inline mr-1 mb-0.5"/> {order.timestamp ? new Date(order.timestamp).toLocaleString() : 'Just now'}</span>
+                      </div>
+                      <div className="flex flex-col items-end gap-2">
+                        <span className="text-sm font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg">Qty: {order.quantity}</span>
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md ${order.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-yellow-100 text-yellow-700'}`}>{order.status}</span>
+                      </div>
+                    </div>
+                    {order.is_prebooking ? (
+                      <div className="mt-1 pt-3 border-t border-slate-100 flex items-center justify-between text-sm font-bold text-orange-600">
+                        <span className="flex items-center gap-1"><Calendar size={14}/> Prebook Slot</span>
+                        <span>{order.time_slot}:00</span>
+                      </div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </main>
+      )}
+
+      {/* Floating Tray Icon */}
+      <div className="fixed bottom-24 right-4 lg:right-6 z-50 flex flex-col items-end pointer-events-none">
+        {showTrayPopup && (
+          <div className="mb-4 w-80 max-w-[calc(100vw-32px)] rounded-[24px] bg-[rgba(48,49,46,0.95)] p-5 text-[var(--inverse-on-surface)] shadow-2xl backdrop-blur-xl animate-in slide-in-from-bottom-2 pointer-events-auto">
+            <div className="flex items-center justify-between mb-4 border-b border-white/10 pb-3">
+              <h3 className="m-0 text-lg font-bold">Your Tray</h3>
+              <button className="rounded-full p-1 hover:bg-white/10" onClick={() => setShowTrayPopup(false)}>
+                <X size={18} />
+              </button>
+            </div>
+            <div className="max-h-60 overflow-y-auto space-y-3 pr-2">
+              {selectedItems.length === 0 ? (
+                <p className="text-sm opacity-70">Tray is empty.</p>
+              ) : selectedItems.map(({ item, qty }) => (
+                <div key={item.id} className="flex items-center justify-between gap-2 text-sm">
+                  <span className="truncate flex-1">{item.name} <span className="opacity-70 text-xs">x{qty}</span></span>
+                  <span className="font-semibold">{money(priceValue(item.price) * qty)}</span>
+                </div>
+              ))}
+            </div>
+            {totalItems > 0 && (
+              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between font-bold">
+                <span>Total</span>
+                <span className="text-[var(--primary)]">{money(finalTotal)}</span>
+              </div>
+            )}
+          </div>
+        )}
+        <button 
+          className="hidden lg:flex h-16 w-16 items-center justify-center rounded-full bg-[var(--inverse-surface)] text-[var(--inverse-on-surface)] shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:scale-105 transition-transform relative border border-white/10 pointer-events-auto"
+          onClick={() => setShowTrayPopup(!showTrayPopup)}
+          title="View Tray"
+        >
+          <ShoppingBag size={26} />
+          {totalItems > 0 && (
+            <span className="absolute top-0 right-0 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white shadow-sm ring-2 ring-white">
+              {totalItems}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {totalItems > 0 && activeMobileView === 'menu' && (
+        <button 
+          className="fixed bottom-24 right-4 z-40 bg-[var(--inverse-surface)] text-[var(--inverse-on-surface)] w-14 h-14 rounded-full shadow-2xl border border-white/10 flex items-center justify-center active:scale-90 transition-transform lg:hidden"
+          onClick={() => setShowTrayPopup(!showTrayPopup)}
+        >
+          <ShoppingBag size={24} />
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-[var(--background)]">
+            {totalItems}
+          </span>
+        </button>
+      )}
+
+      <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center bg-white/90 backdrop-blur-xl border border-[var(--outline-variant)] shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-full p-1.5 gap-1 w-max">
+        <button 
+          className={`font-righteous flex items-center justify-center gap-2 px-6 py-3 rounded-full text-sm tracking-wide transition-all ${activeMobileView === 'menu' ? 'bg-yellow-400 text-slate-900 shadow-lg' : 'text-[var(--on-surface-variant)] hover:bg-[var(--surface-container-high)]'}`} 
+          onClick={() => { setActiveMobileView('menu'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
+          type="button"
+        >
+          <img src={iconImg} alt="Order" className={`w-5 h-5 object-contain ${activeMobileView === 'menu' ? 'brightness-0' : 'brightness-0 opacity-50'}`} style={activeMobileView === 'menu' ? {filter: 'invert(9%) sepia(85%) saturate(7181%) hue-rotate(345deg) brightness(85%) contrast(105%)'} : {}} />
+          Order
+        </button>
+        <button 
+          className={`font-righteous flex items-center justify-center gap-2 px-6 py-3 rounded-full text-sm tracking-wide transition-all ${activeMobileView === 'orders' ? 'bg-yellow-400 text-slate-900 shadow-lg' : 'text-[var(--on-surface-variant)] hover:bg-[var(--surface-container-high)]'}`} 
+          onClick={() => { setActiveMobileView('orders'); fetchHistory(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
+          type="button"
+        >
+          <History size={18} />
+          History
+        </button>
+      </nav>
     </div>
   );
 };
 
-export default App;
+const SummaryLine = ({ label, value, className = '' }) => (
+  <div className={`flex items-center justify-between gap-4 text-sm font-semibold text-[var(--on-surface-variant)] ${className}`}>
+    <span>{label}</span>
+    <strong className="text-[var(--on-surface)]">{value}</strong>
+  </div>
+);
 
+const MenuRow = ({ item, quantity, onQuantity, onSetQuantity, index }) => (
+  <article className="menu-row-card" style={{ animationDelay: `${Math.min(index * 42, 220)}ms` }}>
+    <div className="menu-row-image">
+      <img src={item.img} alt={item.name} loading="lazy" />
+    </div>
+    <div className="menu-row-body">
+      <div className="min-w-0">
+        <h3>{item.name}</h3>
+        <p>{item.description}</p>
+      </div>
+      <div className="menu-row-meta">
+        <span>{item.price}</span>
+      </div>
+    </div>
+    <div className="menu-row-qty">
+      <button className="qty-round ghost" onClick={() => onQuantity(item.id, -1)} type="button" aria-label={`Decrease ${item.name}`}>
+        <Minus size={15} />
+      </button>
+      <input
+        inputMode="numeric"
+        pattern="[0-9]*"
+        value={quantity || ''}
+        onChange={(event) => onSetQuantity(item.id, event.target.value)}
+        placeholder="0"
+        aria-label={`${item.name} quantity`}
+      />
+      <button className="qty-round add" onClick={() => onQuantity(item.id, 1)} type="button" aria-label={`Increase ${item.name}`}>
+        <Plus size={15} />
+      </button>
+    </div>
+  </article>
+);
+
+const InstructionCard = ({ inst, index, quantities, setInstructions }) => {
+  const selectedIds = Object.keys(quantities).filter((id) => quantities[id] > 0);
+  return (
+    <div className="rounded-3xl border border-white/70 bg-white/55 p-4">
+      <div className="mb-3 flex gap-2">
+        <input
+          className="form-input"
+          type="text"
+          placeholder="Extra spicy, no onion..."
+          value={inst.text}
+          onChange={(event) => {
+            setInstructions((prev) => prev.map((entry, idx) => (idx === index ? { ...entry, text: event.target.value } : entry)));
+          }}
+        />
+        <button
+          className="cn-button cn-button-danger cn-icon-button"
+          onClick={() => setInstructions((prev) => prev.filter((_, idx) => idx !== index))}
+          type="button"
+          aria-label="Remove instruction"
+        >
+          <X size={16} />
+        </button>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {selectedIds.map((id) => {
+          const item = MENU_ITEMS.find((entry) => entry.id === id);
+          const active = inst.items.includes(id);
+          return (
+            <button
+              key={id}
+              className={`cn-button ${active ? 'cn-button-primary' : 'cn-button-secondary'}`}
+              onClick={() => {
+                setInstructions((prev) => prev.map((entry, idx) => {
+                  if (idx !== index) return entry;
+                  return {
+                    ...entry,
+                    items: active ? entry.items.filter((itemId) => itemId !== id) : [...entry.items, id],
+                  };
+                }));
+              }}
+              type="button"
+            >
+              {item?.name || id}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+
+export default App;

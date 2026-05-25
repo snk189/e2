@@ -1,0 +1,2526 @@
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T08:15:59Z
+Completed At: 2026-05-24T08:16:00Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 706
+Total Bytes: 28089
+Showing lines 1 to 706
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import React, { useCallback, useEffect, useMemo, useState } from 'react';
+2: import confetti from 'canvas-confetti';
+3: import {
+4:   Calendar,
+5:   Check,
+6:   Clock,
+7:   History,
+8:   LogOut,
+9:   Minus,
+10:   Plus,
+11:   Receipt,
+12:   RefreshCw,
+13:   ShoppingBag,
+14:   Utensils,
+15:   X,
+16: } from 'lucide-react';
+17: import { MENU_ITEMS } from './data/items';
+18: import { submitOrder, setApiUser, getHistory, logoutUser } from './services/api';
+19: import Auth from './components/Auth';
+20: import Dashboard from './components/Dashboard';
+21: import AdminDashboard from './components/AdminDashboard';
+22: 
+23: const priceValue = (price) => parseInt(String(price).replace(/\D/g, ''), 10) || 0;
+24: const money = (value) => `Rs. ${value}`;
+25: const categories = [...new Set(MENU_ITEMS.map((item) => item.category || 'Other'))];
+26: const categoryStyles = {
+27:   'Main Course': { id: 'main-course', tone: 'main' },
+28:   'Fast Food': { id: 'fast-food', tone: 'fast' },
+29:   Beverages: { id: 'beverages', tone: 'bev' },
+30:   Dessert: { id: 'dessert', tone: 'dessert' },
+31:   Snacks: { id: 'snacks', tone: 'snacks' },
+32: };
+33: 
+34: const App = () => {
+35:   const [user, setUser] = useState(null);
+36:   const [userType, setUserType] = useState(null);
+37: 
+38:   useEffect(() => {
+39:     if (user) setApiUser(user);
+40:   }, [user]);
+41: 
+42:   const handleLogin = (username, type) => {
+43:     setUser(username);
+44:     setUserType(type);
+45:     setApiUser(username);
+46:   };
+47: 
+48:   const handleLogout = async () => {
+49:     if (user) await logoutUser();
+50:     localSto
+<truncated 27950 bytes>
+-button" onClick={onClose} type="button" aria-label="Close history">
+669:           <X size={18} />
+670:         </button>
+671:       </div>
+672:       <div className="overflow-y-auto p-5">
+673:         {loadingHistory ? (
+674:           <p className="text-center text-sm font-semibold text-[var(--on-surface-variant)]">Loading history...</p>
+675:         ) : historyData.length === 0 ? (
+676:           <p className="rounded-3xl border border-dashed border-[var(--outline-variant)] bg-white/45 p-8 text-center text-sm font-semibold text-[var(--on-surface-variant)]">
+677:             No orders yet.
+678:           </p>
+679:         ) : (
+680:           <div className="space-y-3">
+681:             {historyData.map((order, index) => {
+682:               const orderDate = order.timestamp
+683:                 ? new Date(order.timestamp * 1000).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+684:                 : 'Recent';
+685:               const status = (order.status || (order.is_delivered ? 'delivered' : 'pending')).replace(/_/g, ' ');
+686:               return (
+687:                 <div key={`${order.item}-${order.timestamp}-${index}`} className="rounded-3xl border border-white/70 bg-white/62 p-4">
+688:                   <div className="flex items-start justify-between gap-3">
+689:                     <div>
+690:                       <p className="m-0 text-base font-bold capitalize">{order.item} x{order.quantity}</p>
+691:                       <p className="m-0 mt-1 text-xs font-semibold text-[var(--on-surface-variant)]">{orderDate}</p>
+692:                     </div>
+693:                     <span className="cn-chip cn-chip-success capitalize">{status}</span>
+694:                   </div>
+695:                 </div>
+696:               );
+697:             })}
+698:           </div>
+699:         )}
+700:       </div>
+701:     </div>
+702:   </div>
+703: );
+704: 
+705: export default App;
+706: 
+The above content shows the entire, complete file contents of the requested file.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T08:16:26Z
+Completed At: 2026-05-24T08:16:26Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/index.css`
+Total Lines: 979
+Total Bytes: 20569
+Showing lines 1 to 800
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: @import 'tailwindcss';
+2: 
+3: :root {
+4:   --surface: #fbf9f5;
+5:   --surface-lowest: #ffffff;
+6:   --surface-low: #f5f3ef;
+7:   --surface-container: #efeeea;
+8:   --surface-high: #eae8e4;
+9:   --surface-highest: #e4e2de;
+10:   --on-surface: #1b1c1a;
+11:   --on-surface-variant: #534434;
+12:   --inverse-surface: #30312e;
+13:   --inverse-on-surface: #f2f0ed;
+14:   --outline: #867461;
+15:   --outline-variant: #d8c3ad;
+16:   --primary: #855300;
+17:   --primary-container: #f59e0b;
+18:   --on-primary: #ffffff;
+19:   --secondary: #006c49;
+20:   --secondary-container: #6cf8bb;
+21:   --tertiary: #944a23;
+22:   --tertiary-container: #f79a6c;
+23:   --error: #ba1a1a;
+24:   --error-container: #ffdad6;
+25:   --glass: rgba(255, 255, 255, 0.78);
+26:   --glass-strong: rgba(255, 255, 255, 0.9);
+27:   --glass-border: rgba(255, 255, 255, 0.72);
+28:   --amber-shadow: 0 18px 42px rgba(245, 158, 11, 0.13);
+29:   --soft-shadow: 0 14px 34px rgba(83, 68, 52, 0.09);
+30:   font-family: Lexend, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+31:   color: var(--on-surface);
+32:   background: var(--surface);
+33:   font-synthesis: none;
+34:   text-rendering: optimizeLegibility;
+35:   -webkit-font-smoothing: antialiased;
+36:   -moz-osx-font-smoothing: grayscale;
+37: }
+38: 
+39: * {
+40:   box-sizing: border-box;
+41: }
+42: 
+43: html {
+44:   min-height: 100%;
+45:   background: var(--surface);
+46:   scroll-behavior: smooth;
+47: }
+48: 
+49: body {
+50:   min-width: 320px;
+51:   min-height: 100dvh;
+52:   margin: 0;
+53:   color: var(--on-surface);
+54:   background:
+55:     linear-gradi
+<truncated 17729 bytes>
+rder: 1px solid rgba(255, 255, 255, 0.78);
+751:   background:
+752:     linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.58)),
+753:     radial-gradient(circle at 82% 10%, color-mix(in srgb, var(--primary-container) 38%, transparent), transparent 34%);
+754:   box-shadow: 0 24px 54px color-mix(in srgb, var(--primary) 18%, transparent);
+755:   backdrop-filter: blur(22px);
+756: }
+757: 
+758: .ops-hero::after {
+759:   content: '';
+760:   position: absolute;
+761:   inset: auto -70px -120px auto;
+762:   width: 260px;
+763:   height: 260px;
+764:   border-radius: 50%;
+765:   background: color-mix(in srgb, var(--primary-container) 24%, transparent);
+766:   filter: blur(26px);
+767:   pointer-events: none;
+768: }
+769: 
+770: .analytics-grid {
+771:   display: grid;
+772:   grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.8fr);
+773:   gap: 18px;
+774: }
+775: 
+776: .analytics-card {
+777:   border-radius: 28px;
+778:   border: 1px solid color-mix(in srgb, var(--primary) 16%, white);
+779:   background: rgba(255, 255, 255, 0.82);
+780:   box-shadow: 0 18px 42px color-mix(in srgb, var(--primary) 11%, transparent);
+781:   backdrop-filter: blur(20px);
+782: }
+783: 
+784: .chart-panel {
+785:   min-height: 340px;
+786:   padding: 20px;
+787: }
+788: 
+789: .metric-card {
+790:   position: relative;
+791:   overflow: hidden;
+792:   min-height: 142px;
+793:   border-radius: 24px;
+794:   border: 1px solid color-mix(in srgb, var(--metric-color, var(--primary)) 24%, white);
+795:   background:
+796:     linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.62)),
+797:     radial-gradient(circle at 85% 15%, color-mix(in srgb, var(--metric-color, var(--primary)) 18%, transparent), transparent 42%);
+798:   box-shadow: 0 16px 34px color-mix(in srgb, var(--metric-color, var(--primary)) 13%, transparent);
+799:   padding: 20px;
+800: }
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T08:15:59Z
+Completed At: 2026-05-24T08:16:00Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 706
+Total Bytes: 28089
+Showing lines 1 to 706
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import React, { useCallback, useEffect, useMemo, useState } from 'react';
+2: import confetti from 'canvas-confetti';
+3: import {
+4:   Calendar,
+5:   Check,
+6:   Clock,
+7:   History,
+8:   LogOut,
+9:   Minus,
+10:   Plus,
+11:   Receipt,
+12:   RefreshCw,
+13:   ShoppingBag,
+14:   Utensils,
+15:   X,
+16: } from 'lucide-react';
+17: import { MENU_ITEMS } from './data/items';
+18: import { submitOrder, setApiUser, getHistory, logoutUser } from './services/api';
+19: import Auth from './components/Auth';
+20: import Dashboard from './components/Dashboard';
+21: import AdminDashboard from './components/AdminDashboard';
+22: 
+23: const priceValue = (price) => parseInt(String(price).replace(/\D/g, ''), 10) || 0;
+24: const money = (value) => `Rs. ${value}`;
+25: const categories = [...new Set(MENU_ITEMS.map((item) => item.category || 'Other'))];
+26: const categoryStyles = {
+27:   'Main Course': { id: 'main-course', tone: 'main' },
+28:   'Fast Food': { id: 'fast-food', tone: 'fast' },
+29:   Beverages: { id: 'beverages', tone: 'bev' },
+30:   Dessert: { id: 'dessert', tone: 'dessert' },
+31:   Snacks: { id: 'snacks', tone: 'snacks' },
+32: };
+33: 
+34: const App = () => {
+35:   const [user, setUser] = useState(null);
+36:   const [userType, setUserType] = useState(null);
+37: 
+38:   useEffect(() => {
+39:     if (user) setApiUser(user);
+40:   }, [user]);
+41: 
+42:   const handleLogin = (username, type) => {
+43:     setUser(username);
+44:     setUserType(type);
+45:     setApiUser(username);
+46:   };
+47: 
+48:   const handleLogout = async () => {
+49:     if (user) await logoutUser();
+50:     localSto
+<truncated 27950 bytes>
+-button" onClick={onClose} type="button" aria-label="Close history">
+669:           <X size={18} />
+670:         </button>
+671:       </div>
+672:       <div className="overflow-y-auto p-5">
+673:         {loadingHistory ? (
+674:           <p className="text-center text-sm font-semibold text-[var(--on-surface-variant)]">Loading history...</p>
+675:         ) : historyData.length === 0 ? (
+676:           <p className="rounded-3xl border border-dashed border-[var(--outline-variant)] bg-white/45 p-8 text-center text-sm font-semibold text-[var(--on-surface-variant)]">
+677:             No orders yet.
+678:           </p>
+679:         ) : (
+680:           <div className="space-y-3">
+681:             {historyData.map((order, index) => {
+682:               const orderDate = order.timestamp
+683:                 ? new Date(order.timestamp * 1000).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+684:                 : 'Recent';
+685:               const status = (order.status || (order.is_delivered ? 'delivered' : 'pending')).replace(/_/g, ' ');
+686:               return (
+687:                 <div key={`${order.item}-${order.timestamp}-${index}`} className="rounded-3xl border border-white/70 bg-white/62 p-4">
+688:                   <div className="flex items-start justify-between gap-3">
+689:                     <div>
+690:                       <p className="m-0 text-base font-bold capitalize">{order.item} x{order.quantity}</p>
+691:                       <p className="m-0 mt-1 text-xs font-semibold text-[var(--on-surface-variant)]">{orderDate}</p>
+692:                     </div>
+693:                     <span className="cn-chip cn-chip-success capitalize">{status}</span>
+694:                   </div>
+695:                 </div>
+696:               );
+697:             })}
+698:           </div>
+699:         )}
+700:       </div>
+701:     </div>
+702:   </div>
+703: );
+704: 
+705: export default App;
+706: 
+The above content shows the entire, complete file contents of the requested file.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T08:16:26Z
+Completed At: 2026-05-24T08:16:26Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/index.css`
+Total Lines: 979
+Total Bytes: 20569
+Showing lines 1 to 800
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: @import 'tailwindcss';
+2: 
+3: :root {
+4:   --surface: #fbf9f5;
+5:   --surface-lowest: #ffffff;
+6:   --surface-low: #f5f3ef;
+7:   --surface-container: #efeeea;
+8:   --surface-high: #eae8e4;
+9:   --surface-highest: #e4e2de;
+10:   --on-surface: #1b1c1a;
+11:   --on-surface-variant: #534434;
+12:   --inverse-surface: #30312e;
+13:   --inverse-on-surface: #f2f0ed;
+14:   --outline: #867461;
+15:   --outline-variant: #d8c3ad;
+16:   --primary: #855300;
+17:   --primary-container: #f59e0b;
+18:   --on-primary: #ffffff;
+19:   --secondary: #006c49;
+20:   --secondary-container: #6cf8bb;
+21:   --tertiary: #944a23;
+22:   --tertiary-container: #f79a6c;
+23:   --error: #ba1a1a;
+24:   --error-container: #ffdad6;
+25:   --glass: rgba(255, 255, 255, 0.78);
+26:   --glass-strong: rgba(255, 255, 255, 0.9);
+27:   --glass-border: rgba(255, 255, 255, 0.72);
+28:   --amber-shadow: 0 18px 42px rgba(245, 158, 11, 0.13);
+29:   --soft-shadow: 0 14px 34px rgba(83, 68, 52, 0.09);
+30:   font-family: Lexend, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+31:   color: var(--on-surface);
+32:   background: var(--surface);
+33:   font-synthesis: none;
+34:   text-rendering: optimizeLegibility;
+35:   -webkit-font-smoothing: antialiased;
+36:   -moz-osx-font-smoothing: grayscale;
+37: }
+38: 
+39: * {
+40:   box-sizing: border-box;
+41: }
+42: 
+43: html {
+44:   min-height: 100%;
+45:   background: var(--surface);
+46:   scroll-behavior: smooth;
+47: }
+48: 
+49: body {
+50:   min-width: 320px;
+51:   min-height: 100dvh;
+52:   margin: 0;
+53:   color: var(--on-surface);
+54:   background:
+55:     linear-gradi
+<truncated 17729 bytes>
+rder: 1px solid rgba(255, 255, 255, 0.78);
+751:   background:
+752:     linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.58)),
+753:     radial-gradient(circle at 82% 10%, color-mix(in srgb, var(--primary-container) 38%, transparent), transparent 34%);
+754:   box-shadow: 0 24px 54px color-mix(in srgb, var(--primary) 18%, transparent);
+755:   backdrop-filter: blur(22px);
+756: }
+757: 
+758: .ops-hero::after {
+759:   content: '';
+760:   position: absolute;
+761:   inset: auto -70px -120px auto;
+762:   width: 260px;
+763:   height: 260px;
+764:   border-radius: 50%;
+765:   background: color-mix(in srgb, var(--primary-container) 24%, transparent);
+766:   filter: blur(26px);
+767:   pointer-events: none;
+768: }
+769: 
+770: .analytics-grid {
+771:   display: grid;
+772:   grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.8fr);
+773:   gap: 18px;
+774: }
+775: 
+776: .analytics-card {
+777:   border-radius: 28px;
+778:   border: 1px solid color-mix(in srgb, var(--primary) 16%, white);
+779:   background: rgba(255, 255, 255, 0.82);
+780:   box-shadow: 0 18px 42px color-mix(in srgb, var(--primary) 11%, transparent);
+781:   backdrop-filter: blur(20px);
+782: }
+783: 
+784: .chart-panel {
+785:   min-height: 340px;
+786:   padding: 20px;
+787: }
+788: 
+789: .metric-card {
+790:   position: relative;
+791:   overflow: hidden;
+792:   min-height: 142px;
+793:   border-radius: 24px;
+794:   border: 1px solid color-mix(in srgb, var(--metric-color, var(--primary)) 24%, white);
+795:   background:
+796:     linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.62)),
+797:     radial-gradient(circle at 85% 15%, color-mix(in srgb, var(--metric-color, var(--primary)) 18%, transparent), transparent 42%);
+798:   box-shadow: 0 16px 34px color-mix(in srgb, var(--metric-color, var(--primary)) 13%, transparent);
+799:   padding: 20px;
+800: }
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T08:20:14Z
+Completed At: 2026-05-24T08:20:14Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/index.css`
+Total Lines: 979
+Total Bytes: 20569
+Showing lines 920 to 950
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+920:   .chart-panel {
+921:     min-height: 280px;
+922:   }
+923: 
+924:   .category-chip-nav {
+925:     top: 64px;
+926:     margin-inline: -16px;
+927:     padding-inline: 16px;
+928:   }
+929: }
+930: 
+931: @media (max-width: 560px) {
+932:   .cn-topbar-inner {
+933:     gap: 10px;
+934:   }
+935: 
+936:   .topbar-actions {
+937:     gap: 6px;
+938:   }
+939: 
+940:   .cn-button {
+941:     min-height: 42px;
+942:     padding: 0 12px;
+943:   }
+944: 
+945:   .cn-icon-button {
+946:     width: 39px;
+947:     min-width: 39px;
+948:     padding: 0;
+949:   }
+950: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T08:42:41Z
+Completed At: 2026-05-24T08:42:41Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/index.css`
+Total Lines: 979
+Total Bytes: 20569
+Showing lines 420 to 430
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+420: 
+421: .cn-table-wrap {
+422:   overflow: auto;
+423:   border-radius: 20px;
+424:   border: 1px solid rgba(216, 195, 173, 0.42);
+425:   background: rgba(255, 255, 255, 0.62);
+426: }
+427: 
+428: .cn-table {
+429:   width: 100%;
+430:   border-collapse: collapse;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T08:43:04Z
+Completed At: 2026-05-24T08:43:04Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 700
+Total Bytes: 27077
+Showing lines 40 to 60
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+40:   }, [user]);
+41: 
+42:   const handleLogin = (username, type) => {
+43:     setUser(username);
+44:     setUserType(type);
+45:     setApiUser(username);
+46:   };
+47: 
+48:   const handleLogout = async () => {
+49:     if (user) await logoutUser();
+50:     localStorage.removeItem('bitespeed_user');
+51:     localStorage.removeItem('bitespeed_type');
+52:     setUser(null);
+53:     setUserType(null);
+54:     setApiUser('Unknown_User');
+55:   };
+56: 
+57:   if (!user) return <Auth onLogin={handleLogin} />;
+58:   if (userType === 'a') return <AdminDashboard onLogout={handleLogout} />;
+59:   if (userType === 'm') return <Dashboard onLogout={handleLogout} />;
+60:   return <BookingInterface onLogout={handleLogout} username={user} />;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T08:49:31Z
+Completed At: 2026-05-24T08:49:32Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 700
+Total Bytes: 27077
+Showing lines 270 to 300
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+270: 
+271:       return {
+272:         username,
+273:         item: item.id,
+274:         time_slot: orderType === 'prebook' ? Number.parseInt(time.split(':')[0], 10) : now.getHours(),
+275:         quantity: qty,
+276:         is_prebooking: orderType === 'prebook' ? 1 : 0,
+277:         takeaway: 0,
+278:         day_of_week: orderType === 'prebook' ? prebookDate.getDay() : now.getDay(),
+279:         prebooking_date: orderType === 'prebook' ? date : '',
+280:         prebooking_time: orderType === 'prebook' ? time : '',
+281:         notes: itemInstructions,
+282:         status: 'pending',
+283:         timestamp,
+284:       };
+285:     });
+286: 
+287:     const hourOfDay = new Date().getHours();
+288:     const isLive = hourOfDay >= 8 && hourOfDay < 18;
+289: 
+290:     try {
+291:       await submitOrder(ordersArray);
+292:       showToast('Order booked successfully.');
+293:       setQuantities({});
+294:       setInstructions([]);
+295:       setDate('');
+296:       setTime('');
+297:     } catch {
+298:       showToast('Order failed. Please try again.');
+299:     } finally {
+300:       setLoading(false);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T08:49:39Z
+Completed At: 2026-05-24T08:49:39Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 700
+Total Bytes: 27077
+Showing lines 240 to 280
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+240:       showToast('Add at least one item to continue.');
+241:       return;
+242:     }
+243: 
+244:     const now = new Date();
+245:     if (orderType === 'prebook') {
+246:       if (!date || !time) {
+247:         showToast('Choose a date and time for prebooking.');
+248:         return;
+249:       }
+250:       const selectedDateTime = new Date(`${date}T${time}`);
+251:       if (selectedDateTime <= now) {
+252:         showToast('Prebook time must be in the future.');
+253:         return;
+254:       }
+255:       const hour = selectedDateTime.getHours();
+256:       if (hour < 8 || hour >= 18) {
+257:         showToast('Canteen operates between 8 AM and 6 PM.');
+258:         return;
+259:       }
+260:     }
+261: 
+262:     setLoading(true);
+263:     const timestamp = Math.floor(now.getTime() / 1000);
+264:     const prebookDate = orderType === 'prebook' ? new Date(date) : null;
+265:     const ordersArray = selectedItems.map(({ item, qty }) => {
+266:       const itemInstructions = instructions
+267:         .filter((inst) => inst.items.includes(item.id) && inst.text.trim())
+268:         .map((inst) => inst.text.trim())
+269:         .join(' | ');
+270: 
+271:       return {
+272:         username,
+273:         item: item.id,
+274:         time_slot: orderType === 'prebook' ? Number.parseInt(time.split(':')[0], 10) : now.getHours(),
+275:         quantity: qty,
+276:         is_prebooking: orderType === 'prebook' ? 1 : 0,
+277:         takeaway: 0,
+278:         day_of_week: orderType === 'prebook' ? prebookDate.getDay() : now.getDay(),
+279:         prebooking_date: orderType === 'prebook' ? date : '',
+280:         prebooking_time: orderType === 'prebook' ? time : '',
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T08:50:07Z
+Completed At: 2026-05-24T08:50:07Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 698
+Total Bytes: 26979
+Showing lines 84 to 100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+84: const BookingInterface = ({ onLogout, username }) => {
+85:   const [quantities, setQuantities] = useState({});
+86:   const [orderType, setOrderType] = useState('dine-in');
+87:   const [date, setDate] = useState('');
+88:   const [time, setTime] = useState('');
+89:   const [instructions, setInstructions] = useState([]);
+90:   const [loading, setLoading] = useState(false);
+91:   const [showHistory, setShowHistory] = useState(false);
+92:   const [historyData, setHistoryData] = useState([]);
+93:   const [loadingHistory, setLoadingHistory] = useState(false);
+94:   const [toast, setToast] = useState({ show: false, message: '' });
+95:   const [activeCategory, setActiveCategory] = useState('All');
+96:   const [activeMobileView, setActiveMobileView] = useState('menu');
+97:   const [refreshing, setRefreshing] = useState(false);
+98:   const [startY, setStartY] = useState(0);
+99:   const [startX, setStartX] = useState(0);
+100:   const [offerApplied, setOfferApplied] = useState(false);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:19:28Z
+Completed At: 2026-05-24T09:19:28Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 701
+Total Bytes: 27074
+Showing lines 350 to 450
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+350:             </div>
+351:             <div className="cn-segmented">
+352:               <button
+353:                 className={`cn-segment ${orderType === 'dine-in' ? 'active' : ''}`}
+354:                 onClick={() => setOrderType('dine-in')}
+355:                 type="button"
+356:               >
+357:                 <Utensils size={16} />
+358:                 Dine-In
+359:               </button>
+360:               <button
+361:                 className={`cn-segment ${orderType === 'prebook' ? 'active' : ''}`}
+362:                 onClick={() => {
+363:                   setOrderType('prebook');
+364:                   if (!date) setDate(todayStr);
+365:                   if (!time) setTime('13:00');
+366:                   if (navigator.vibrate) navigator.vibrate(35);
+367:                 }}
+368:                 type="button"
+369:               >
+370:                 <Calendar size={16} />
+371:                 Prebook
+372:               </button>
+373:             </div>
+374: 
+375:             {orderType === 'prebook' && (
+376:               <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+377:                 <div>
+378:                   <label className="form-label" htmlFor="order-date">Date</label>
+379:                   <input
+380:                     id="order-date"
+381:                     className="form-input"
+382:                     type="date"
+383:                     min={todayStr}
+384:                     value={date}
+385:                     onChange={(event) => setDate(event.target.value)}
+386:                   />
+387: 
+<truncated 1469 bytes>
+ems-center justify-between border-t border-dashed border-[var(--outline-variant)] pt-4 text-xl font-bold">
+414:                 <span>Total</span>
+415:                 <span>{money(finalTotal)}</span>
+416:               </div>
+417:             </div>
+418: 
+419:             <button className="cn-button cn-button-primary mt-5 w-full" disabled={loading || totalItems === 0} onClick={handleSubmit} type="button">
+420:               <Check size={18} />
+421:               {loading ? 'Processing...' : `Confirm Order (${totalItems})`}
+422:             </button>
+423:           </aside>
+424:         </section>
+425: 
+426:         <section className="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
+427:           <div>
+428:             <div className="booking-menu-head mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between" id="booking-menu">
+429:               <div>
+430:                 <h2 className="section-title">Menu</h2>
+431:                 <p className="section-copy">Grouped like the canteen board. Tap plus or type quantities up to 10.</p>
+432:               </div>
+433:               <div className="category-chip-nav">
+434:                 {['All', ...categories].map((category) => (
+435:                   <button
+436:                     key={category}
+437:                     className={`category-chip ${activeCategory === category ? 'active' : ''}`}
+438:                     onClick={() => jumpToCategory(category)}
+439:                     type="button"
+440:                   >
+441:                     {category}
+442:                   </button>
+443:                 ))}
+444:               </div>
+445:             </div>
+446: 
+447:             <div className="menu-category-stack">
+448:               {groupedMenu.map(({ category, items }) => (
+449:                 <section
+450:                   className="menu-category"
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:19:37Z
+Completed At: 2026-05-24T09:19:37Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 701
+Total Bytes: 27074
+Showing lines 300 to 350
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+300:     } finally {
+301:       setLoading(false);
+302:     }
+303:   };
+304: 
+305:   return (
+306:     <div
+307:       className="app-bg"
+308:       onTouchStart={handleTouchStart}
+309:       onTouchMove={handleTouchMove}
+310:       onTouchEnd={handleTouchEnd}
+311:     >
+312:       <Toast toast={toast} />
+313:       {refreshing && (
+314:         <div className="fixed left-1/2 top-24 z-50 -translate-x-1/2 rounded-full bg-white/90 p-3 shadow-lg">
+315:           <RefreshCw className="animate-spin text-[var(--primary)]" size={20} />
+316:         </div>
+317:       )}
+318: 
+319:       <AppHeader
+320:         title="BiteSpeed Co."
+321:         subtitle={`Hello, ${username}`}
+322:         actions={(
+323:           <>
+324:             <span className={`cn-chip ${isLive ? 'cn-chip-success' : 'cn-chip-danger'} text-[11px] sm:text-sm max-w-[150px] sm:max-w-none overflow-hidden text-ellipsis whitespace-nowrap`}>
+325:               {isLive ? <span className="pulse-dot" /> : null}
+326:               {isLive ? 'Live' : 'Not Live'} - Opens at 8, Closes at 6
+327:             </span>
+328:             <button className="cn-button cn-button-secondary" onClick={() => fetchHistory()} type="button">
+329:               <History size={17} />
+330:               <span className="hide-mobile">History</span>
+331:             </button>
+332:             <button className="cn-button cn-button-danger cn-icon-button" onClick={onLogout} type="button" aria-label="Logout">
+333:               <LogOut size={17} />
+334:             </button>
+335:           </>
+336:         )}
+337:       />
+338: 
+339:       <main className="app-shell">
+340:         <section className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px]">
+341: 
+342:           <aside className="glass-card p-5">
+343:             <div className="mb-5 flex items-start justify-between gap-4">
+344:               <div>
+345:                 <h2 className="section-title text-2xl">Ordering Method</h2>
+346:                 <p className="section-copy">
+347:                   {orderType === 'prebook' ? 'Reserve ahead and save 5%.' : 'Immediate prep for dine-in.'}
+348:                 </p>
+349:               </div>
+350:             </div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:19:44Z
+Completed At: 2026-05-24T09:19:44Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 701
+Total Bytes: 27074
+Showing lines 410 to 480
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+410:               {orderType === 'prebook' && totalItems > 0 && (
+411:                 <SummaryLine className="cn-chip-success rounded-2xl p-3" label="Prebook discount" value={`- ${money(discount)}`} />
+412:               )}
+413:               <div className="flex items-center justify-between border-t border-dashed border-[var(--outline-variant)] pt-4 text-xl font-bold">
+414:                 <span>Total</span>
+415:                 <span>{money(finalTotal)}</span>
+416:               </div>
+417:             </div>
+418: 
+419:             <button className="cn-button cn-button-primary mt-5 w-full" disabled={loading || totalItems === 0} onClick={handleSubmit} type="button">
+420:               <Check size={18} />
+421:               {loading ? 'Processing...' : `Confirm Order (${totalItems})`}
+422:             </button>
+423:           </aside>
+424:         </section>
+425: 
+426:         <section className="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
+427:           <div>
+428:             <div className="booking-menu-head mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between" id="booking-menu">
+429:               <div>
+430:                 <h2 className="section-title">Menu</h2>
+431:                 <p className="section-copy">Grouped like the canteen board. Tap plus or type quantities up to 10.</p>
+432:               </div>
+433:               <div className="category-chip-nav">
+434:                 {['All', ...categories].map((category) => (
+435:                   <button
+436:                     key={category}
+437:                     className={`cate
+<truncated 176 bytes>
+           >
+441:                     {category}
+442:                   </button>
+443:                 ))}
+444:               </div>
+445:             </div>
+446: 
+447:             <div className="menu-category-stack">
+448:               {groupedMenu.map(({ category, items }) => (
+449:                 <section
+450:                   className="menu-category"
+451:                   id={`cat-${categoryStyles[category]?.id || category.toLowerCase().replace(/\s+/g, '-')}`}
+452:                   key={category}
+453:                 >
+454:                   <div className="category-line">
+455:                     <span className={`category-pill gradient-${categoryStyles[category]?.tone || 'main'}`}>{category}</span>
+456:                   </div>
+457:                   <div className="menu-list">
+458:                     {items.map((item, index) => (
+459:                       <MenuRow
+460:                         key={item.id}
+461:                         item={item}
+462:                         index={index}
+463:                         quantity={quantities[item.id] || 0}
+464:                         onQuantity={handleQuantity}
+465:                         onSetQuantity={handleSetQuantity}
+466:                       />
+467:                     ))}
+468:                   </div>
+469:                 </section>
+470:               ))}
+471:             </div>
+472:           </div>
+473: 
+474:           <aside className="space-y-5">
+475:             <section className="glass-card p-5">
+476:               <div className="mb-4 flex items-start justify-between">
+477:                 <div>
+478:                   <h2 className="section-title text-2xl">Your Tray</h2>
+479:                   <p className="section-copy">{totalItems ? `${totalItems} item${totalItems === 1 ? '' : 's'} ready.` : 'Add items from the menu.'}</p>
+480:                 </div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:20:39Z
+Completed At: 2026-05-24T09:20:39Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 724
+Total Bytes: 28500
+Showing lines 480 to 560
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+480:             <div className="mt-6 space-y-3">
+481:               <SummaryLine label="Items selected" value={totalItems} />
+482:               <SummaryLine label="Subtotal" value={money(subtotal)} />
+483:               {orderType === 'prebook' && totalItems > 0 && (
+484:                 <SummaryLine className="cn-chip-success rounded-2xl p-3" label="Prebook discount" value={`- ${money(discount)}`} />
+485:               )}
+486:               <div className="flex items-center justify-between border-t border-dashed border-[var(--outline-variant)] pt-4 text-xl font-bold">
+487:                 <span>Total</span>
+488:                 <span>{money(finalTotal)}</span>
+489:               </div>
+490:             </div>
+491: 
+492:             <button className="cn-button cn-button-primary mt-5 w-full" disabled={loading || totalItems === 0} onClick={handleSubmit} type="button">
+493:               <Check size={18} />
+494:               {loading ? 'Processing...' : `Confirm Order (${totalItems})`}
+495:             </button>
+496:           </aside>
+497:         </section>
+498:             <section className="glass-card p-5">
+499:               <div className="mb-4 flex items-start justify-between">
+500:                 <div>
+501:                   <h2 className="section-title text-2xl">Your Tray</h2>
+502:                   <p className="section-copy">{totalItems ? `${totalItems} item${totalItems === 1 ? '' : 's'} ready.` : 'Add items from the menu.'}</p>
+503:                 </div>
+504:                 <ShoppingBag className="text-[var(--primary)]" size={22} />
+505:              
+<truncated 1306 bytes>
+       <div className="mb-3 flex items-center justify-between">
+527:                   <h2 className="section-title text-xl">Special Instructions</h2>
+528:                   <button className="cn-button cn-button-secondary" onClick={addInstruction} type="button">Add</button>
+529:                 </div>
+530:                 <div className="space-y-3">
+531:                   {instructions.length === 0 && (
+532:                     <p className="m-0 text-sm font-semibold text-[var(--on-surface-variant)]">No special instructions added.</p>
+533:                   )}
+534:                   {instructions.map((inst, index) => (
+535:                     <InstructionCard
+536:                       key={`${index}-${inst.items.join('-')}`}
+537:                       inst={inst}
+538:                       index={index}
+539:                       quantities={quantities}
+540:                       setInstructions={setInstructions}
+541:                     />
+542:                   ))}
+543:                 </div>
+544:               </section>
+545:             )}
+546:           </aside>
+547:         </section>
+548:       </main>
+549: 
+550:       {totalItems > 0 && (
+551:         <div className="fixed bottom-[84px] left-4 right-4 z-50 flex items-center justify-between gap-3 rounded-[24px] bg-[rgba(48,49,46,0.92)] p-3 text-[var(--inverse-on-surface)] shadow-2xl backdrop-blur-xl lg:hidden">
+552:           <div>
+553:             <p className="m-0 text-base font-bold">{money(finalTotal)}</p>
+554:             <p className="m-0 text-xs font-semibold opacity-75">{totalItems} item{totalItems === 1 ? '' : 's'} selected</p>
+555:           </div>
+556:           <button className="cn-button cn-button-primary" disabled={loading} onClick={handleSubmit} type="button">Confirm</button>
+557:         </div>
+558:       )}
+559: 
+560:       <nav className="bottom-nav">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:21:22Z
+Completed At: 2026-05-24T09:21:22Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 662
+Total Bytes: 31783
+Showing lines 50 to 100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+50:   const [orderType, setOrderType] = useState('dine-in'); // 'dine-in', 'prebook'
+51:   const [date, setDate] = useState('');
+52:   const [time, setTime] = useState('');
+53:   const [instructions, setInstructions] = useState([]);
+54:   const [loading, setLoading] = useState(false);
+55:   const [showHistory, setShowHistory] = useState(false);
+56:   const [historyData, setHistoryData] = useState([]);
+57:   const [loadingHistory, setLoadingHistory] = useState(false);
+58: 
+59:   // New states for Toast, Refresh, and Promo Popup
+60:   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+61:   const [offerApplied, setOfferApplied] = useState(false);
+62:   const [promoAmount, setPromoAmount] = useState(0);
+63:   const [startY, setStartY] = useState(0);
+64:   const [refreshing, setRefreshing] = useState(false);
+65: 
+66:   const showToast = (message, type = 'success') => {
+67:     setToast({ show: true, message, type });
+68:     setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000);
+69:   };
+70: 
+71:   const handleTouchStart = (e) => {
+72:     if (window.scrollY === 0) setStartY(e.touches[0].clientY);
+73:   };
+74: 
+75:   const handleTouchMove = (e) => {
+76:     if (window.scrollY === 0 && startY > 0) {
+77:       if (e.touches[0].clientY - startY > 80 && !refreshing) {
+78:         setRefreshing(true);
+79:         // Reset quantities to simulate a fresh state
+80:         setQuantities({});
+81:         setInstructions([]);
+82:         setTimeout(() => setRefreshing(false), 1000);
+83:         setStartY(0);
+84:       }
+85:     }
+86:   };
+87: 
+88:   const handleTouchEnd = () => setStartY(0);
+89: 
+90:   const todayStr = new Date().toISOString().split('T')[0];
+91:   const tmr = new Date();
+92:   tmr.setDate(tmr.getDate() + 1);
+93:   const tmrStr = tmr.toISOString().split('T')[0];
+94: 
+95:   const fetchHistory = async (silent = false) => {
+96:     try {
+97:       if (!silent) setLoadingHistory(true);
+98:       const data = await getHistory(username);
+99:       setHistoryData(data); // Already sorted newest first by backend
+100:       if (!silent) setShowHistory(true);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:22:24Z
+Completed At: 2026-05-24T09:22:24Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 662
+Total Bytes: 31783
+Showing lines 300 to 350
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+300:              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+301:            </svg>
+302:         </div>
+303:       )}
+304: 
+305: 
+306: 
+307: 
+308: 
+309:       <header className="bg-gradient-to-br from-[#1a1025] to-[#0d0614] text-white pt-6 pb-5 px-5 rounded-b-[2rem] shadow-2xl shadow-indigo-900/20 mb-6 relative z-10 border-b border-indigo-900/50">
+310:         <div className="flex justify-between items-start">
+311:           <div>
+312:             <h1 className="text-3xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-gray-100 via-gray-300 to-gray-500 drop-shadow-md">BiteSpeed</h1>
+313:             <p className="text-indigo-200/60 text-sm font-bold mt-0.5 tracking-wide">Hello, <span className="text-white">{username}</span></p>
+314:           </div>
+315:           <div className="flex flex-col gap-2.5">
+316:             <button onClick={() => fetchHistory()} className="bg-white/10 hover:bg-indigo-500/90 text-white px-4 py-2 rounded-xl font-bold text-xs transition-all duration-300 backdrop-blur-sm border border-white/10 shadow-sm text-center">
+317:               Order History
+318:             </button>
+319:             <button onClick={onLogout} className="bg-white/10 hover:bg-red-500/90 text-white px-4 py-2 rounded-xl font-bold text-xs transition-all duration-300 backdrop-blur-sm border border-white/10 shadow-sm text-center">
+320:               Logout
+321:             </button>
+322:      
+<truncated 286 bytes>
+2 className="text-xl font-bold mb-4 border-b border-gray-100 pb-3">Ordering Method</h2>
+331:           <div className="flex p-1.5 rounded-2xl mb-4 shadow-inner border border-gray-100 bg-gray-50/80 backdrop-blur">
+332:             <button
+333:               onClick={() => { setOrderType('dine-in'); setIsPrebooking(false); }}
+334:               className={`flex-1 py-3.5 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${orderType === 'dine-in' ? 'bg-[#e23744] text-white shadow-lg shadow-red-500/30 transform scale-[1.02]' : 'bg-transparent text-gray-500 hover:text-gray-800 hover:bg-white'}`}
+335:             >
+336:               <div className={`flex items-center justify-center w-7 h-7 rounded-full ${orderType === 'dine-in' ? 'bg-white/25 shadow-sm' : 'bg-gray-200'}`}>🍽️</div> Dine-In
+337:             </button>
+338:             <button
+339:               onClick={() => {
+340:                 setOrderType('prebook');
+341:                 setIsPrebooking(true);
+342:                 if (navigator.vibrate) navigator.vibrate(50);
+343:               }}
+344:               className={`flex-1 py-3.5 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${orderType === 'prebook' ? 'bg-[#fc8019] text-white shadow-lg shadow-orange-500/30 transform scale-[1.02]' : 'bg-transparent text-gray-500 hover:text-gray-800 hover:bg-white'}`}
+345:             >
+346:               <div className={`flex items-center justify-center w-7 h-7 rounded-full ${orderType === 'prebook' ? 'bg-white/25 shadow-sm' : 'bg-gray-200'}`}>📅</div> Prebook
+347:             </button>
+348:           </div>
+349: 
+350:           <div className={`overflow-hidden transition-all duration-300 ${orderType === 'prebook' ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'}`}>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:23:17Z
+Completed At: 2026-05-24T09:23:17Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/index.css`
+Total Lines: 979
+Total Bytes: 20569
+Showing lines 1 to 100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: @import 'tailwindcss';
+2: 
+3: :root {
+4:   --surface: #fbf9f5;
+5:   --surface-lowest: #ffffff;
+6:   --surface-low: #f5f3ef;
+7:   --surface-container: #efeeea;
+8:   --surface-high: #eae8e4;
+9:   --surface-highest: #e4e2de;
+10:   --on-surface: #1b1c1a;
+11:   --on-surface-variant: #534434;
+12:   --inverse-surface: #30312e;
+13:   --inverse-on-surface: #f2f0ed;
+14:   --outline: #867461;
+15:   --outline-variant: #d8c3ad;
+16:   --primary: #855300;
+17:   --primary-container: #f59e0b;
+18:   --on-primary: #ffffff;
+19:   --secondary: #006c49;
+20:   --secondary-container: #6cf8bb;
+21:   --tertiary: #944a23;
+22:   --tertiary-container: #f79a6c;
+23:   --error: #ba1a1a;
+24:   --error-container: #ffdad6;
+25:   --glass: rgba(255, 255, 255, 0.78);
+26:   --glass-strong: rgba(255, 255, 255, 0.9);
+27:   --glass-border: rgba(255, 255, 255, 0.72);
+28:   --amber-shadow: 0 18px 42px rgba(245, 158, 11, 0.13);
+29:   --soft-shadow: 0 14px 34px rgba(83, 68, 52, 0.09);
+30:   font-family: Lexend, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+31:   color: var(--on-surface);
+32:   background: var(--surface);
+33:   font-synthesis: none;
+34:   text-rendering: optimizeLegibility;
+35:   -webkit-font-smoothing: antialiased;
+36:   -moz-osx-font-smoothing: grayscale;
+37: }
+38: 
+39: * {
+40:   box-sizing: border-box;
+41: }
+42: 
+43: html {
+44:   min-height: 100%;
+45:   background: var(--surface);
+46:   scroll-behavior: smooth;
+47: }
+48: 
+49: body {
+50:   min-width: 320px;
+51:   min-height: 100dvh;
+52:   margin: 0;
+53:   color: var(--on-surface);
+54:   background:
+55:     linear-gradient(135deg, rgba(255, 221, 184, 0.45), transparent 34%),
+56:     linear-gradient(225deg, rgba(108, 248, 187, 0.2), transparent 34%),
+57:     var(--surface);
+58:   font-family: Lexend, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+59:   font-size: 16px;
+60:   letter-spacing: 0;
+61: }
+62: 
+63: button,
+64: input,
+65: select,
+66: textarea {
+67:   font: inherit;
+68:   letter-spacing: 0;
+69: }
+70: 
+71: button {
+72:   -webkit-tap-highlight-color: transparent;
+73: }
+74: 
+75: img {
+76:   max-width: 100%;
+77: }
+78: 
+79: .app-bg {
+80:   min-height: 100dvh;
+81:   background:
+82:     linear-gradient(135deg, rgba(255, 221, 184, 0.45), transparent 34%),
+83:     linear-gradient(225deg, rgba(108, 248, 187, 0.2), transparent 34%),
+84:     var(--surface);
+85: }
+86: 
+87: .management-theme {
+88:   --primary: #006c49;
+89:   --primary-container: #14b885;
+90:   --secondary: #855300;
+91:   --secondary-container: #ffddb8;
+92:   --tertiary: #175c69;
+93:   --tertiary-container: #8edce8;
+94:   --amber-shadow: 0 18px 42px rgba(0, 108, 73, 0.14);
+95:   background:
+96:     linear-gradient(135deg, rgba(108, 248, 187, 0.34), transparent 34%),
+97:     linear-gradient(225deg, rgba(142, 220, 232, 0.26), transparent 36%),
+98:     var(--surface);
+99: }
+100: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:24:11Z
+Completed At: 2026-05-24T09:24:11Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 662
+Total Bytes: 31783
+Showing lines 150 to 250
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+150:     Object.keys(quantities).forEach(id => {
+151:       const item = MENU_ITEMS.find(i => i.id === id);
+152:       if (item) {
+153:         const price = parseInt(item.price.replace('₹', ''), 10);
+154:         total += price * quantities[id];
+155:       }
+156:     });
+157:     return total;
+158:   };
+159: 
+160:   React.useEffect(() => {
+161:     const totalItems = Object.values(quantities).reduce((a, b) => a + b, 0);
+162:     const hasOffer = orderType === 'prebook' && totalItems > 0;
+163:     
+164:     if (hasOffer && !offerApplied) {
+165:       setOfferApplied(true);
+166:       // Fire celebration blast!
+167:       confetti({
+168:         particleCount: 150,
+169:         spread: 80,
+170:         origin: { y: 0.6 },
+171:         colors: ['#10B981', '#34D399', '#FBBF24', '#F59E0B'],
+172:         zIndex: 9999,
+173:       });
+174:       setTimeout(() => {
+175:         confetti({
+176:           particleCount: 100,
+177:           spread: 120,
+178:           origin: { y: 0.5 },
+179:           zIndex: 9999,
+180:         });
+181:       }, 250);
+182:     } else if (!hasOffer && offerApplied) {
+183:       setOfferApplied(false);
+184:     }
+185:   }, [orderType, quantities, offerApplied]);
+186: 
+187:   const handleSubmit = async (e) => {
+188:     e.preventDefault();
+189:     if (calculateTotalItems() === 0) {
+190:         showToast("Please add at least one item.", "error");
+191:         return;
+192:     }
+193: 
+194:     const now = new Date();
+195: 
+196:     if (orderType === 'prebook') {
+197:         if (!date || !time) {
+1
+<truncated 73 bytes>
+, "error");
+199:             return;
+200:         }
+201:         
+202:         const selectedDateTime = new Date(`${date}T${time}`);
+203:         
+204:         if (selectedDateTime <= now) {
+205:             showToast("Cannot book in the past!", "error");
+206:             return;
+207:         }
+208:         
+209:         const hour = selectedDateTime.getHours();
+210:         if (hour < 8 || hour >= 18) {
+211:             showToast("Canteen operates between 8 AM and 6 PM.", "error");
+212:             return;
+213:         }
+214:     }
+215:     
+216:     setLoading(true);
+217:     
+218:     const timestamp = Math.floor(now.getTime() / 1000);
+219:     
+220:     let time_slot;
+221:     let day_of_week;
+222: 
+223:     if (orderType === 'prebook') {
+224:         const prebookDateObj = new Date(date);
+225:         day_of_week = prebookDateObj.getDay();
+226:         time_slot = parseInt(time.split(':')[0], 10);
+227:     } else {
+228:         time_slot = now.getHours();
+229:         day_of_week = now.getDay();
+230:     }
+231:     
+232:     const is_prebooking = orderType === 'prebook' ? 1 : 0;
+233: 
+234:     const ordersArray = Object.keys(quantities).map(id => {
+235:       const itemInstructions = instructions
+236:         .filter(inst => inst.items.includes(id) && inst.text.trim() !== '')
+237:         .map(inst => inst.text.trim())
+238:         .join(' | ');
+239: 
+240:       return {
+241:         username: username,
+242:         item: id,
+243:         time_slot: time_slot,
+244:         quantity: quantities[id],
+245:         is_prebooking: is_prebooking,
+246:         takeaway: 0,
+247:         day_of_week: day_of_week,
+248:         prebooking_date: orderType === 'prebook' ? date : '',
+249:         prebooking_time: orderType === 'prebook' ? time : '',
+250:         notes: itemInstructions,
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:24:33Z
+Completed At: 2026-05-24T09:24:33Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 662
+Total Bytes: 31783
+Showing lines 320 to 450
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+320:               Logout
+321:             </button>
+322:           </div>
+323:         </div>
+324:       </header>
+325: 
+326:       <main className="max-w-md mx-auto px-4">
+327:         
+328:         {/* Booking Type Section */}
+329:         <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6">
+330:           <h2 className="text-xl font-bold mb-4 border-b border-gray-100 pb-3">Ordering Method</h2>
+331:           <div className="flex p-1.5 rounded-2xl mb-4 shadow-inner border border-gray-100 bg-gray-50/80 backdrop-blur">
+332:             <button
+333:               onClick={() => { setOrderType('dine-in'); setIsPrebooking(false); }}
+334:               className={`flex-1 py-3.5 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${orderType === 'dine-in' ? 'bg-[#e23744] text-white shadow-lg shadow-red-500/30 transform scale-[1.02]' : 'bg-transparent text-gray-500 hover:text-gray-800 hover:bg-white'}`}
+335:             >
+336:               <div className={`flex items-center justify-center w-7 h-7 rounded-full ${orderType === 'dine-in' ? 'bg-white/25 shadow-sm' : 'bg-gray-200'}`}>🍽️</div> Dine-In
+337:             </button>
+338:             <button
+339:               onClick={() => {
+340:                 setOrderType('prebook');
+341:                 setIsPrebooking(true);
+342:                 if (navigator.vibrate) navigator.vibrate(50);
+343:               }}
+344:               className={`flex-1 py-3.5 text-sm font-black rounded-xl transition-all duration-300 flex items-ce
+<truncated 6195 bytes>
+x items-center justify-center font-bold text-gray-700 bg-white rounded-full shadow-sm hover:bg-gray-200 transition-colors active:scale-95"
+418:                         >
+419:                           -
+420:                         </button>
+421:                         <input
+422:                           type="text"
+423:                           inputMode="numeric"
+424:                           pattern="[0-9]*"
+425:                           value={quantities[item.id] || ''}
+426:                           onChange={(e) => handleSetQuantity(item.id, e.target.value)}
+427:                           placeholder="0"
+428:                           className="w-6 sm:w-8 text-center font-extrabold text-gray-700 bg-transparent outline-none text-sm sm:text-base"
+429:                         />
+430:                         <button 
+431:                           onClick={() => handleQuantity(item.id, 1)}
+432:                           className="w-8 h-8 flex items-center justify-center font-bold text-white bg-black rounded-full shadow-md hover:bg-gray-800 transition-colors active:scale-95"
+433:                         >
+434:                           +
+435:                         </button>
+436:                       </div>
+437:                     </div>
+438:                   ))}
+439:                 </div>
+440:               </div>
+441:             )})}
+442:           </div>
+443:         </div>
+444: 
+445:         {/* Special Instructions Section */}
+446:         {calculateTotalItems() > 0 && (
+447:           <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6">
+448:             <div className="flex justify-between items-center mb-4">
+449:               <h2 className="text-sm font-bold text-gray-800">Special Instructions</h2>
+450:               {instructions.length < 5 && (
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:24:39Z
+Completed At: 2026-05-24T09:24:39Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 662
+Total Bytes: 31783
+Showing lines 450 to 520
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+450:               {instructions.length < 5 && (
+451:                 <button 
+452:                   onClick={() => setInstructions([...instructions, { text: '', items: [] }])}
+453:                   className="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-100 transition-colors"
+454:                 >
+455:                   + Add Instruction
+456:                 </button>
+457:               )}
+458:             </div>
+459:             
+460:             {instructions.length === 0 && (
+461:               <p className="text-xs text-gray-400 font-medium italic">No special instructions added.</p>
+462:             )}
+463: 
+464:             <div className="space-y-4">
+465:               {instructions.map((inst, index) => (
+466:                 <div key={index} className="bg-gray-50 border border-gray-100 p-4 rounded-2xl relative">
+467:                   <button 
+468:                     onClick={() => {
+469:                       const newInst = [...instructions];
+470:                       newInst.splice(index, 1);
+471:                       setInstructions(newInst);
+472:                     }}
+473:                     className="absolute top-3 right-3 text-red-400 hover:text-red-600 bg-red-50 hover:bg-red-100 rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs"
+474:                   >
+475:                     ×
+476:                   </button>
+477:                   <input
+478:                     type="text"
+479:                     placeholder="e.g. Extra spicy, No onion..."
+480: 
+<truncated 533 bytes>
+-wrap gap-2">
+489:                     {Object.keys(quantities).filter(id => quantities[id] > 0).map(id => {
+490:                       const itemName = MENU_ITEMS.find(m => m.id === id)?.name || id;
+491:                       const isSelected = inst.items.includes(id);
+492:                       return (
+493:                         <button
+494:                           key={id}
+495:                           onClick={() => {
+496:                             const newInst = [...instructions];
+497:                             if (isSelected) {
+498:                               newInst[index].items = newInst[index].items.filter(i => i !== id);
+499:                             } else {
+500:                               newInst[index].items.push(id);
+501:                             }
+502:                             setInstructions(newInst);
+503:                           }}
+504:                           className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 border-2 ${isSelected ? 'bg-indigo-100 border-indigo-400 text-indigo-700' : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'}`}
+505:                         >
+506:                           {itemName} {isSelected && '✓'}
+507:                         </button>
+508:                       );
+509:                     })}
+510:                   </div>
+511:                 </div>
+512:               ))}
+513:             </div>
+514:           </div>
+515:         )}
+516: 
+517:         {/* Order Summary Section */}
+518:         {calculateTotalItems() > 0 && (
+519:           <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6 animate-in slide-in-from-bottom-4 fade-in duration-300">
+520:             <h2 className="text-xl font-bold mb-4 border-b border-gray-100 pb-3">Order Summary</h2>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:24:48Z
+Completed At: 2026-05-24T09:24:48Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 662
+Total Bytes: 31783
+Showing lines 520 to 580
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+520:             <h2 className="text-xl font-bold mb-4 border-b border-gray-100 pb-3">Order Summary</h2>
+521:             <div className="space-y-3 mb-4">
+522:               {Object.keys(quantities).map(id => {
+523:                 const item = MENU_ITEMS.find(i => i.id === id);
+524:                 if (!item || quantities[id] === 0) return null;
+525:                 const price = parseInt(item.price.replace('₹', ''), 10);
+526:                 const itemTotal = price * quantities[id];
+527:                 return (
+528:                   <div key={id} className="flex justify-between items-center text-sm font-medium text-gray-700">
+529:                     <span className="flex-1 truncate pr-4">{item.name} <span className="text-gray-400 ml-1">x{quantities[id]}</span></span>
+530:                     <span className="shrink-0 font-bold">₹{itemTotal}</span>
+531:                   </div>
+532:                 );
+533:               })}
+534:             </div>
+535:             
+536:             <div className="border-t border-dashed border-gray-200 pt-3 space-y-2">
+537:               <div className="flex justify-between items-center text-sm font-bold text-gray-500">
+538:                 <span>Subtotal</span>
+539:                 <span>₹{calculateTotalPrice()}</span>
+540:               </div>
+541:               
+542:               {orderType === 'prebook' && (
+543:                 <div className="flex justify-between items-center text-sm font-bold text-emerald-600 bg-emerald-50 p-2.5 rounded-xl border border-emerald-100 mt-2">
+544:                 
+<truncated 359 bytes>
+0 pt-3 border-t border-gray-100 mt-3">
+550:                 <span>Final Total</span>
+551:                 <span>
+552:                   ₹{orderType === 'prebook' 
+553:                     ? calculateTotalPrice() - Math.round(calculateTotalPrice() * 0.05) 
+554:                     : calculateTotalPrice()}
+555:                 </span>
+556:               </div>
+557:             </div>
+558:           </div>
+559:         )}
+560: 
+561:         {/* Submit Button */}
+562:         <div className="mt-4 relative">
+563:           
+564:           {/* Animated Celebration handled by canvas-confetti in useEffect */}
+565: 
+566:           <button
+567:             onClick={handleSubmit}
+568:             disabled={loading || calculateTotalItems() === 0}
+569:             className="w-full bg-black text-white font-extrabold text-lg py-4 sm:py-5 rounded-2xl shadow-xl hover:bg-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-1 active:translate-y-0 flex flex-col items-center justify-center relative overflow-hidden group"
+570:           >
+571:             <span className="flex items-center space-x-2">
+572:               <span>{loading ? 'Processing Order...' : `Confirm Order (${calculateTotalItems()})`}</span>
+573:               {!loading && calculateTotalItems() > 0 && (
+574:                 <>
+575:                   <span className="opacity-50 mx-1">•</span>
+576:                   {orderType === 'prebook' ? (
+577:                     <div className="flex items-center space-x-2">
+578:                       <span className="line-through opacity-60 text-sm">₹{calculateTotalPrice()}</span>
+579:                       <span className="text-emerald-400 font-black">₹{calculateTotalPrice() - Math.round(calculateTotalPrice() * 0.05)}</span>
+580:                     </div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:36:37Z
+Completed At: 2026-05-24T09:36:38Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 661
+Total Bytes: 31720
+Showing lines 1 to 140
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import React, { useState } from 'react';
+2: import confetti from 'canvas-confetti';
+3: import { MENU_ITEMS } from './data/items';
+4: import { submitOrder, setApiUrl, changePassword, setApiUser, getHistory, logoutUser } from './services/api';
+5: import Auth from './components/Auth';
+6: import Dashboard from './components/Dashboard';
+7: import AdminDashboard from './components/AdminDashboard';
+8: 
+9: const App = () => {
+10:   const [user, setUser] = useState(() => localStorage.getItem('bitespeed_user'));
+11:   const [userType, setUserType] = useState(() => localStorage.getItem('bitespeed_type') || 'n');
+12: 
+13:   React.useEffect(() => {
+14:     if (user) setApiUser(user);
+15:   }, [user]);
+16: 
+17:   const handleLogin = (username, type) => {
+18:     setUser(username);
+19:     setUserType(type);
+20:     setApiUser(username);
+21:   };
+22: 
+23:   const handleLogout = async () => {
+24:     if (user) await logoutUser();
+25:     setUser(null);
+26:     setUserType(null);
+27:     setApiUser('Unknown_User');
+28:   };
+29: 
+30:   if (!user) {
+31:     return <Auth onLogin={handleLogin} />;
+32:   }
+33: 
+34:   if (userType === 'a') {
+35:     return <AdminDashboard onLogout={handleLogout} />;
+36:   }
+37: 
+38:   if (userType === 'm') {
+39:     return <Dashboard onLogout={handleLogout} />;
+40:   }
+41: 
+42:   // Normal User Booking Interface
+43:   return <BookingInterface onLogout={handleLogout} username={user} />;
+44: };
+45: 
+46: 
+47: 
+48: const BookingInterface = ({ onLogout, username }) => {
+49:   const [quantities, setQuantities] = us
+<truncated 1630 bytes>
+     }
+85:     }
+86:   };
+87: 
+88:   const handleTouchEnd = () => setStartY(0);
+89: 
+90:   const todayStr = new Date().toISOString().split('T')[0];
+91:   const tmr = new Date();
+92:   tmr.setDate(tmr.getDate() + 1);
+93:   const tmrStr = tmr.toISOString().split('T')[0];
+94: 
+95:   const fetchHistory = async (silent = false) => {
+96:     try {
+97:       if (!silent) setLoadingHistory(true);
+98:       const data = await getHistory(username);
+99:       setHistoryData(data); // Already sorted newest first by backend
+100:       if (!silent) setShowHistory(true);
+101:     } catch (err) {
+102:       if (!silent) showToast("Failed to load history", "error");
+103:     } finally {
+104:       if (!silent) setLoadingHistory(false);
+105:     }
+106:   };
+107: 
+108:   React.useEffect(() => {
+109:     let interval;
+110:     if (showHistory) {
+111:       interval = setInterval(() => fetchHistory(true), 5000);
+112:     }
+113:     return () => clearInterval(interval);
+114:   }, [showHistory]);
+115: 
+116:   const handleQuantity = (id, delta) => {
+117:     setQuantities(prev => {
+118:       const current = prev[id] || 0;
+119:       const next = Math.max(0, Math.min(10, current + delta));
+120:       if (next === 0) {
+121:         const copy = { ...prev };
+122:         delete copy[id];
+123:         return copy;
+124:       }
+125:       return { ...prev, [id]: next };
+126:     });
+127:   };
+128: 
+129:   const handleSetQuantity = (id, value) => {
+130:     let next = parseInt(value, 10);
+131:     if (isNaN(next) && value !== '') return;
+132:     if (value === '') next = 0;
+133:     if (next < 0) return;
+134:     if (next > 10) next = 10;
+135:     
+136:     setQuantities(prev => {
+137:       if (next === 0) {
+138:         const copy = { ...prev };
+139:         delete copy[id];
+140:         return copy;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:37:15Z
+Completed At: 2026-05-24T09:37:15Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 661
+Total Bytes: 31720
+Showing lines 650 to 661
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+650:               )}
+651:             </div>
+652:           </div>
+653:         </div>
+654:       )}
+655:     </div>
+656:   );
+657: };
+658: 
+659: export default App;
+660: 
+661: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:39:04Z
+Completed At: 2026-05-24T09:39:05Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 508
+Total Bytes: 22730
+Showing lines 500 to 508
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+500:         </div>
+501:       )}
+502:     </div>
+503:   );
+504: };
+505: 
+506: export default App;
+507: 
+508: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:39:27Z
+Completed At: 2026-05-24T09:39:27Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 508
+Total Bytes: 22730
+Showing lines 450 to 480
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+450:                           <span>{order.day_of_week_name}, {order.time_slot}:00</span>
+451:                         </div>
+452:                         <span className="status-badge">
+453:                           {order.status === 'Ordered' || order.status === 'Preparing' ? <span className="pulse-dot"></span> : null}
+454:                           {order.status}
+455:                         </span>
+456:                       </div>
+457:                     ))
+458:                   )}
+459:                 </div>
+460:               </section>
+461:             )}
+462:           </aside>
+463:         </section>
+464:       </main>
+465: 
+466:                           <span className="font-black text-lg text-gray-800 capitalize">{order.item}</span>
+467:                           <span className="font-bold bg-gray-100 text-gray-800 px-2 py-0.5 rounded-md text-sm">x{order.quantity}</span>
+468:                         </div>
+469:                         <div className="flex justify-between items-end">
+470:                            <div className="flex flex-col">
+471:                              <span className="text-xs font-bold text-gray-400 mb-1">ORDERED ON</span>
+472:                              <span className="text-xs font-semibold text-gray-600">{orderDate}</span>
+473:                            </div>
+474:                            <div className="flex flex-col items-end">
+475:                              {order.is_prebooking ? (
+476:                                <span className="text-[10px] uppercase tracking-wider font-extrabold bg-indigo-50 text-indigo-500 px-2.5 py-1 rounded-md border border-indigo-100 mb-1">
+477:                                  Prebook
+478:                                </span>
+479:                              ) : order.takeaway ? (
+480:                                <span className="text-[10px] uppercase tracking-wider font-extrabold bg-orange-50 text-orange-600 px-2.5 py-1 rounded-md border border-orange-100 mb-1">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:39:33Z
+Completed At: 2026-05-24T09:39:33Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 508
+Total Bytes: 22730
+Showing lines 460 to 508
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+460:               </section>
+461:             )}
+462:           </aside>
+463:         </section>
+464:       </main>
+465: 
+466:                           <span className="font-black text-lg text-gray-800 capitalize">{order.item}</span>
+467:                           <span className="font-bold bg-gray-100 text-gray-800 px-2 py-0.5 rounded-md text-sm">x{order.quantity}</span>
+468:                         </div>
+469:                         <div className="flex justify-between items-end">
+470:                            <div className="flex flex-col">
+471:                              <span className="text-xs font-bold text-gray-400 mb-1">ORDERED ON</span>
+472:                              <span className="text-xs font-semibold text-gray-600">{orderDate}</span>
+473:                            </div>
+474:                            <div className="flex flex-col items-end">
+475:                              {order.is_prebooking ? (
+476:                                <span className="text-[10px] uppercase tracking-wider font-extrabold bg-indigo-50 text-indigo-500 px-2.5 py-1 rounded-md border border-indigo-100 mb-1">
+477:                                  Prebook
+478:                                </span>
+479:                              ) : order.takeaway ? (
+480:                                <span className="text-[10px] uppercase tracking-wider font-extrabold bg-orange-50 text-orange-600 px-2.5 py-1 rounded-md border border-orange-100 mb-1">
+481:                                  Takeaway
+482:                                </span>
+483:                              ) : (
+484:                                <span className="text-[10px] uppercase tracking-wider font-extrabold bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-md border border-emerald-100 mb-1">
+485:                                  Dine-In
+486:                                </span>
+487:                              )}
+488:                              <span className={`text-[10px] uppercase tracking-wider font-extrabold px-2.5 py-1 rounded-md border ${(order.status === 'delivered' || order.is_delivered) ? 'bg-gray-100 text-gray-500 border-gray-200' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
+489:                                {(order.status || (order.is_delivered ? 'delivered' : 'pending')).replace(/_/g, ' ')}
+490:                              </span>
+491:                            </div>
+492:                         </div>
+493:                       </div>
+494:                     );
+495:                   })}
+496:                 </div>
+497:               )}
+498:             </div>
+499:           </div>
+500:         </div>
+501:       )}
+502:     </div>
+503:   );
+504: };
+505: 
+506: export default App;
+507: 
+508: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:44:14Z
+Completed At: 2026-05-24T09:44:14Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 701
+Total Bytes: 27074
+Showing lines 380 to 600
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+380:                     id="order-date"
+381:                     className="form-input"
+382:                     type="date"
+383:                     min={todayStr}
+384:                     value={date}
+385:                     onChange={(event) => setDate(event.target.value)}
+386:                   />
+387:                 </div>
+388:                 <div>
+389:                   <label className="form-label" htmlFor="order-time">Time</label>
+390:                   <input
+391:                     id="order-time"
+392:                     className="form-input"
+393:                     type="time"
+394:                     min="08:00"
+395:                     max="18:00"
+396:                     value={time}
+397:                     onChange={(event) => setTime(event.target.value)}
+398:                   />
+399:                 </div>
+400:                 <div className="flex gap-2 sm:col-span-2 lg:col-span-1 xl:col-span-2">
+401:                   <button className="cn-button cn-button-secondary flex-1" onClick={() => setDate(todayStr)} type="button">Today</button>
+402:                   <button className="cn-button cn-button-secondary flex-1" onClick={() => setDate(tomorrowStr)} type="button">Tomorrow</button>
+403:                 </div>
+404:               </div>
+405:             )}
+406: 
+407:             <div className="mt-6 space-y-3">
+408:               <SummaryLine label="Items selected" value={totalItems} />
+409:               <SummaryLine label="Subtotal" value={money(subtotal)} />
+410:               {orderType === 'prebook' && totalItems > 0 && (
+411:            
+<truncated 7740 bytes>
+    loadingHistory={loadingHistory}
+556:           onClose={() => setShowHistory(false)}
+557:         />
+558:       )}
+559:     </div>
+560:   );
+561: };
+562: 
+563: const SummaryLine = ({ label, value, className = '' }) => (
+564:   <div className={`flex items-center justify-between gap-4 text-sm font-semibold text-[var(--on-surface-variant)] ${className}`}>
+565:     <span>{label}</span>
+566:     <strong className="text-[var(--on-surface)]">{value}</strong>
+567:   </div>
+568: );
+569: 
+570: const MenuRow = ({ item, quantity, onQuantity, onSetQuantity, index }) => (
+571:   <article className="menu-row-card" style={{ animationDelay: `${Math.min(index * 42, 220)}ms` }}>
+572:     <div className="menu-row-image">
+573:       <img src={item.img} alt={item.name} loading="lazy" />
+574:     </div>
+575:     <div className="menu-row-body">
+576:       <div className="min-w-0">
+577:         <h3>{item.name}</h3>
+578:         <p>{item.description}</p>
+579:       </div>
+580:       <div className="menu-row-meta">
+581:         <span>{item.price}</span>
+582:         <small><Clock size={12} /> 12 min</small>
+583:       </div>
+584:     </div>
+585:     <div className="menu-row-qty">
+586:       <button className="qty-round ghost" onClick={() => onQuantity(item.id, -1)} type="button" aria-label={`Decrease ${item.name}`}>
+587:         <Minus size={15} />
+588:       </button>
+589:       <input
+590:         inputMode="numeric"
+591:         pattern="[0-9]*"
+592:         value={quantity || ''}
+593:         onChange={(event) => onSetQuantity(item.id, event.target.value)}
+594:         placeholder="0"
+595:         aria-label={`${item.name} quantity`}
+596:       />
+597:       <button className="qty-round add" onClick={() => onQuantity(item.id, 1)} type="button" aria-label={`Increase ${item.name}`}>
+598:         <Plus size={15} />
+599:       </button>
+600:     </div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:44:26Z
+Completed At: 2026-05-24T09:44:27Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 701
+Total Bytes: 27074
+Showing lines 300 to 379
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+300:     } finally {
+301:       setLoading(false);
+302:     }
+303:   };
+304: 
+305:   return (
+306:     <div
+307:       className="app-bg"
+308:       onTouchStart={handleTouchStart}
+309:       onTouchMove={handleTouchMove}
+310:       onTouchEnd={handleTouchEnd}
+311:     >
+312:       <Toast toast={toast} />
+313:       {refreshing && (
+314:         <div className="fixed left-1/2 top-24 z-50 -translate-x-1/2 rounded-full bg-white/90 p-3 shadow-lg">
+315:           <RefreshCw className="animate-spin text-[var(--primary)]" size={20} />
+316:         </div>
+317:       )}
+318: 
+319:       <AppHeader
+320:         title="BiteSpeed Co."
+321:         subtitle={`Hello, ${username}`}
+322:         actions={(
+323:           <>
+324:             <span className={`cn-chip ${isLive ? 'cn-chip-success' : 'cn-chip-danger'} text-[11px] sm:text-sm max-w-[150px] sm:max-w-none overflow-hidden text-ellipsis whitespace-nowrap`}>
+325:               {isLive ? <span className="pulse-dot" /> : null}
+326:               {isLive ? 'Live' : 'Not Live'} - Opens at 8, Closes at 6
+327:             </span>
+328:             <button className="cn-button cn-button-secondary" onClick={() => fetchHistory()} type="button">
+329:               <History size={17} />
+330:               <span className="hide-mobile">History</span>
+331:             </button>
+332:             <button className="cn-button cn-button-danger cn-icon-button" onClick={onLogout} type="button" aria-label="Logout">
+333:               <LogOut size={17} />
+334:             </button>
+335:           </>
+336:         )}
+337:       />
+338: 
+339:       <main className="app-shell">
+340:         <section className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px]">
+341: 
+342:           <aside className="glass-card p-5">
+343:             <div className="mb-5 flex items-start justify-between gap-4">
+344:               <div>
+345:                 <h2 className="section-title text-2xl">Ordering Method</h2>
+346:                 <p className="section-copy">
+347:                   {orderType === 'prebook' ? 'Reserve ahead and save 5%.' : 'Immediate prep for dine-in.'}
+348:                 </p>
+349:               </div>
+350:             </div>
+351:             <div className="cn-segmented">
+352:               <button
+353:                 className={`cn-segment ${orderType === 'dine-in' ? 'active' : ''}`}
+354:                 onClick={() => setOrderType('dine-in')}
+355:                 type="button"
+356:               >
+357:                 <Utensils size={16} />
+358:                 Dine-In
+359:               </button>
+360:               <button
+361:                 className={`cn-segment ${orderType === 'prebook' ? 'active' : ''}`}
+362:                 onClick={() => {
+363:                   setOrderType('prebook');
+364:                   if (!date) setDate(todayStr);
+365:                   if (!time) setTime('13:00');
+366:                   if (navigator.vibrate) navigator.vibrate(35);
+367:                 }}
+368:                 type="button"
+369:               >
+370:                 <Calendar size={16} />
+371:                 Prebook
+372:               </button>
+373:             </div>
+374: 
+375:             {orderType === 'prebook' && (
+376:               <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+377:                 <div>
+378:                   <label className="form-label" htmlFor="order-date">Date</label>
+379:                   <input
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:44:44Z
+Completed At: 2026-05-24T09:44:44Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/index.css`
+Total Lines: 979
+Total Bytes: 20569
+Showing lines 315 to 330
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+315:   background: transparent;
+316:   font-size: 13px;
+317:   font-weight: 700;
+318:   transition: transform 160ms ease, background 160ms ease, color 160ms ease, box-shadow 160ms ease;
+319: }
+320: 
+321: .cn-segment.active {
+322:   color: var(--on-primary);
+323:   background: var(--primary-container);
+324:   box-shadow: 0 12px 24px rgba(245, 158, 11, 0.22);
+325:   transform: scale(1.01);
+326: }
+327: 
+328: .form-label {
+329:   display: block;
+330:   margin-bottom: 7px;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:44:56Z
+Completed At: 2026-05-24T09:44:56Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 701
+Total Bytes: 27074
+Showing lines 330 to 345
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+330:               <span className="hide-mobile">History</span>
+331:             </button>
+332:             <button className="cn-button cn-button-danger cn-icon-button" onClick={onLogout} type="button" aria-label="Logout">
+333:               <LogOut size={17} />
+334:             </button>
+335:           </>
+336:         )}
+337:       />
+338: 
+339:       <main className="app-shell">
+340:         <section className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px]">
+341: 
+342:           <aside className="glass-card p-5">
+343:             <div className="mb-5 flex items-start justify-between gap-4">
+344:               <div>
+345:                 <h2 className="section-title text-2xl">Ordering Method</h2>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:45:27Z
+Completed At: 2026-05-24T09:45:27Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/index.css`
+Total Lines: 979
+Total Bytes: 20569
+Showing lines 370 to 380
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+370:   font-weight: 700;
+371:   white-space: nowrap;
+372: }
+373: 
+374: .cn-chip-success {
+375:   color: var(--secondary);
+376:   background: rgba(108, 248, 187, 0.22);
+377:   border-color: rgba(0, 108, 73, 0.12);
+378: }
+379: 
+380: .cn-chip-warm {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:45:43Z
+Completed At: 2026-05-24T09:45:44Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/index.css`
+Total Lines: 979
+Total Bytes: 20569
+Showing lines 198 to 205
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+198: 
+199: .glass-card {
+200:   background: var(--glass);
+201:   border: 1px solid var(--glass-border);
+202:   border-radius: 24px;
+203:   box-shadow: var(--soft-shadow);
+204:   backdrop-filter: blur(20px);
+205: }
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:46:00Z
+Completed At: 2026-05-24T09:46:00Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 701
+Total Bytes: 27074
+Showing lines 474 to 525
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+474:           <aside className="space-y-5">
+475:             <section className="glass-card p-5">
+476:               <div className="mb-4 flex items-start justify-between">
+477:                 <div>
+478:                   <h2 className="section-title text-2xl">Your Tray</h2>
+479:                   <p className="section-copy">{totalItems ? `${totalItems} item${totalItems === 1 ? '' : 's'} ready.` : 'Add items from the menu.'}</p>
+480:                 </div>
+481:                 <ShoppingBag className="text-[var(--primary)]" size={22} />
+482:               </div>
+483:               <div className="space-y-3">
+484:                 {selectedItems.length === 0 ? (
+485:                   <div className="rounded-3xl border border-dashed border-[var(--outline-variant)] bg-white/45 p-5 text-center text-sm font-semibold text-[var(--on-surface-variant)]">
+486:                     Your tray is waiting.
+487:                   </div>
+488:                 ) : selectedItems.map(({ item, qty }) => (
+489:                   <div key={item.id} className="grid grid-cols-[46px_minmax(0,1fr)_auto] items-center gap-3">
+490:                     <img className="h-11 w-11 rounded-2xl object-cover" src={item.img} alt="" />
+491:                     <div className="min-w-0">
+492:                       <p className="m-0 truncate text-sm font-bold">{item.name} x{qty}</p>
+493:                       <p className="m-0 text-xs font-semibold text-[var(--on-surface-variant)]">{item.category}</p>
+494:                     </div>
+495:                     <span className="text-sm font-bold text-[var(--primary)]">{money(priceValue(item.price) * qty)}</span>
+496:                   </div>
+497:                 ))}
+498:               </div>
+499:             </section>
+500: 
+501:             {totalItems > 0 && (
+502:               <section className="glass-card p-5">
+503:                 <div className="mb-3 flex items-center justify-between">
+504:                   <h2 className="section-title text-xl">Special Instructions</h2>
+505:                   <button className="cn-button cn-button-secondary" onClick={addInstruction} type="button">Add</button>
+506:                 </div>
+507:                 <div className="space-y-3">
+508:                   {instructions.length === 0 && (
+509:                     <p className="m-0 text-sm font-semibold text-[var(--on-surface-variant)]">No special instructions added.</p>
+510:                   )}
+511:                   {instructions.map((inst, index) => (
+512:                     <InstructionCard
+513:                       key={`${index}-${inst.items.join('-')}`}
+514:                       inst={inst}
+515:                       index={index}
+516:                       quantities={quantities}
+517:                       setInstructions={setInstructions}
+518:                     />
+519:                   ))}
+520:                 </div>
+521:               </section>
+522:             )}
+523:           </aside>
+524:         </section>
+525:       </main>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T09:46:59Z
+Completed At: 2026-05-24T09:46:59Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 707
+Total Bytes: 27301
+Showing lines 1 to 20
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import React, { useCallback, useEffect, useMemo, useState } from 'react';
+2: import confetti from 'canvas-confetti';
+3: import {
+4:   Calendar,
+5:   Check,
+6:   Clock,
+7:   History,
+8:   LogOut,
+9:   Minus,
+10:   Plus,
+11:   Receipt,
+12:   RefreshCw,
+13:   ShoppingBag,
+14:   Utensils,
+15:   X,
+16: } from 'lucide-react';
+17: import { MENU_ITEMS } from './data/items';
+18: import { submitOrder, setApiUser, getHistory, logoutUser } from './services/api';
+19: import Auth from './components/Auth';
+20: import Dashboard from './components/Dashboard';
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T10:07:28Z
+Completed At: 2026-05-24T10:07:28Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 707
+Total Bytes: 27301
+Showing lines 400 to 480
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+400:                 <div className="flex gap-2 sm:col-span-2 lg:col-span-1 xl:col-span-2">
+401:                   <button className="cn-button cn-button-secondary flex-1" onClick={() => setDate(todayStr)} type="button">Today</button>
+402:                   <button className="cn-button cn-button-secondary flex-1" onClick={() => setDate(tomorrowStr)} type="button">Tomorrow</button>
+403:                 </div>
+404:               </div>
+405:             )}
+406: 
+407: 
+408:           </aside>
+409:         </section>
+410: 
+411:         <section className="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
+412:           <div>
+413:             <div className="booking-menu-head mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between" id="booking-menu">
+414:               <div>
+415:                 <h2 className="section-title">Menu</h2>
+416:                 <p className="section-copy">Grouped like the canteen board. Tap plus or type quantities up to 10.</p>
+417:               </div>
+418:               <div className="category-chip-nav">
+419:                 {['All', ...categories].map((category) => (
+420:                   <button
+421:                     key={category}
+422:                     className={`category-chip ${activeCategory === category ? 'active' : ''}`}
+423:                     onClick={() => jumpToCategory(category)}
+424:                     type="button"
+425:                   >
+426:                     {category}
+427:                   </button>
+428:                 ))}
+429:               </div>
+430:             </div>
+431: 
+432:             
+<truncated 1002 bytes>
+={handleSetQuantity}
+451:                       />
+452:                     ))}
+453:                   </div>
+454:                 </section>
+455:               ))}
+456:             </div>
+457:           </div>
+458: 
+459:           <aside className="space-y-5">
+460:             <section className="glass-card p-5">
+461:               <div className="mb-4 flex items-start justify-between">
+462:                 <div>
+463:                   <h2 className="section-title text-2xl">Your Tray</h2>
+464:                   <p className="section-copy">{totalItems ? `${totalItems} item${totalItems === 1 ? '' : 's'} ready.` : 'Add items from the menu.'}</p>
+465:                 </div>
+466:                 <ShoppingBag className="text-[var(--primary)]" size={22} />
+467:               </div>
+468:               <div className="space-y-3">
+469:                 {selectedItems.length === 0 ? (
+470:                   <div className="rounded-3xl border border-dashed border-[var(--outline-variant)] bg-white/45 p-5 text-center text-sm font-semibold text-[var(--on-surface-variant)]">
+471:                     Your tray is waiting.
+472:                   </div>
+473:                 ) : selectedItems.map(({ item, qty }) => (
+474:                   <div key={item.id} className="grid grid-cols-[46px_minmax(0,1fr)_auto] items-center gap-3">
+475:                     <img className="h-11 w-11 rounded-2xl object-cover" src={item.img} alt="" />
+476:                     <div className="min-w-0">
+477:                       <p className="m-0 truncate text-sm font-bold">{item.name} x{qty}</p>
+478:                       <p className="m-0 text-xs font-semibold text-[var(--on-surface-variant)]">{item.category}</p>
+479:                     </div>
+480:                     <span className="text-sm font-bold text-[var(--primary)]">{money(priceValue(item.price) * qty)}</span>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T10:07:45Z
+Completed At: 2026-05-24T10:07:45Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/index.css`
+Total Lines: 986
+Total Bytes: 20746
+Showing lines 460 to 470
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+460: .bottom-nav {
+461:   position: fixed;
+462:   left: 0;
+463:   right: 0;
+464:   bottom: 0;
+465:   z-index: 50;
+466:   display: none;
+467:   min-height: 72px;
+468:   padding: 8px 16px max(8px, env(safe-area-inset-bottom));
+469:   background: rgba(255, 255, 255, 0.92);
+470:   border-top: 1px solid rgba(216, 195, 173, 0.56);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T10:07:53Z
+Completed At: 2026-05-24T10:07:53Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/index.css`
+Total Lines: 986
+Total Bytes: 20746
+Showing lines 510 to 515
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+510: }
+511: 
+512: .category-chip-nav::-webkit-scrollbar {
+513:   display: none;
+514: }
+515: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T10:07:59Z
+Completed At: 2026-05-24T10:07:59Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/index.css`
+Total Lines: 986
+Total Bytes: 20746
+Showing lines 910 to 920
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+910: 
+911:   .responsive-grid {
+912:     grid-template-columns: 1fr;
+913:   }
+914: 
+915:   .topbar-actions .hide-mobile {
+916:     display: none;
+917:   }
+918: 
+919:   .bottom-nav {
+920:     display: flex;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T10:08:38Z
+Completed At: 2026-05-24T10:08:38Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 707
+Total Bytes: 27301
+Showing lines 600 to 660
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+600:         placeholder="0"
+601:         aria-label={`${item.name} quantity`}
+602:       />
+603:       <button className="qty-round add" onClick={() => onQuantity(item.id, 1)} type="button" aria-label={`Increase ${item.name}`}>
+604:         <Plus size={15} />
+605:       </button>
+606:     </div>
+607:   </article>
+608: );
+609: 
+610: const InstructionCard = ({ inst, index, quantities, setInstructions }) => {
+611:   const selectedIds = Object.keys(quantities).filter((id) => quantities[id] > 0);
+612:   return (
+613:     <div className="rounded-3xl border border-white/70 bg-white/55 p-4">
+614:       <div className="mb-3 flex gap-2">
+615:         <input
+616:           className="form-input"
+617:           type="text"
+618:           placeholder="Extra spicy, no onion..."
+619:           value={inst.text}
+620:           onChange={(event) => {
+621:             setInstructions((prev) => prev.map((entry, idx) => (idx === index ? { ...entry, text: event.target.value } : entry)));
+622:           }}
+623:         />
+624:         <button
+625:           className="cn-button cn-button-danger cn-icon-button"
+626:           onClick={() => setInstructions((prev) => prev.filter((_, idx) => idx !== index))}
+627:           type="button"
+628:           aria-label="Remove instruction"
+629:         >
+630:           <X size={16} />
+631:         </button>
+632:       </div>
+633:       <div className="flex flex-wrap gap-2">
+634:         {selectedIds.map((id) => {
+635:           const item = MENU_ITEMS.find((entry) => entry.id === id);
+636:           const active = inst.items.includes(id);
+637:           return (
+638:             <button
+639:               key={id}
+640:               className={`cn-button ${active ? 'cn-button-primary' : 'cn-button-secondary'}`}
+641:               onClick={() => {
+642:                 setInstructions((prev) => prev.map((entry, idx) => {
+643:                   if (idx !== index) return entry;
+644:                   return {
+645:                     ...entry,
+646:                     items: active ? entry.items.filter((itemId) => itemId !== id) : [...entry.items, id],
+647:                   };
+648:                 }));
+649:               }}
+650:               type="button"
+651:             >
+652:               {item?.name || id}
+653:             </button>
+654:           );
+655:         })}
+656:       </div>
+657:     </div>
+658:   );
+659: };
+660: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T10:09:51Z
+Completed At: 2026-05-24T10:09:51Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/index.css`
+Total Lines: 959
+Total Bytes: 20191
+Showing lines 885 to 905
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+885:     grid-template-columns: 1fr;
+886:   }
+887: 
+888:   .topbar-actions .hide-mobile {
+889:     display: none;
+890:   }
+891: 
+892:   .bottom-nav {
+893:     display: flex;
+894:   }
+895: 
+896:   .analytics-grid {
+897:     grid-template-columns: 1fr;
+898:   }
+899: 
+900:   .chart-panel {
+901:     min-height: 280px;
+902:   }
+903: 
+904:   .category-chip-nav {
+905:     top: 64px;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T10:10:15Z
+Completed At: 2026-05-24T10:10:15Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/index.css`
+Total Lines: 957
+Total Bytes: 20153
+Showing lines 855 to 865
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+855:   100% { box-shadow: 0 0 0 0 rgba(0, 108, 73, 0); }
+856: }
+857: 
+858: @media (max-width: 920px) {
+859:   .app-shell {
+860:     padding: 18px 16px 112px;
+861:   }
+862: 
+863:   .cn-topbar-inner {
+864:     min-height: 64px;
+865:     padding: 10px 16px;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T10:27:43Z
+Completed At: 2026-05-24T10:27:43Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 662
+Total Bytes: 31783
+Showing lines 300 to 350
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+300:              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+301:            </svg>
+302:         </div>
+303:       )}
+304: 
+305: 
+306: 
+307: 
+308: 
+309:       <header className="bg-gradient-to-br from-[#1a1025] to-[#0d0614] text-white pt-6 pb-5 px-5 rounded-b-[2rem] shadow-2xl shadow-indigo-900/20 mb-6 relative z-10 border-b border-indigo-900/50">
+310:         <div className="flex justify-between items-start">
+311:           <div>
+312:             <h1 className="text-3xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-gray-100 via-gray-300 to-gray-500 drop-shadow-md">BiteSpeed</h1>
+313:             <p className="text-indigo-200/60 text-sm font-bold mt-0.5 tracking-wide">Hello, <span className="text-white">{username}</span></p>
+314:           </div>
+315:           <div className="flex flex-col gap-2.5">
+316:             <button onClick={() => fetchHistory()} className="bg-white/10 hover:bg-indigo-500/90 text-white px-4 py-2 rounded-xl font-bold text-xs transition-all duration-300 backdrop-blur-sm border border-white/10 shadow-sm text-center">
+317:               Order History
+318:             </button>
+319:             <button onClick={onLogout} className="bg-white/10 hover:bg-red-500/90 text-white px-4 py-2 rounded-xl font-bold text-xs transition-all duration-300 backdrop-blur-sm border border-white/10 shadow-sm text-center">
+320:               Logout
+321:             </button>
+322:      
+<truncated 286 bytes>
+2 className="text-xl font-bold mb-4 border-b border-gray-100 pb-3">Ordering Method</h2>
+331:           <div className="flex p-1.5 rounded-2xl mb-4 shadow-inner border border-gray-100 bg-gray-50/80 backdrop-blur">
+332:             <button
+333:               onClick={() => { setOrderType('dine-in'); setIsPrebooking(false); }}
+334:               className={`flex-1 py-3.5 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${orderType === 'dine-in' ? 'bg-[#e23744] text-white shadow-lg shadow-red-500/30 transform scale-[1.02]' : 'bg-transparent text-gray-500 hover:text-gray-800 hover:bg-white'}`}
+335:             >
+336:               <div className={`flex items-center justify-center w-7 h-7 rounded-full ${orderType === 'dine-in' ? 'bg-white/25 shadow-sm' : 'bg-gray-200'}`}>🍽️</div> Dine-In
+337:             </button>
+338:             <button
+339:               onClick={() => {
+340:                 setOrderType('prebook');
+341:                 setIsPrebooking(true);
+342:                 if (navigator.vibrate) navigator.vibrate(50);
+343:               }}
+344:               className={`flex-1 py-3.5 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${orderType === 'prebook' ? 'bg-[#fc8019] text-white shadow-lg shadow-orange-500/30 transform scale-[1.02]' : 'bg-transparent text-gray-500 hover:text-gray-800 hover:bg-white'}`}
+345:             >
+346:               <div className={`flex items-center justify-center w-7 h-7 rounded-full ${orderType === 'prebook' ? 'bg-white/25 shadow-sm' : 'bg-gray-200'}`}>📅</div> Prebook
+347:             </button>
+348:           </div>
+349: 
+350:           <div className={`overflow-hidden transition-all duration-300 ${orderType === 'prebook' ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'}`}>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T10:28:24Z
+Completed At: 2026-05-24T10:28:25Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/App.jsx`
+Total Lines: 662
+Total Bytes: 31783
+Showing lines 1 to 30
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import React, { useState } from 'react';
+2: import confetti from 'canvas-confetti';
+3: import { MENU_ITEMS } from './data/items';
+4: import { submitOrder, setApiUrl, changePassword, setApiUser, getHistory, logoutUser } from './services/api';
+5: import Auth from './components/Auth';
+6: import Dashboard from './components/Dashboard';
+7: import AdminDashboard from './components/AdminDashboard';
+8: 
+9: const App = () => {
+10:   const [user, setUser] = useState(() => localStorage.getItem('bitespeed_user'));
+11:   const [userType, setUserType] = useState(() => localStorage.getItem('bitespeed_type') || 'n');
+12: 
+13:   React.useEffect(() => {
+14:     if (user) setApiUser(user);
+15:   }, [user]);
+16: 
+17:   const handleLogin = (username, type) => {
+18:     setUser(username);
+19:     setUserType(type);
+20:     setApiUser(username);
+21:   };
+22: 
+23:   const handleLogout = async () => {
+24:     if (user) await logoutUser();
+25:     setUser(null);
+26:     setUserType(null);
+27:     setApiUser('Unknown_User');
+28:   };
+29: 
+30:   if (!user) {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+--- VIEW_FILE ---
+Created At: 2026-05-24T10:29:23Z
+Completed At: 2026-05-24T10:29:24Z
+File Path: `file:///c:/Users/RAMAKRISHNA/OneDrive/Desktop/e2/frontend/src/dump.json`
+Total Lines: 1
+Total Bytes: 4572
+Showing lines 1 to 1
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: {"step_index":570,"source":"MODEL","type":"PLANNER_RESPONSE","status":"DONE","created_at":"2026-05-24T09:24:48Z","thinking":"**Prioritizing Tool Usage**\n\nI'm now focusing on tool selection, understanding that specificity is key. I'm prioritizing the 'view_file' tool when directly accessing file content. If a more general task comes up, I'll then consider command-line execution for broader functionality, as needed.\n\n\n**Refining Tool Choice**\n\nI'm now honing my tool usage strategy, remembering rules about avoiding `cat` for file creation and `grep` within bash. I'm focusing on direct tool calls and careful planning before execution. I've noted that the UI discrepancy regarding the bill's placement is related to the \"Ordering Method\" section.\n\n\n**Analyzing UI Layout Discrepancies**\n\nI've just pinpointed the UI discrepancy regarding the bill's placement. The \"Ordering Method\" section, previously combined with the bill in the `<aside>`, was at the top on mobile in the old UI. Now, in the current `App.jsx`, they're separated, with \"Ordering Method\" at the top and the \"Order Summary\" at the bottom. The user's comment clarifies they want the bill at the bottom, and that old layout explains their perceived issue.\n\n\n**Evaluating UI Impact**\n\nI'm now focused on the UI shift from the `BookingInterface` with potentially truncated file data to the inline Tailwind version. Initially, I was concerned about reverting changes due to data loss. I've realized the user's focus is the \"Order Summary\" bill placement and the \"Ordering Method\" location. The inline T
+<truncated 1011 bytes>
+rgs":{"AllowMultiple":"false","Description":"\"Change the prebook toggle to green in App.jsx\"","EndLine":"348","Instruction":"\"Replace the orange color with green for the prebooking toggle button\"","ReplacementContent":"\"            <button\\n              onClick={() => {\\n                setOrderType('prebook');\\n                setIsPrebooking(true);\\n                if (navigator.vibrate) navigator.vibrate(50);\\n              }}\\n              className={`flex-1 py-3.5 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${orderType === 'prebook' ? 'bg-[#10b981] text-white shadow-lg shadow-emerald-500/30 transform scale-[1.02]' : 'bg-transparent text-gray-500 hover:text-gray-800 hover:bg-white'}`}\\n            >\\n              <div className={`flex items-center justify-center w-7 h-7 rounded-full ${orderType === 'prebook' ? 'bg-white/25 shadow-sm' : 'bg-gray-200'}`}>📅</div> Prebook\\n            </button>\"","StartLine":"338","TargetContent":"\"            <button\\n              onClick={() => {\\n                setOrderType('prebook');\\n                setIsPrebooking(true);\\n                if (navigator.vibrate) navigator.vibrate(50);\\n              }}\\n              className={`flex-1 py-3.5 text-sm font-black rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${orderType === 'prebook' ? 'bg-[#fc8019] text-white shadow-lg shadow-orange-500/30 transform scale-[1.02]' : 'bg-transparent text-gray-500 hover:text-gray-800 hover:bg-white'}`}\\n            >\\n              <div className={`flex items-center justify-center w-7 h-7 rounded-full ${orderType === 'prebook' ? 'bg-white/25 shadow-sm' : 'bg-gray-200'}`}>📅</div> Prebook\\n            </button>\"","TargetFile":"\"c:\\\\Users\\\\RAMAKRISHNA\\\\OneDrive\\\\Desktop\\\\e2\\\\frontend\\\\src\\\\App.jsx\"","toolAction":"\"Editing file\"","toolSummary":"\"Make prebook toggle green\""}}]}
+The above content shows the entire, complete file contents of the requested file.
+

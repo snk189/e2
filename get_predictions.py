@@ -23,10 +23,16 @@ def prepare_data(df):
     # Calculate effective_timestamp based on prebooking status
     df['effective_timestamp'] = np.where(df['is_prebooking'] == 1, df['prebooking_datetime'], df['order_timestamp'])
     
-    # Convert to datetime and adjust to local time if needed (assuming local timezone or naive works)
-    # We will derive date_obj and time_slot directly from effective_timestamp
-    df['effective_datetime'] = pd.to_datetime(df['effective_timestamp'], unit='s')
-    df['date_obj'] = df['effective_datetime'].dt.normalize()
+    # Convert to datetime and adjust to local time
+    # Convert numeric effectively to handle edge cases
+    df['effective_timestamp'] = pd.to_numeric(df['effective_timestamp'], errors='coerce')
+    df = df.dropna(subset=['effective_timestamp'])
+    
+    # Read timestamp in UTC, then shift to IST so time_slot hour matches local time
+    df['effective_datetime'] = pd.to_datetime(df['effective_timestamp'], unit='s', utc=True).dt.tz_convert('Asia/Kolkata')
+    
+    # Strip timezone to enable standard pandas datetime filtering locally
+    df['date_obj'] = df['effective_datetime'].dt.normalize().dt.tz_localize(None)
     df['time_slot'] = df['effective_datetime'].dt.hour
     
     # Filter dataset strictly to Jan 1, 2026 - Jun 30, 2026
@@ -407,9 +413,13 @@ def main():
         X, y, feature_cols, encoded_cat_cols = extract_features(df)
         model = build_model(X, y, feature_cols, split_idx)
 
+        from datetime import timezone, timedelta
+        ist = timezone(timedelta(hours=5, minutes=30))
+        now = datetime.now(ist)
+        
         # get today's actual
-        today_date_str = datetime.now().strftime('%Y-%m-%d')
-        yesterday_date_str = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+        today_date_str = now.strftime('%Y-%m-%d')
+        yesterday_date_str = (now - timedelta(days=1)).strftime('%Y-%m-%d')
 
         today_df = df[df['date_obj'].dt.strftime('%Y-%m-%d') == today_date_str]
         yesterday_df = df[df['date_obj'].dt.strftime('%Y-%m-%d') == yesterday_date_str]
@@ -418,7 +428,7 @@ def main():
         yesterday_actual = yesterday_df.groupby('item')['quantity'].sum().to_dict()
         today_actual_hourly = today_df.groupby(['item', 'time_slot'])['quantity'].sum().to_dict()
 
-        today_target = datetime.now()
+        today_target = now
         tomorrow_target = today_target + timedelta(days=1)
 
         today_pred = get_forecast(today_target, df, model, feature_cols, lookups)
@@ -427,8 +437,8 @@ def main():
         unique_items = df['item'].unique()
 
         # Financials mapping
-        price_map = {'dosa': 60, 'pizza': 150, 'sandwich': 50, 'milkshake': 80, 'tea': 20}
-        cost_map = {'dosa': 25, 'pizza': 70, 'sandwich': 20, 'milkshake': 40, 'tea': 5}
+        price_map = {'dosa': 60, 'pizza': 150, 'sandwich': 50, 'milkshake': 80, 'tea': 20, 'burger': 80, 'idly': 40, 'pulao': 100, 'coffee': 25, 'juice': 45, 'icecream': 50, 'samosa': 15, 'panipuri': 30}
+        cost_map = {'dosa': 25, 'pizza': 70, 'sandwich': 20, 'milkshake': 40, 'tea': 5, 'burger': 40, 'idly': 15, 'pulao': 50, 'coffee': 10, 'juice': 20, 'icecream': 25, 'samosa': 5, 'panipuri': 10}
 
         total_revenue = 0
         total_cost = 0
@@ -443,7 +453,7 @@ def main():
         }
 
         # Format the response
-        current_hour = datetime.now().hour
+        current_hour = now.hour
 
         today_list = []
         for item in unique_items:

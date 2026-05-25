@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Check, RefreshCw, Save } from 'lucide-react';
 import { getAdminSettings, updateAdminSettings } from '../services/api';
 
 const EnvironmentSettings = () => {
@@ -8,7 +9,7 @@ const EnvironmentSettings = () => {
     season: 'winter',
     temperature_celsius: 25.0,
     weather: 'sunny',
-    is_exam_week: 0
+    is_exam_week: 0,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -18,9 +19,9 @@ const EnvironmentSettings = () => {
     const fetchSettings = async () => {
       try {
         const data = await getAdminSettings();
-        setSettings(data);
-      } catch (err) {
-        console.error("Failed to load settings", err);
+        setSettings((current) => ({ ...current, ...data }));
+      } catch {
+        setMessage('Could not load settings.');
       } finally {
         setLoading(false);
       }
@@ -28,13 +29,15 @@ const EnvironmentSettings = () => {
     fetchSettings();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value, type } = e.target;
-    setSettings(prev => ({
+  const handleChange = (event) => {
+    const { name, value, type } = event.target;
+    setSettings((prev) => ({
       ...prev,
-      [name]: ['is_holiday', 'is_bridge_day', 'is_exam_week'].includes(name) 
-              ? parseInt(value, 10) 
-              : type === 'number' ? parseFloat(value) : value
+      [name]: ['is_holiday', 'is_bridge_day', 'is_exam_week'].includes(name)
+        ? Number.parseInt(value, 10)
+        : type === 'number'
+          ? Number.parseFloat(value)
+          : value,
     }));
   };
 
@@ -43,132 +46,95 @@ const EnvironmentSettings = () => {
     setMessage('');
     try {
       await updateAdminSettings(settings);
-      setMessage('Settings saved successfully! New orders will now use these values.');
-      setTimeout(() => setMessage(''), 3000);
-    } catch (err) {
+      setMessage('Settings saved. New orders will use this context.');
+      window.setTimeout(() => setMessage(''), 3000);
+    } catch {
       setMessage('Error saving settings.');
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) return <div className="p-4 text-gray-500">Loading settings...</div>;
+  if (loading) {
+    return (
+      <div className="glass-card flex min-h-48 items-center justify-center p-8">
+        <RefreshCw className="mr-3 animate-spin text-[var(--primary)]" size={22} />
+        <span className="text-sm font-bold text-[var(--on-surface-variant)]">Loading settings...</span>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 mb-6">
-      <h2 className="text-xl font-bold mb-4 border-b border-gray-100 pb-3 flex items-center justify-between">
-        Environment Settings
-        <span className="text-xs bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-medium">ML Model Input</span>
-      </h2>
-      
-      <p className="text-sm text-gray-500 mb-6">
-        Configure today's environmental context. These parameters are directly appended to new user orders and feed the XGBoost demand forecasting model.
-      </p>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        {/* Toggle Switches */}
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Is Holiday?</label>
-            <select 
-              name="is_holiday" 
-              value={settings.is_holiday} 
-              onChange={handleChange}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-            >
-              <option value={1}>Yes</option>
-              <option value={0}>No</option>
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Is Bridge Day?</label>
-            <select 
-              name="is_bridge_day" 
-              value={settings.is_bridge_day} 
-              onChange={handleChange}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-            >
-              <option value={1}>Yes</option>
-              <option value={0}>No</option>
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Is Exam Week?</label>
-            <select 
-              name="is_exam_week" 
-              value={settings.is_exam_week} 
-              onChange={handleChange}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-            >
-              <option value={1}>Yes</option>
-              <option value={0}>No</option>
-            </select>
-          </div>
+    <section className="glass-card p-5 sm:p-6">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h2 className="section-title">Environment Settings</h2>
+          <p className="section-copy">These values are appended to new orders for demand forecasting.</p>
         </div>
+        <span className="cn-chip cn-chip-warm">ML model input</span>
+      </div>
 
-        {/* Inputs & Selects */}
+      <div className="responsive-grid">
+        <div className="space-y-4">
+          <SelectField label="Is Holiday?" name="is_holiday" value={settings.is_holiday} onChange={handleChange} options={yesNoOptions} />
+          <SelectField label="Is Bridge Day?" name="is_bridge_day" value={settings.is_bridge_day} onChange={handleChange} options={yesNoOptions} />
+          <SelectField label="Is Exam Week?" name="is_exam_week" value={settings.is_exam_week} onChange={handleChange} options={yesNoOptions} />
+        </div>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Temperature (°C)</label>
-            <input 
-              type="number" 
+            <label className="form-label" htmlFor="temperature_celsius">Temperature (C)</label>
+            <input
+              id="temperature_celsius"
+              className="form-input"
+              type="number"
               name="temperature_celsius"
               step="0.1"
               value={settings.temperature_celsius}
               onChange={handleChange}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
             />
           </div>
-          
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Season</label>
-            <select 
-              name="season" 
-              value={settings.season} 
-              onChange={handleChange}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-            >
-              <option value="spring">Spring</option>
-              <option value="summer">Summer</option>
-              <option value="autumn">Autumn</option>
-              <option value="winter">Winter</option>
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Weather</label>
-            <select 
-              name="weather" 
-              value={settings.weather} 
-              onChange={handleChange}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-            >
-              <option value="sunny">Sunny</option>
-              <option value="cloudy">Cloudy</option>
-              <option value="rainy">Rainy</option>
-              <option value="snowy">Snowy</option>
-            </select>
-          </div>
+          <SelectField label="Season" name="season" value={settings.season} onChange={handleChange} options={[
+            ['spring', 'Spring'],
+            ['summer', 'Summer'],
+            ['autumn', 'Autumn'],
+            ['winter', 'Winter'],
+          ]} />
+          <SelectField label="Weather" name="weather" value={settings.weather} onChange={handleChange} options={[
+            ['sunny', 'Sunny'],
+            ['cloudy', 'Cloudy'],
+            ['rainy', 'Rainy'],
+            ['snowy', 'Snowy'],
+          ]} />
         </div>
       </div>
-      
-      <div className="mt-8 flex items-center justify-between">
-        <span className={`text-sm font-medium ${message.includes('Error') ? 'text-red-500' : 'text-green-500'}`}>
+
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <span className={`text-sm font-bold ${message.includes('Error') || message.includes('Could') ? 'text-[var(--error)]' : 'text-[var(--secondary)]'}`}>
           {message}
         </span>
-        <button 
-          onClick={handleSave}
-          disabled={saving}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <button className="cn-button cn-button-primary" onClick={handleSave} disabled={saving} type="button">
+          {saving ? <RefreshCw className="animate-spin" size={17} /> : <Save size={17} />}
           {saving ? 'Saving...' : 'Save Context'}
         </button>
       </div>
-    </div>
+    </section>
   );
 };
+
+const SelectField = ({ label, name, value, onChange, options }) => (
+  <div>
+    <label className="form-label" htmlFor={name}>{label}</label>
+    <select id={name} className="form-input" name={name} value={value} onChange={onChange}>
+      {options.map(([optionValue, optionLabel]) => (
+        <option key={optionValue} value={optionValue}>{optionLabel}</option>
+      ))}
+    </select>
+  </div>
+);
+
+const yesNoOptions = [
+  [1, 'Yes'],
+  [0, 'No'],
+];
 
 export default EnvironmentSettings;

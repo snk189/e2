@@ -18456,7 +18456,7 @@ user192,20-05-2026,icecream,14,42,1779288537,0,0,summer,27.2,cloudy,0,0,,False
 user412,20-05-2026,icecream,15,23,1779290650,0,0,summer,27.2,cloudy,0,0,,False
 user116,20-05-2026,icecream,16,30,1779294230,0,0,summer,27.2,cloudy,0,0,,False
 user173,20-05-2026,icecream,17,18,1779297355,0,0,summer,27.2,cloudy,0,0,,False
-user20,20-05-2026,icecream,18,3,1779302432,0,0,summer,27.2,cloudy,0,0,,False
+user20,20-05-2026,icecream,18,3,1779302432,0,0,summer,27.2,cloudy,0,0,,True,delivered
 user123,20-05-2026,samosa,8,3,1779264219,0,0,summer,27.2,cloudy,0,0,,False
 user132,20-05-2026,samosa,9,4,1779271106,0,0,summer,27.2,cloudy,0,0,,False
 user36,20-05-2026,samosa,10,22,1779272779,0,0,summer,27.2,cloudy,0,0,,False
@@ -18467,7 +18467,7 @@ user126,20-05-2026,samosa,14,33,1779286525,0,0,summer,27.2,cloudy,0,0,,False
 user239,20-05-2026,samosa,15,27,1779292477,0,0,summer,27.2,cloudy,0,0,,False
 user71,20-05-2026,samosa,16,32,1779295463,0,0,summer,27.2,cloudy,0,0,,False
 user106,20-05-2026,samosa,17,17,1779297018,0,0,summer,27.2,cloudy,0,0,,False
-user140,20-05-2026,samosa,18,9,1779303388,0,0,summer,27.2,cloudy,0,0,,False
+user140,20-05-2026,samosa,18,9,1779303388,0,0,summer,27.2,cloudy,0,0,,False,ready
 user55,20-05-2026,panipuri,8,3,1779266957,0,0,summer,27.2,cloudy,0,0,,False
 user118,20-05-2026,panipuri,9,3,1779271188,0,0,summer,27.2,cloudy,0,0,,False
 user376,20-05-2026,panipuri,10,16,1779272727,0,0,summer,27.2,cloudy,0,0,,False
@@ -18478,7 +18478,7 @@ user69,20-05-2026,panipuri,14,38,1779287737,0,0,summer,27.2,cloudy,0,0,,False
 user83,20-05-2026,panipuri,15,29,1779291884,0,0,summer,27.2,cloudy,0,0,,False
 user185,20-05-2026,panipuri,16,36,1779295499,0,0,summer,27.2,cloudy,0,0,,False
 user28,20-05-2026,panipuri,17,35,1779297968,0,0,summer,27.2,cloudy,0,0,,False
-user17,20-05-2026,panipuri,18,6,1779302920,0,0,summer,27.2,cloudy,0,0,,False
+user17,20-05-2026,panipuri,18,6,1779302920,0,0,summer,27.2,cloudy,0,0,,False,pending
 user22,21-05-2026,pizza,8,2,1779353809,0,0,summer,25.7,sunny,0,0,,False
 user387,21-05-2026,pizza,9,2,1779356195,0,0,summer,25.7,sunny,0,0,,False
 user407,21-05-2026,pizza,10,5,1779360981,0,0,summer,25.7,sunny,0,0,,False
@@ -18489,9 +18489,6 @@ user108,21-05-2026,pizza,14,55,1779373146,0,0,summer,25.7,sunny,0,0,,False
 user60,21-05-2026,pizza,15,17,1779376890,0,0,summer,25.7,sunny,0,0,,False
 user44,21-05-2026,pizza,16,6,1779379510,0,0,summer,25.7,sunny,0,0,,False
 user184,21-05-2026,pizza,17,3,1779385289,0,0,summer,25.7,sunny,0,0,,False
-user499,21-05-2026,pizza,18,1,1779389741,0,0,summer,25.7,sunny,0,0,,False
-user151,21-05-2026,burger,8,1,1779353099,0,0,summer,25.7,sunny,0,0,,False
-user150,21-05-2026,burger,9,2,1779355572,0,0,summer,25.7,sunny,0,0,,False
 user175,21-05-2026,burger,10,4,1779360460,0,0,summer,25.7,sunny,0,0,,False
 user55,21-05-2026,burger,11,48,1779363359,0,0,summer,25.7,sunny,0,0,,False
 user467,21-05-2026,burger,12,42,1779365660,0,0,summer,25.7,sunny,0,0,,False
@@ -18523,7 +18520,7 @@ user200,21-05-2026,idly,15,2,1779377561,0,0,summer,25.7,sunny,0,0,,False
 user111,21-05-2026,idly,16,1,1779379964,0,0,summer,25.7,sunny,0,0,,False
 user8,21-05-2026,idly,17,0,1779384545,0,0,summer,25.7,sunny,0,0,,False
 user430,21-05-2026,idly,18,0,1779386475,0,0,summer,25.7,sunny,0,0,,False
-user152,21-05-2026,dosa,8,17,1779350491,0,0,summer,25.7,sunny,0,0,,False
+user152,21-05-2026,dosa,8,17,1779350491,0,0,summer,25.7,sunny,0,0,,False,ready
 user478,21-05-2026,dosa,9,31,1779357073,0,0,summer,25.7,sunny,0,0,,False
 user15,21-05-2026,dosa,10,22,1779359408,0,0,summer,25.7,sunny,0,0,,False
 user156,21-05-2026,dosa,11,11,1779362643,0,0,summer,25.7,sunny,0,0,,False
@@ -18589,7 +18586,7 @@ user52,21-05-2026,icecream,15,32,1779375768,0,0,summer,25.7,sunny,0,0,,False
 user151,21-05-2026,icecream,16,36,1779382085,0,0,summer,25.7,sunny,0,0,,False
 user157,21-05-2026,icecream,17,21,1779383534,0,0,summer,25.7,sunny,0,0,,False
 user29,21-05-2026,icecream,18,4,1779387257,0,0,summer,25.7,sunny,0,0,,False
-user57,21-05-2026,samosa,8,4,1779351433,0,0,summer,25.7,sunny,0,0,,False
+user57,21-05-2026,samosa,8,4,1779351433,0,0,summer,25.7,sunny,0,0,,False,pending
 user19,21-05-2026,samosa,9,4,1779355858,0,0,summer,25.7,sunny,0,0,,False
 user8,21-05-2026,samosa,10,20,1779360146,0,0,summer,25.7,sunny,0,0,,False
 user178,21-05-2026,samosa,11,45,1779364410,0,0,summer,25.7,sunny,0,0,,False
@@ -18653,7 +18650,6 @@ user70,22-05-2026,idly,13,4,1779456582,0,0,summer,29.5,rainy,0,0,,False
 user179,22-05-2026,idly,14,3,1779461700,0,0,summer,29.5,rainy,0,0,,False
 user467,22-05-2026,idly,15,1,1779462659,0,0,summer,29.5,rainy,0,0,,False
 user182,22-05-2026,idly,16,1,1779467615,0,0,summer,29.5,rainy,0,0,,False
-user110,22-05-2026,idly,17,1,1779472301,0,0,summer,29.5,rainy,0,0,,False
 user190,22-05-2026,idly,18,1,1779473118,0,0,summer,29.5,rainy,0,0,,False
 user456,22-05-2026,dosa,8,33,1779437107,0,0,summer,29.5,rainy,0,0,,False
 user187,22-05-2026,dosa,9,34,1779440933,0,0,summer,29.5,rainy,0,0,,False
@@ -18675,7 +18671,6 @@ user69,22-05-2026,pulao,13,58,1779456679,0,0,summer,29.5,rainy,0,1,,False
 user462,22-05-2026,pulao,14,63,1779460747,0,0,summer,29.5,rainy,0,0,,False
 user189,22-05-2026,pulao,15,29,1779464544,0,0,summer,29.5,rainy,0,0,,False
 user194,22-05-2026,pulao,16,5,1779466070,0,0,summer,29.5,rainy,0,0,,False
-user431,22-05-2026,pulao,17,4,1779471378,0,0,summer,29.5,rainy,0,0,,False
 user424,22-05-2026,pulao,18,2,1779473415,0,0,summer,29.5,rainy,0,0,,False
 user85,22-05-2026,coffee,8,19,1779439269,0,0,summer,29.5,rainy,0,0,,False
 user110,22-05-2026,coffee,9,34,1779440842,0,0,summer,29.5,rainy,0,0,,False
@@ -23907,3 +23902,18 @@ Bb,20-05-2026,dosa,22,2,1779296435,0,0,summer,31,sunny,0,0,,False,pending,more c
 Bb,20-05-2026,idly,22,1,1779296435,0,0,summer,31,sunny,0,0,,False,pending,more chutney
 Bb,20-05-2026,sandwich,22,1,1779296435,0,0,summer,31,sunny,0,0,,False,pending,less cspice
 Bb,20-05-2026,coffee,22,1,1779296435,0,0,summer,31,sunny,0,0,,False,pending,less sugar
+Bb,21-05-2026,icecream,14,1,1779354116,0,0,summer,31,sunny,0,0,,False,pending,
+Bb,21-05-2026,samosa,14,1,1779354116,0,0,summer,31,sunny,0,0,,False,pending,swusukwugs | sgusuwh
+Bb,21-05-2026,panipuri,14,1,1779354116,0,0,summer,31,sunny,0,0,,False,pending,
+Bb,22-05-2026,dosa,7,1,1779416501,0,0,summer,31,sunny,0,0,,False,pending,more chutney | more spice
+Bb,22-05-2026,idly,7,1,1779416501,0,0,summer,31,sunny,0,0,,False,pending,more chutney
+Bb,24-05-2026,dosa,13,1,1779609055,0,0,summer,31,sunny,0,0,,False,pending,extra chutney | sambhar
+Bb,24-05-2026,idly,13,6,1779609055,0,0,summer,31,sunny,0,0,,False,pending,extra chutney
+Bb,24-05-2026,pulao,13,7,1779609055,0,0,summer,31,sunny,0,0,,False,pending,
+Bb,24-05-2026,dosa,19,2,1779631943,1,1,autumn,31.5,cloudy,1,0,,False,pending,
+Bb,24-05-2026,idly,19,6,1779631943,1,1,autumn,31.5,cloudy,1,0,,False,pending,
+Bb,24-05-2026,dosa,20,2,1779633579,1,1,autumn,31.5,cloudy,1,0,,False,pending,
+Bb,24-05-2026,idly,20,1,1779633579,1,1,autumn,31.5,cloudy,1,0,,False,pending,spice more
+Bb,24-05-2026,samosa,20,1,1779633579,1,1,autumn,31.5,cloudy,1,0,,False,pending,spice more
+Bb,24-05-2026,idly,20,6,1779633628,1,1,autumn,31.5,cloudy,1,0,,False,pending,more soft
+Bb,24-05-2026,panipuri,20,1,1779633628,1,1,autumn,31.5,cloudy,1,0,,False,pending,more pani

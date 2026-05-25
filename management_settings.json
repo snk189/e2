@@ -1,8 +1,8 @@
 {
-  "is_holiday": 0,
-  "is_bridge_day": 0,
-  "season": "summer",
-  "temperature_celsius": 31,
-  "weather": "sunny",
-  "is_exam_week": 0
+  "is_holiday": 1,
+  "is_bridge_day": 1,
+  "season": "autumn",
+  "temperature_celsius": 31.5,
+  "weather": "cloudy",
+  "is_exam_week": 1
 }
