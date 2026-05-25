@@ -299,7 +299,7 @@ def predict_demand(target_date_str, df, model, feature_cols, encoded_cat_cols, l
 def main():
     print("[1/3] Fetching dataset from PostgreSQL...")
     user = os.environ.get('PGUSER', 'postgres')
-    password = os.environ.get('PGPASSWORD', 'postgres')
+    password = os.environ.get('PGPASSWORD', 'admin')
     host = os.environ.get('PGHOST', 'localhost')
     port = os.environ.get('PGPORT', '5432')
     database = os.environ.get('PGDATABASE', 'bitespeed')
