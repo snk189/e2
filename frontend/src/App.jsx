@@ -538,7 +538,7 @@ const BookingInterface = ({ onLogout, username }) => {
                     <div className="flex justify-between items-start mt-1">
                       <div className="flex flex-col">
                         <span className="font-['Righteous'] text-xl text-slate-800 tracking-wide">{order.item}</span>
-                        <span className="text-xs text-slate-500 font-semibold mt-0.5"><Clock size={12} className="inline mr-1 mb-0.5"/> {order.timestamp ? new Date(order.timestamp).toLocaleString() : 'Just now'}</span>
+                        <span className="text-xs text-slate-500 font-semibold mt-0.5"><Clock size={12} className="inline mr-1 mb-0.5"/> {order.timestamp ? new Date(order.timestamp * 1000).toLocaleString() : 'Just now'}</span>
                       </div>
                       <div className="flex flex-col items-end gap-2">
                         <span className="text-sm font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg">Qty: {order.quantity}</span>
