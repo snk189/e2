@@ -11,7 +11,7 @@ BiteSpeed is a lightweight, local food-ordering application designed with a prim
 
 ## 2. ML Data Collection Pipeline (Backend)
 - **Robust API:** A Node.js and Express backend that handles incoming order requests.
-- **Real-Time Data Logging:** Every transaction is instantly recorded and strictly formatted into a master database (`data1.csv`).
+- **Real-Time Data Logging:** Every transaction is instantly recorded and strictly formatted into a centralized PostgreSQL master database.
 - **ML-Ready Format:** The output is structured specifically for downstream consumption by machine learning models, eliminating the need for complex data wrangling.
 
 ## 3. Machine Learning & Demand Forecasting
