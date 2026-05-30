@@ -95,6 +95,13 @@ const Dashboard = ({ onLogout }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeTab, todayOrders, activeIndex, handleUpdateOrderStatus]);
 
+  useEffect(() => {
+    if (activeIndex >= 0) {
+      const el = document.getElementById(`order-row-${activeIndex}`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [activeIndex]);
+
   return (
     <div className="app-bg management-theme min-h-dvh">
       <Header activeTab={activeTab} setActiveTab={setActiveTab} onLogout={onLogout} />
@@ -142,8 +149,15 @@ const Dashboard = ({ onLogout }) => {
                       const isSelected = index === activeIndex;
                       return (
                         <tr 
+                          id={`order-row-${index}`}
                           key={order.id || `${order.item}-${order.timestamp}-${index}`} 
-                          className={`${status === 'delivered' ? 'opacity-55' : ''} ${isSelected ? 'ring-2 ring-[var(--primary)] ring-inset bg-white/40' : ''}`}
+                          className={`
+                            ${status === 'delivered' ? 'opacity-55 bg-gray-50/50' : 
+                              status === 'pending' ? 'bg-yellow-50/50' : 
+                              status === 'preparing' ? 'bg-blue-50/50' : 
+                              status === 'ready' ? 'bg-emerald-50/50' : ''}
+                            ${isSelected ? 'ring-2 ring-[var(--primary)] ring-inset shadow-md !bg-white/80' : 'transition-colors duration-200 hover:bg-white/40'}
+                          `}
                         >
                           <td>{formatTime(order.effective_time || order.timestamp)}</td>
                           <td className="font-semibold">{order.username}</td>
@@ -155,7 +169,12 @@ const Dashboard = ({ onLogout }) => {
                           <td>{order.is_prebooking ? <span className="cn-chip cn-chip-warm">Prebook</span> : <span className="cn-chip cn-chip-success">Dine-In</span>}</td>
                           <td>
                             <div className="flex items-center justify-end gap-2">
-                              <span className="cn-chip capitalize">{status.replace(/_/g, ' ')}</span>
+                              <span className={`cn-chip capitalize text-xs font-bold border ${
+                                status === 'pending' ? '!bg-yellow-100 !text-yellow-800 !border-yellow-200' :
+                                status === 'preparing' ? '!bg-blue-100 !text-blue-800 !border-blue-200' :
+                                status === 'ready' ? '!bg-emerald-100 !text-emerald-800 !border-emerald-200' :
+                                '!bg-gray-100 !text-gray-600 !border-gray-200'
+                              }`}>{status.replace(/_/g, ' ')}</span>
                               {status !== 'pending' && (
                                 <button className="cn-button cn-button-secondary cn-icon-button" onClick={() => handleUpdateOrderStatus(order.id, status, -1)} type="button" aria-label="Previous status">
                                   <ChevronLeft size={16} />
@@ -543,7 +562,9 @@ const sortOrders = (a, b) => {
   const aDone = a.is_delivered || a.status === 'delivered';
   const bDone = b.is_delivered || b.status === 'delivered';
   if (aDone !== bDone) return aDone ? 1 : -1;
-  return (a.effective_time || a.timestamp || 0) - (b.effective_time || b.timestamp || 0);
+  const timeDiff = (a.effective_time || a.timestamp || 0) - (b.effective_time || b.timestamp || 0);
+  if (timeDiff !== 0) return timeDiff;
+  return a.item.localeCompare(b.item);
 };
 
 const formatTime = (timestamp) => {

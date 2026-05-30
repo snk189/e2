@@ -146,10 +146,10 @@ const BookingInterface = ({ onLogout, username }) => {
   }, [username]);
 
   useEffect(() => {
-    if (!showHistory) return undefined;
+    if (activeMobileView !== 'orders') return undefined;
     const interval = window.setInterval(() => fetchHistory(true), 5000);
     return () => window.clearInterval(interval);
-  }, [fetchHistory, showHistory]);
+  }, [fetchHistory, activeMobileView]);
 
   useEffect(() => {
     if (orderType !== 'prebook' || totalItems === 0 || offerApplied) return;
@@ -218,17 +218,6 @@ const BookingInterface = ({ onLogout, username }) => {
   };
 
   const handleTouchEnd = (event) => {
-    if (startX > 0) {
-      const endX = event.changedTouches[0].clientX;
-      const diffX = startX - endX;
-      if (diffX > 50) {
-        setOrderType('prebook');
-        if (!date) setDate(todayStr);
-        if (!time) setTime('13:00');
-      } else if (diffX < -50) {
-        setOrderType('dine-in');
-      }
-    }
     setStartY(0);
     setStartX(0);
   };
@@ -532,8 +521,13 @@ const BookingInterface = ({ onLogout, username }) => {
             ) : (
               <div className="space-y-4">
                 {historyData.map((order, i) => (
-                  <div key={i} className="bg-white/80 backdrop-blur-sm p-4 rounded-[20px] border border-white/60 shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)] transition-all relative overflow-hidden flex flex-col gap-3">
-                    <div className={`absolute top-0 left-0 w-full h-1 ${order.status === 'completed' ? 'bg-emerald-500' : 'bg-yellow-400'}`}></div>
+                  <div key={`${order.timestamp}_${order.item}_${i}`} className="bg-white/80 backdrop-blur-sm p-4 rounded-[20px] border border-white/60 shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)] transition-all relative overflow-hidden flex flex-col gap-3">
+                    <div className={`absolute top-0 left-0 w-full h-1 ${
+                      order.status === 'pending' ? 'bg-yellow-400' :
+                      order.status === 'preparing' ? 'bg-blue-400' :
+                      order.status === 'ready' ? 'bg-emerald-400' :
+                      'bg-gray-400'
+                    }`}></div>
                     
                     <div className="flex justify-between items-start mt-1">
                       <div className="flex flex-col">
@@ -542,9 +536,19 @@ const BookingInterface = ({ onLogout, username }) => {
                       </div>
                       <div className="flex flex-col items-end gap-2">
                         <span className="text-sm font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg">Qty: {order.quantity}</span>
-                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md ${order.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-yellow-100 text-yellow-700'}`}>{order.status}</span>
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md ${
+                          order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                          order.status === 'preparing' ? 'bg-blue-100 text-blue-800' :
+                          order.status === 'ready' ? 'bg-emerald-100 text-emerald-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>{order.status}</span>
                       </div>
                     </div>
+                    {order.notes ? (
+                      <div className="mt-1 pt-3 border-t border-slate-100 flex items-start gap-2 text-sm text-slate-600 italic">
+                        <span className="font-bold not-italic shrink-0 text-slate-800">Notes:</span> {order.notes}
+                      </div>
+                    ) : null}
                     {order.is_prebooking ? (
                       <div className="mt-1 pt-3 border-t border-slate-100 flex items-center justify-between text-sm font-bold text-orange-600">
                         <span className="flex items-center gap-1"><Calendar size={14}/> Prebook Slot</span>

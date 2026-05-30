@@ -214,7 +214,7 @@ app.post('/api/order', async (req, res) => {
 app.get('/api/history/:username', async (req, res) => {
     try {
         const username = req.params.username;
-        const result = await pool.query('SELECT * FROM orders WHERE user_id = $1 AND quantity > 0 ORDER BY order_timestamp DESC LIMIT 50', [username]);
+        const result = await pool.query('SELECT * FROM orders WHERE user_id = $1 AND quantity > 0 ORDER BY order_timestamp DESC, item ASC LIMIT 50', [username]);
         const history = result.rows.map(row => ({
             item: row.item,
             time_slot: parseInt(row.time_slot),
@@ -337,7 +337,7 @@ app.get('/api/admin/today_orders', async (req, res) => {
             
             if (effective_time >= startOfDay && effective_time < endOfDay) {
                 todayOrders.push({
-                    id: row.order_timestamp + "_" + i, // Use a compound key for frontend if needed, but original used row index. We'll send CTID or row ID later if needed. For now let's just use some id.
+                    id: row.order_timestamp + "|" + row.user_id + "|" + row.item, // Use a compound key for frontend if needed, but original used row index. We'll send CTID or row ID later if needed. For now let's just use some id.
                     username: row.user_id,
                     item: row.item,
                     quantity: parseInt(row.quantity),
@@ -387,7 +387,7 @@ app.get('/api/admin/orders_by_date', async (req, res) => {
             
             if (matchesUsername && matchesDate) {
                 dateOrders.push({
-                    id: row.order_timestamp + "_" + i,
+                    id: row.order_timestamp + "|" + row.user_id + "|" + row.item,
                     username: row.user_id,
                     item: row.item,
                     quantity: parseInt(row.quantity),
@@ -411,24 +411,28 @@ app.get('/api/admin/orders_by_date', async (req, res) => {
     }
 });
 
-// Since the original code updated status by line index `id`, we must adapt the frontend or update by a better identifier.
-// The original UI sent `id` as line index. Without line indices, we need a workaround.
-// The frontend might be sending line index, which we can't reliably map unless we fetch all and update that offset.
 app.post('/api/admin/update_order_status', async (req, res) => {
     try {
         const { id, is_delivered, status } = req.body;
-        // In CSV, `id` was line number. Let's fetch all orders and find the one at offset `id - 1` if it's an integer.
-        // For safe compatibility with existing frontend, we use offset.
-        const allRes = await pool.query('SELECT user_id, order_timestamp FROM orders');
-        if (id >= 1 && id <= allRes.rows.length) {
-            const rowToUpdate = allRes.rows[id - 1]; // because line 0 is header in csv, so id=1 is row 0.
+        
+        if (typeof id === 'string' && id.includes('|')) {
+            const parts = id.split('|');
+            const order_timestamp = parseInt(parts[0]);
+            const user_id = parts[1];
+            const item = parts.slice(2).join('|');
+            
             const new_delivered = is_delivered ? 'True' : 'False';
             const new_status = status || (is_delivered ? 'delivered' : 'pending');
             
-            await pool.query('UPDATE orders SET is_delivered = $1, status = $2 WHERE user_id = $3 AND order_timestamp = $4', [new_delivered, new_status, rowToUpdate.user_id, rowToUpdate.order_timestamp]);
-            res.status(200).json({ message: 'Order status updated successfully' });
+            const updateRes = await pool.query('UPDATE orders SET is_delivered = $1, status = $2 WHERE user_id = $3 AND order_timestamp = $4 AND item = $5', [new_delivered, new_status, user_id, order_timestamp, item]);
+            
+            if (updateRes.rowCount > 0) {
+                res.status(200).json({ message: 'Order status updated successfully' });
+            } else {
+                res.status(404).json({ error: 'Order not found' });
+            }
         } else {
-            res.status(404).json({ error: 'Order not found' });
+            res.status(400).json({ error: 'Invalid order ID format' });
         }
     } catch (error) {
         console.error(error);
@@ -609,7 +613,7 @@ app.get('/api/admin/recent_data', async (req, res) => {
         for (let i = rows.length - 1; i >= 0 && recent.length < 100; i--) {
             const row = rows[i];
             recent.push({
-                id: i + 1, // To maintain 1-based index equivalent to line numbers
+                id: row.order_timestamp + "|" + row.user_id + "|" + row.item,
                 username: row.user_id,
                 item: row.item,
                 time_slot: row.time_slot,
@@ -626,15 +630,23 @@ app.get('/api/admin/recent_data', async (req, res) => {
 
 app.post('/api/admin/remove_data', async (req, res) => {
     try {
-        const { id } = req.body; // id is the line index (1-based)
-        const allRes = await pool.query('SELECT user_id, order_timestamp FROM orders');
-        if (id >= 1 && id <= allRes.rows.length) {
-            const rowToUpdate = allRes.rows[id - 1];
-            await pool.query('DELETE FROM orders WHERE user_id = $1 AND order_timestamp = $2', [rowToUpdate.user_id, rowToUpdate.order_timestamp]);
-            runModelBackground(); // Trigger AI update when data is removed
-            res.status(200).json({ message: 'Datapoint removed' });
+        const { id } = req.body; 
+        if (typeof id === 'string' && id.includes('|')) {
+            const parts = id.split('|');
+            const order_timestamp = parseInt(parts[0]);
+            const user_id = parts[1];
+            const item = parts.slice(2).join('|');
+            
+            const deleteRes = await pool.query('DELETE FROM orders WHERE user_id = $1 AND order_timestamp = $2 AND item = $3', [user_id, order_timestamp, item]);
+            
+            if (deleteRes.rowCount > 0) {
+                runModelBackground(); // Trigger AI update when data is removed
+                res.status(200).json({ message: 'Datapoint removed' });
+            } else {
+                res.status(404).json({ error: 'Datapoint not found' });
+            }
         } else {
-            res.status(404).json({ error: 'Datapoint not found' });
+            res.status(400).json({ error: 'Invalid datapoint ID format' });
         }
     } catch (error) {
         res.status(500).json({ error: 'Failed to remove datapoint' });
