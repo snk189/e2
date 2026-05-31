@@ -443,6 +443,26 @@ app.get('/api/demand', async (req, res) => {
 });
 
 
+app.get('/api/model_status', async (req, res) => {
+    try {
+        const pythonData = await fetchPrediction('/status');
+        res.status(200).json(pythonData);
+    } catch (error) {
+        console.error('Error getting model status:', error);
+        res.status(500).json({ error: 'Failed to get model status' });
+    }
+});
+
+app.post('/api/retrain_model', async (req, res) => {
+    try {
+        const pythonData = await fetchPrediction('/retrain');
+        res.status(200).json(pythonData);
+    } catch (error) {
+        console.error('Error triggering model retrain:', error);
+        res.status(500).json({ error: 'Failed to trigger model retrain' });
+    }
+});
+
 app.get('/api/admin/demand/:date', async (req, res) => {
     try {
         const dateParam = req.params.date; // YYYY-MM-DD

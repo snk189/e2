@@ -31,6 +31,8 @@ import {
   getOrdersByDate,
   getDemandByDate,
   getMenuIntelligence,
+  retrainModel,
+  getModelStatus
 } from '../services/api';
 import { MENU_ITEMS } from '../data/items';
 
@@ -214,6 +216,31 @@ const AdminDemand = ({ demandData, onRefresh }) => {
   const [advancedDate, setAdvancedDate] = useState('');
   const [advancedDemand, setAdvancedDemand] = useState(null);
   const [advancedLoading, setAdvancedLoading] = useState(false);
+  const [modelStatus, setModelStatus] = useState('idle'); // 'idle' or 'training'
+
+  useEffect(() => {
+    let intervalId;
+    const checkStatus = async () => {
+      try {
+        const res = await getModelStatus();
+        setModelStatus(res.is_training ? 'training' : 'idle');
+      } catch (err) {
+        console.error("Failed to fetch model status", err);
+      }
+    };
+    checkStatus();
+    intervalId = setInterval(checkStatus, 5000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const handleRetrain = async () => {
+    try {
+      await retrainModel();
+      setModelStatus('training');
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchAdvancedDemand = async (date) => {
     if (!date) return;
@@ -244,10 +271,25 @@ const AdminDemand = ({ demandData, onRefresh }) => {
             <h2 className="section-title">AI Demand Analysis</h2>
             <p className="section-copy">Forecast accuracy, tomorrow planning, and financial health in one command surface.</p>
           </div>
-          <button className="cn-button cn-button-secondary" onClick={onRefresh} type="button">
-            <RefreshCw size={16} />
-            Refresh Model
-          </button>
+          <div className="flex items-center gap-3">
+            {modelStatus === 'training' ? (
+              <span className="flex items-center gap-2 text-xs font-bold text-blue-500">
+                <RefreshCw size={14} className="animate-spin" /> Training model...
+              </span>
+            ) : (
+              <span className="flex items-center gap-2 text-xs font-bold text-emerald-500">
+                <Check size={14} /> Model Ready
+              </span>
+            )}
+            <button className="cn-button cn-button-secondary" onClick={handleRetrain} disabled={modelStatus === 'training'} type="button">
+              <RefreshCw size={16} className={modelStatus === 'training' ? "animate-spin" : ""} />
+              Retrain Model
+            </button>
+            <button className="cn-button cn-button-primary" onClick={onRefresh} type="button">
+              <RefreshCw size={16} />
+              Refresh Data
+            </button>
+          </div>
         </div>
       </section>
 

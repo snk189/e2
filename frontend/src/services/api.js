@@ -84,7 +84,30 @@ export const getDemand = async () => {
         const response = await axios.get(`${BASE_URL}/demand`);
         return response.data;
     } catch (error) {
-        throw error.response?.data || { error: 'Fetching demand failed' };
+        if (error.response?.status === 202) {
+            throw new Error('MODEL_TRAINING');
+        }
+        throw error;
+    }
+};
+
+export const getModelStatus = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/model_status`);
+        return response.data;
+    } catch (error) {
+        console.error("Failed to get model status:", error);
+        return { is_training: false };
+    }
+};
+
+export const retrainModel = async () => {
+    try {
+        const response = await axios.post(`${BASE_URL}/retrain_model`);
+        return response.data;
+    } catch (error) {
+        console.error("Failed to trigger retrain:", error);
+        throw error;
     }
 };
 

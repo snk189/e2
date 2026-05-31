@@ -19,6 +19,7 @@ global_df = None
 global_feature_cols = None
 global_lookups = None
 last_training_time = 0
+is_training = False
 
 def fetch_orders_from_db():
     try:
@@ -32,7 +33,7 @@ def fetch_orders_from_db():
         df = pd.read_sql('SELECT * FROM orders', engine)
         return df
     except Exception as e:
-        print(f"[DB Error] {e}")
+        print(f"[SERVER] Error fetching from DB: {e}")
         return pd.DataFrame()
 
 def load_data_and_model_if_exists():
@@ -70,36 +71,46 @@ def load_data_and_model_if_exists():
     return False
 
 def train_and_load_model():
-    global global_model, global_df, global_feature_cols, global_lookups, last_training_time
-    print("[SERVER] Connecting to DB to fetch orders for training...")
-    df = fetch_orders_from_db()
-    if df.empty:
-        print("[SERVER] Error: Could not fetch orders or empty DB.")
+    global global_model, global_df, global_feature_cols, global_lookups, last_training_time, is_training
+    if is_training:
+        print("[SERVER] Training already in progress, skipping...")
         return
+        
+    is_training = True
+    try:
+        print("[SERVER] Connecting to DB to fetch orders for training...")
+        df = fetch_orders_from_db()
+        if df.empty:
+            print("[SERVER] Error: Could not fetch orders or empty DB.")
+            return
 
-    print("[SERVER] Preparing Data for training...")
-    df, lookups, split_idx, model_end_idx = prepare_data(df)
-    
-    print("[SERVER] Extracting Features for training...")
-    X, y, feature_cols, encoded_cat_cols = extract_features(df)
-    
-    print("[SERVER] Building and Training Model...")
-    models = build_model(X, y, feature_cols, split_idx, model_end_idx)
-    
-    xgb_path = os.path.join(os.path.dirname(__file__), "xgboost_model.json")
-    cb_path = os.path.join(os.path.dirname(__file__), "catboost_model.cbm")
-    
-    models["xgb"].save_model(xgb_path)
-    models["cb"].save_model(cb_path)
-    
-    print(f"[SERVER] Models trained and saved successfully.")
-    
-    global_model = models
-    global_df = df
-    global_feature_cols = feature_cols
-    global_lookups = lookups
-    last_training_time = time.time()
-    print(f"[SERVER] Model successfully loaded at {datetime.now().strftime('%H:%M:%S')}. Ready for predictions.")
+        print("[SERVER] Preparing Data for training...")
+        df, lookups, split_idx, model_end_idx = prepare_data(df)
+        
+        print("[SERVER] Extracting Features for training...")
+        X, y, feature_cols, encoded_cat_cols = extract_features(df)
+        
+        print("[SERVER] Building and Training Model...")
+        models = build_model(X, y, feature_cols, split_idx, model_end_idx)
+        
+        xgb_path = os.path.join(os.path.dirname(__file__), "xgboost_model.json")
+        cb_path = os.path.join(os.path.dirname(__file__), "catboost_model.cbm")
+        
+        models["xgb"].save_model(xgb_path)
+        models["cb"].save_model(cb_path)
+        
+        print(f"[SERVER] Models trained and saved successfully.")
+        
+        global_model = models
+        global_df = df
+        global_feature_cols = feature_cols
+        global_lookups = lookups
+        last_training_time = time.time()
+        print(f"[SERVER] Model successfully loaded at {datetime.now().strftime('%H:%M:%S')}. Ready for predictions.")
+    except Exception as e:
+        print(f"[SERVER] Error during training: {e}")
+    finally:
+        is_training = False
 
 def background_trainer():
     while True:
@@ -113,6 +124,30 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed_url = urlparse(self.path)
         
+        if parsed_url.path == '/status':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'is_training': is_training}).encode('utf-8'))
+            return
+
+        if parsed_url.path == '/retrain':
+            if is_training:
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'message': 'Training already in progress'}).encode('utf-8'))
+                return
+                
+            # Spawn background thread to retrain
+            threading.Thread(target=train_and_load_model).start()
+            
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({'message': 'Retraining started'}).encode('utf-8'))
+            return
+            
         if parsed_url.path == '/predict':
             query = parse_qs(parsed_url.query)
             date_str = query.get('date', [None])[0]
