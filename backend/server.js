@@ -407,7 +407,7 @@ app.get('/api/demand', async (req, res) => {
 
         const r = await pool.query(
             `SELECT item, quantity, prebooking_datetime FROM orders
-             WHERE quantity > 0 AND is_prebooking = '1'
+             WHERE quantity > 0 AND is_prebooking = 1
                AND prebooking_datetime >= $1 AND prebooking_datetime < $2`,
             [tomorrowStartIST, tomorrowEndIST]
         );
@@ -447,57 +447,12 @@ app.get('/api/admin/demand/:date', async (req, res) => {
     try {
         const dateParam = req.params.date; // YYYY-MM-DD
 
-        // Fetch prediction from Python server
-        const [pythonData, dbResult] = await Promise.all([
-            fetchPrediction(`/predict?date=${dateParam}`),
-            (async () => {
-                // Fetch actuals from DB for the requested date using IST-aware timestamps
-                const [year, month, day] = dateParam.split('-').map(Number);
-                // Build IST start/end as UTC epoch (IST = UTC+5:30 = 19800 seconds offset)
-                const istOffset = 19800;
-                const startIST = Date.UTC(year, month - 1, day, 0, 0, 0) / 1000 - istOffset;
-                const endIST   = startIST + 86400;
-                const r = await pool.query(
-                    `SELECT item, quantity, order_timestamp, is_prebooking, prebooking_datetime
-                     FROM orders WHERE quantity > 0
-                       AND (
-                         (is_prebooking != '1' AND order_timestamp >= $1 AND order_timestamp < $2)
-                         OR
-                         (is_prebooking = '1'  AND prebooking_datetime >= $1 AND prebooking_datetime < $2)
-                       )`,
-                    [startIST, endIST]
-                );
-                const totals = {};
-                const hourly = {};
-                r.rows.forEach(row => {
-                    const item = row.item.toLowerCase();
-                    const qty  = parseInt(row.quantity);
-                    const ts   = parseInt(row.is_prebooking == 1 && row.prebooking_datetime ? row.prebooking_datetime : row.order_timestamp);
-                    // Convert UTC ts → IST hour
-                    const hour = new Date((ts + istOffset) * 1000).getUTCHours();
-                    totals[item] = (totals[item] || 0) + qty;
-                    if (!hourly[item]) hourly[item] = {};
-                    hourly[item][hour] = (hourly[item][hour] || 0) + qty;
-                });
-                return { totals, hourly };
-            })()
-        ]);
-
-        // Merge DB actuals into the Python prediction output
-        if (pythonData.demand && dbResult) {
-            pythonData.demand = pythonData.demand.map(item => {
-                const key = item.item.toLowerCase();
-                const dbActual = dbResult.totals[key] || 0;
-                const mergedHourly = (item.hourly || []).map(h => ({
-                    ...h,
-                    actual: dbResult.hourly[key] ? (dbResult.hourly[key][h.time] || 0) : 0
-                }));
-                return { ...item, actual: dbActual, hourly: mergedHourly };
-            });
-        }
-
+        const pythonData = await fetchPrediction(`/predict?date=${dateParam}`);
         res.status(200).json(pythonData);
     } catch (error) {
+        if (error.message === 'MODEL_TRAINING') {
+            return res.status(202).json({ error: 'AI Model is currently training in the background. Please try again in a few seconds.' });
+        }
         console.error('Error getting custom demand:', error);
         res.status(500).json({ error: 'Failed to get custom demand data' });
     }

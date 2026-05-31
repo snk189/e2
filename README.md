@@ -2,7 +2,7 @@
 
 ## Overview
 
-BiteSpeed is a full-stack canteen management platform combining a **React + Vite** frontend, a **Node.js + Express** backend, and an **XGBoost ML pipeline** to provide real-time demand forecasting, order management, and financial analytics for canteen operations.
+BiteSpeed is a full-stack canteen management platform combining a **React + Vite** frontend, a **Node.js + Express** backend, and an **XGBoost + CatBoost ML pipeline** to provide real-time demand forecasting, order management, and financial analytics for canteen operations.
 
 The system supports three roles — **Normal users** (ordering), **Management staff** (kitchen & demand view), and **Admin** (full system control) — each with a distinct dashboard tailored to their workflow.
 
@@ -122,8 +122,8 @@ python ml/xgb.py
 ```
 - Pulls order history directly from PostgreSQL
 - Feature engineering: temporal (hour, day-of-week, cyclical encoding), lag/rolling statistics (momentum, historical averages), environmental factors
-- Trains an **XGBoost** regressor per menu item
-- Saves trained weights to `ml/xgboost_model.json`
+- Trains an **XGBoost** and **CatBoost** ensemble regressor per menu item
+- Saves trained weights to `ml/xgboost_model.json` and `ml/catboost_model.cbm`
 
 ### Inference
 The backend automatically triggers `get_predictions.py` in the background whenever the database changes, caching forecasts for instant delivery to the frontend.

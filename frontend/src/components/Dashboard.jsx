@@ -639,7 +639,11 @@ const DemandView = ({ demand, loading, onRefresh, todayOrders }) => {
             {advancedLoading ? (
               <LoadingState label="Running advanced AI prediction models..." />
             ) : advancedDemand ? (
-              <ForecastSection title={`Advanced Forecast for ${advancedDemand.customDate}`} items={advancedDemand.demand || []} mode="advanced" />
+              advancedDemand.error ? (
+                <EmptyState label={advancedDemand.error} />
+              ) : (
+                <ForecastSection title={`Advanced Forecast for ${advancedDemand.customDate}`} items={advancedDemand.demand || []} mode="advanced" />
+              )
             ) : (
               <EmptyState label="Select a date and run analysis to see advanced demand." />
             )}

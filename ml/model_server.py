@@ -8,6 +8,7 @@ import time
 from datetime import datetime, timedelta
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
+from xgboost import XGBRegressor
 
 # Import functions from get_predictions
 from get_predictions import prepare_data, extract_features, build_model, get_forecast
@@ -19,39 +20,82 @@ global_feature_cols = None
 global_lookups = None
 last_training_time = 0
 
-def train_and_load_model():
-    global global_model, global_df, global_feature_cols, global_lookups, last_training_time
-    print("[SERVER] Starting model training/loading process...")
-    user = os.environ.get('PGUSER', 'postgres')
-    password = os.environ.get('PGPASSWORD', 'admin')
-    host = os.environ.get('PGHOST', 'localhost')
-    port = os.environ.get('PGPORT', '5432')
-    database = os.environ.get('PGDATABASE', 'bitespeed')
-    
+def fetch_orders_from_db():
     try:
+        user = os.environ.get('PGUSER', 'postgres')
+        password = os.environ.get('PGPASSWORD', 'admin')
+        host = os.environ.get('PGHOST', 'localhost')
+        port = os.environ.get('PGPORT', '5432')
+        database = os.environ.get('PGDATABASE', 'bitespeed')
+        
         engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
         df = pd.read_sql('SELECT * FROM orders', engine)
+        return df
     except Exception as e:
-        print(f"[SERVER ERROR] Database connection failed: {e}")
+        print(f"[DB Error] {e}")
+        return pd.DataFrame()
+
+def load_data_and_model_if_exists():
+    global global_model, global_df, global_feature_cols, global_lookups
+    print("[SERVER] Connecting to DB to fetch orders...")
+    df = fetch_orders_from_db()
+    if df.empty:
+        print("[SERVER] Error: Could not fetch orders or empty DB.")
+        return False
+
+    print("[SERVER] Preparing Data...")
+    df, lookups, split_idx, model_end_idx = prepare_data(df)
+    
+    print("[SERVER] Extracting Features...")
+    X, y, feature_cols, encoded_cat_cols = extract_features(df)
+    
+    global_df = df
+    global_feature_cols = feature_cols
+    global_lookups = lookups
+    
+    model_path_xgb = os.path.join(os.path.dirname(__file__), "xgboost_model.json")
+    model_path_cb = os.path.join(os.path.dirname(__file__), "catboost_model.cbm")
+    if os.path.exists(model_path_xgb) and os.path.exists(model_path_cb):
+        print("[SERVER] Found existing model files. Loading...")
+        from xgboost import XGBRegressor
+        from catboost import CatBoostRegressor
+        xgb = XGBRegressor()
+        xgb.load_model(model_path_xgb)
+        cb = CatBoostRegressor()
+        cb.load_model(model_path_cb)
+        
+        global_model = {"xgb": xgb, "cb": cb}
+        return True
+        
+    return False
+
+def train_and_load_model():
+    global global_model, global_df, global_feature_cols, global_lookups, last_training_time
+    print("[SERVER] Connecting to DB to fetch orders for training...")
+    df = fetch_orders_from_db()
+    if df.empty:
+        print("[SERVER] Error: Could not fetch orders or empty DB.")
         return
 
-    import io
-    import sys
-    old_stdout = sys.stdout
-    sys.stdout = io.StringIO() # Suppress tuning output
-
-    try:
-        df, lookups, split_idx, model_end_idx = prepare_data(df)
-        X, y, feature_cols, encoded_cat_cols = extract_features(df)
-        
-        # We always fully build/retrain the model in memory
-        model = build_model(X, y, feature_cols, split_idx, model_end_idx)
-    finally:
-        sys.stdout = old_stdout
+    print("[SERVER] Preparing Data for training...")
+    df, lookups, split_idx, model_end_idx = prepare_data(df)
     
-    # Update globals atomically
+    print("[SERVER] Extracting Features for training...")
+    X, y, feature_cols, encoded_cat_cols = extract_features(df)
+    
+    print("[SERVER] Building and Training Model...")
+    models = build_model(X, y, feature_cols, split_idx, model_end_idx)
+    
+    xgb_path = os.path.join(os.path.dirname(__file__), "xgboost_model.json")
+    cb_path = os.path.join(os.path.dirname(__file__), "catboost_model.cbm")
+    
+    models["xgb"].save_model(xgb_path)
+    models["cb"].save_model(cb_path)
+    
+    print(f"[SERVER] Models trained and saved successfully.")
+    
+    global_model = models
     global_df = df
-    global_model = model
     global_feature_cols = feature_cols
     global_lookups = lookups
     last_training_time = time.time()
@@ -236,12 +280,15 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         pass
 
+def startup_worker():
+    loaded = load_data_and_model_if_exists()
+    if not loaded:
+        print("[SERVER] No existing model found. Training in background...")
+        train_and_load_model()
+
 if __name__ == '__main__':
-    first_train_thread = threading.Thread(target=train_and_load_model, daemon=True)
-    first_train_thread.start()
-    
-    t = threading.Thread(target=background_trainer, daemon=True)
-    t.start()
+    threading.Thread(target=startup_worker, daemon=True).start()
+    threading.Thread(target=background_trainer, daemon=True).start()
     
     server_address = ('', 5001)
     httpd = HTTPServer(server_address, ModelRequestHandler)

@@ -90,7 +90,7 @@ BiteSpeed is a full-stack canteen management and ML demand forecasting system. I
 
 ## 5. Machine Learning Pipeline
 
-- **Algorithm**: XGBoost regression model, trained per menu item
+- **Algorithm**: Ensemble of XGBoost and CatBoost (0.499 × XGBoost + 0.501 × CatBoost), trained per menu item
 - **Feature engineering**:
   - Temporal: hour of day, day of week, cyclical sine/cosine encoding
   - Historical: lag features, rolling averages, momentum indicators

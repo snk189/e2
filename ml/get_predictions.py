@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
 from xgboost import XGBRegressor
+from catboost import CatBoostRegressor
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from datetime import datetime, timedelta
 import json
@@ -149,7 +150,7 @@ def build_model(X, y, feature_cols, split_idx, model_end_idx):
     X_train, X_test = X_model.iloc[:split_idx], X_model.iloc[split_idx:]
     y_train, y_test = y_model.iloc[:split_idx], y_model.iloc[split_idx:]
     
-    print("\n[WAIT] Tuning Model using GridSearchCV (Takes a few seconds)...")
+    print("\n[WAIT] Tuning XGBoost Model using GridSearchCV (Takes a few seconds)...")
     param_grid = {
         'n_estimators': [300, 500, 700],
         'max_depth': [6, 8],
@@ -160,38 +161,28 @@ def build_model(X, y, feature_cols, split_idx, model_end_idx):
     tscv = TimeSeriesSplit(n_splits=3)
     grid = GridSearchCV(xgb, param_grid, cv=tscv, scoring='neg_mean_absolute_error', n_jobs=-1)
     grid.fit(X_train, y_train)
-    
-    model = grid.best_estimator_
-    print(f"[OK] Tuning Complete! Best Model Parameters: {grid.best_params_}")
-    
-    y_pred = model.predict(X_test)
-    y_pred_rounded = np.round(y_pred).clip(min=0)
-    
-    r2 = r2_score(y_test, y_pred)
-    mae = mean_absolute_error(y_test, y_pred)
-    mse = mean_squared_error(y_test, y_pred)
-    rmse = np.sqrt(mse)
-    exact_acc = np.mean(y_pred_rounded == y_test) * 100
-    
-    print(f"\n============= Leak-Proof Model Evaluation on Test Data =============")
-    print(f"R² Score: {r2:.4f}")
-    print(f"Mean Absolute Error (MAE): {mae:.4f}")
-    print(f"Mean Squared Error (MSE): {mse:.4f}")
-    print(f"Root Mean Squared Error (RMSE): {rmse:.4f}")
-    print(f"Exact Integer Match Accuracy: {exact_acc:.2f}%\n")
-    
-    # Quick feature importance top 5
-    importances = model.feature_importances_
-    features_df = pd.DataFrame({'Feature': feature_cols, 'Importance': importances}).sort_values(by='Importance', ascending=False).head(5)
-    print(f"============= Top 5 Important Features =============")
-    for idx, row in features_df.iterrows():
-        print(f" - {row['Feature']}: {row['Importance']:.4f}")
-    print("=====================================================\n")
 
-    final_model = XGBRegressor(**grid.best_params_, random_state=42, n_jobs=-1)
-    final_model.fit(X_model, y_model)
-    print("[OK] Final Model Trained Successfully on Model Dataset.")
-    return final_model
+    print("[WAIT] Training Final XGBoost Model...")
+    xgb_final = XGBRegressor(**grid.best_params_, random_state=42, n_jobs=-1)
+    xgb_final.fit(X_model, y_model)
+    print("[OK] Final XGBoost Model Trained Successfully.")
+
+    print("[WAIT] Training Final CatBoost Model...")
+    cb_final = CatBoostRegressor(
+        iterations=1000,
+        learning_rate=0.05,
+        depth=6,
+        loss_function='RMSE',
+        verbose=0,
+        random_seed=42
+    )
+    cb_final.fit(X_model, y_model)
+    print("[OK] Final CatBoost Model Trained Successfully.")
+
+    return {
+        "xgb": xgb_final,
+        "cb": cb_final
+    }
 
 def get_forecast(target_date, df, model, feature_cols, lookups):
     month = target_date.month
@@ -276,7 +267,12 @@ def get_forecast(target_date, df, model, feature_cols, lookups):
             scenarios_df_encoded[col] = 0
 
     X_pred = scenarios_df_encoded[feature_cols].astype(float)
-    preds = model.predict(X_pred)
+    
+    xgb_preds = model["xgb"].predict(X_pred)
+    cb_preds = model["cb"].predict(X_pred)
+    
+    preds = 0.499 * xgb_preds + 0.501 * cb_preds
+    
     scenarios_df['Predicted'] = np.round(preds).clip(min=0).astype(int)
 
     res = {}

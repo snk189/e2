@@ -290,7 +290,11 @@ const AdminDemand = ({ demandData, onRefresh }) => {
           {advancedLoading ? (
             <LoadingState label="Running advanced AI prediction models..." />
           ) : advancedDemand ? (
-            <DemandList title={`Advanced Forecast for ${advancedDemand.customDate}`} items={advancedDemand.demand || []} />
+            advancedDemand.error ? (
+              <EmptyState label={advancedDemand.error} />
+            ) : (
+              <DemandList title={`Advanced Forecast for ${advancedDemand.customDate}`} items={advancedDemand.demand || []} />
+            )
           ) : (
             <EmptyState label="Select a date and run analysis to see advanced demand." />
           )}
