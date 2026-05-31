@@ -237,7 +237,8 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
         pass
 
 if __name__ == '__main__':
-    train_and_load_model()
+    first_train_thread = threading.Thread(target=train_and_load_model, daemon=True)
+    first_train_thread.start()
     
     t = threading.Thread(target=background_trainer, daemon=True)
     t.start()

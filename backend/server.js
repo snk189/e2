@@ -1024,7 +1024,6 @@ app.post('/api/admin/remove_data', async (req, res) => {
             const deleteRes = await pool.query('DELETE FROM orders WHERE user_id = $1 AND order_timestamp = $2 AND item = $3', [user_id, order_timestamp, item]);
             
             if (deleteRes.rowCount > 0) {
-                runModelBackground(); // Trigger AI update when data is removed
                 res.status(200).json({ message: 'Datapoint removed' });
             } else {
                 res.status(404).json({ error: 'Datapoint not found' });

@@ -20,7 +20,7 @@ def get_meal_type(t):
 def prepare_data(df):
     # Dynamic Feature Generation for natively dropped columns
     # Calculate effective_timestamp based on prebooking status
-    df['effective_timestamp'] = np.where(df['is_prebooking'] == 1, df['prebooking_datetime'], df['order_timestamp'])
+    df['effective_timestamp'] = pd.to_numeric(np.where(df['is_prebooking'] == 1, df['prebooking_datetime'], df['order_timestamp']), errors='coerce')
     
     # Convert to datetime and adjust to local time if needed (assuming local timezone or naive works)
     # We will derive date_obj and time_slot directly from effective_timestamp
