@@ -29,6 +29,8 @@ import {
   adminChangePassword,
   getDemand,
   getOrdersByDate,
+  getDemandByDate,
+  getMenuIntelligence,
 } from '../services/api';
 import { MENU_ITEMS } from '../data/items';
 
@@ -161,11 +163,13 @@ const AdminDashboard = ({ onLogout }) => {
 
           />
         )}
+        {activeTab === 'intelligence' && <MenuIntelligence />}
         {activeTab === 'settings' && <EnvironmentSettings />}
       </main>
 
       <nav className="bottom-nav">
         <button className={activeTab === 'demand' ? 'active' : ''} onClick={() => setActiveTab('demand')} type="button"><BarChart3 className="mx-auto mb-1" size={18} />Demand</button>
+        <button className={activeTab === 'intelligence' ? 'active' : ''} onClick={() => setActiveTab('intelligence')} type="button"><BarChart3 className="mx-auto mb-1" size={18} />Intelligence</button>
         <button className={activeTab === 'orders' ? 'active' : ''} onClick={() => setActiveTab('orders')} type="button"><Database className="mx-auto mb-1" size={18} />Data</button>
         <button className={activeTab === 'users' ? 'active' : ''} onClick={() => setActiveTab('users')} type="button"><Users className="mx-auto mb-1" size={18} />Users</button>
         <button className={activeTab === 'settings' ? 'active' : ''} onClick={() => setActiveTab('settings')} type="button"><Shield className="mx-auto mb-1" size={18} />Settings</button>
@@ -187,6 +191,7 @@ const Header = ({ activeTab, setActiveTab, onLogout }) => (
       <div className="topbar-actions">
         {[
           ['demand', 'Demand', BarChart3],
+          ['intelligence', 'Intelligence', BarChart3],
           ['orders', 'Data', Database],
           ['users', 'Users', Users],
           ['settings', 'Settings', Shield],
@@ -205,6 +210,24 @@ const Header = ({ activeTab, setActiveTab, onLogout }) => (
 );
 
 const AdminDemand = ({ demandData, onRefresh }) => {
+  const [demandTab, setDemandTab] = useState('normal');
+  const [advancedDate, setAdvancedDate] = useState('');
+  const [advancedDemand, setAdvancedDemand] = useState(null);
+  const [advancedLoading, setAdvancedLoading] = useState(false);
+
+  const fetchAdvancedDemand = async (date) => {
+    if (!date) return;
+    setAdvancedLoading(true);
+    try {
+      const data = await getDemandByDate(date);
+      setAdvancedDemand(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setAdvancedLoading(false);
+    }
+  };
+
   const financials = demandData?.financials || {};
   const today = demandData?.today || [];
   const chartData = buildChartData(today);
@@ -228,15 +251,62 @@ const AdminDemand = ({ demandData, onRefresh }) => {
         </div>
       </section>
 
-      {!demandData ? (
-        <LoadingState label="Generating analysis..." />
-      ) : (
-        <>
-          <section className="grid gap-4 sm:grid-cols-3">
-            <Metric label="Total Revenue" value={money(financials.totalRevenue || 0)} tone="revenue" />
-            <Metric label="Total Cost" value={money(financials.totalCost || 0)} tone="cost" />
-            <Metric label="Net Profit" value={money(financials.netProfit || 0)} tone="profit" />
-          </section>
+      <div className="flex border-b border-[var(--outline-variant)] overflow-x-auto no-scrollbar mb-4">
+        <button
+          className={`px-4 py-3 text-sm font-bold tracking-wide uppercase transition-colors whitespace-nowrap ${demandTab === 'normal' ? 'border-b-2 border-[var(--primary)] text-[var(--primary)]' : 'text-[var(--on-surface-variant)] hover:text-[var(--on-surface)]'}`}
+          onClick={() => setDemandTab('normal')}
+        >
+          Normal
+        </button>
+        <button
+          className={`px-4 py-3 text-sm font-bold tracking-wide uppercase transition-colors whitespace-nowrap ${demandTab === 'advanced' ? 'border-b-2 border-[var(--primary)] text-[var(--primary)]' : 'text-[var(--on-surface-variant)] hover:text-[var(--on-surface)]'}`}
+          onClick={() => setDemandTab('advanced')}
+        >
+          Advanced
+        </button>
+      </div>
+
+      {demandTab === 'advanced' && (
+        <div className="glass-card p-5 sm:p-6 mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 mb-6">
+            <div className="flex-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--on-surface-variant)] mb-2">Select Date for Advanced Prediction</label>
+              <input 
+                type="date" 
+                className="cn-input w-full" 
+                value={advancedDate}
+                onChange={(e) => setAdvancedDate(e.target.value)}
+              />
+            </div>
+            <button 
+              className="cn-button cn-button-primary"
+              disabled={!advancedDate || advancedLoading}
+              onClick={() => fetchAdvancedDemand(advancedDate)}
+            >
+              {advancedLoading ? 'Predicting...' : 'Run Advanced Analysis'}
+            </button>
+          </div>
+          
+          {advancedLoading ? (
+            <LoadingState label="Running advanced AI prediction models..." />
+          ) : advancedDemand ? (
+            <DemandList title={`Advanced Forecast for ${advancedDemand.customDate}`} items={advancedDemand.demand || []} />
+          ) : (
+            <EmptyState label="Select a date and run analysis to see advanced demand." />
+          )}
+        </div>
+      )}
+
+      {demandTab === 'normal' && (
+        !demandData || demandData.error ? (
+          <EmptyState label={demandData?.error || "Generating analysis..."} />
+        ) : (
+          <>
+            <section className="grid gap-4 sm:grid-cols-3">
+              <Metric label="Total Revenue" value={money(financials.totalRevenue || 0)} tone="revenue" />
+              <Metric label="Total Cost" value={money(financials.totalCost || 0)} tone="cost" />
+              <Metric label="Net Profit" value={money(financials.netProfit || 0)} tone="profit" />
+            </section>
           <section className="analytics-grid">
             <div className="analytics-card chart-panel">
               <div className="mb-4 flex items-center justify-between gap-3">
@@ -282,41 +352,87 @@ const AdminDemand = ({ demandData, onRefresh }) => {
           </section>
           <DemandList title="Today's Performance" items={demandData.today || []} today />
         </>
+        )
       )}
     </div>
   );
 };
 
-const DemandList = ({ title, items, today = false }) => (
-  <section className="glass-card p-5 sm:p-6">
-    <div className="mb-4 flex items-center justify-between gap-3">
-      <h2 className="section-title text-2xl">{title}</h2>
-      <span className="cn-chip">{items.length} rows</span>
-    </div>
-    {items.length === 0 ? <EmptyState label="No demand rows." /> : (
-      <div className="grid gap-3 md:grid-cols-2">
-        {items.map((item) => (
-          <article className="forecast-card" key={`${title}-${item.item}`}>
-            <div className="flex items-start justify-between">
-              <div>
-                <h3 className="m-0 text-xl font-bold capitalize">{item.item}</h3>
-                <p className="m-0 mt-1 text-xs font-bold uppercase text-[var(--on-surface-variant)]">{today ? `Predicted ${item.predicted || 0}` : 'Expected Demand'}</p>
-              </div>
-              <p className="m-0 text-4xl font-bold text-[var(--primary)]">{today ? item.actual || 0 : item.predicted || 0}</p>
-            </div>
-            <div className="forecast-meter mt-4"><span style={{ width: `${Math.max(8, Math.round(((today ? item.actual || 0 : item.predicted || 0) / Math.max(...items.map((entry) => today ? entry.actual || 0 : entry.predicted || 0), 1)) * 100))}%` }} /></div>
-            {today && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                <span className="cn-chip cn-chip-success">Actual {item.actual || 0}</span>
-                <span className="cn-chip cn-chip-warm">{money(item.profit || 0)} profit</span>
-              </div>
-            )}
-          </article>
-        ))}
+const DemandList = ({ title, items, today = false }) => {
+  const [expandedItem, setExpandedItem] = useState(null);
+
+  return (
+    <section className="glass-card p-5 sm:p-6">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h2 className="section-title text-2xl">{title}</h2>
+        <span className="cn-chip">{items.length} rows</span>
       </div>
-    )}
-  </section>
-);
+      {items.length === 0 ? <EmptyState label="No demand rows." /> : (
+        <div className="grid gap-3 md:grid-cols-2">
+          {items.map((item) => (
+            <article 
+              className={`forecast-card cursor-pointer transition-all ${expandedItem === item.item ? 'ring-2 ring-[var(--primary)]' : ''}`} 
+              key={`${title}-${item.item}`}
+              onClick={() => setExpandedItem(expandedItem === item.item ? null : item.item)}
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="m-0 text-xl font-bold capitalize">{item.item}</h3>
+                  <p className="m-0 mt-1 text-xs font-bold uppercase text-[var(--on-surface-variant)]">{today ? `Predicted ${item.predicted || 0}` : 'Expected Demand'}</p>
+                </div>
+                <p className="m-0 text-4xl font-bold text-[var(--primary)]">{today ? item.actual || 0 : item.predicted || 0}</p>
+              </div>
+              <div className="forecast-meter mt-4"><span style={{ width: `${Math.max(8, Math.round(((today ? item.actual || 0 : item.predicted || 0) / Math.max(...items.map((entry) => today ? entry.actual || 0 : entry.predicted || 0), 1)) * 100))}%` }} /></div>
+              {today && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <span className="cn-chip cn-chip-success">Actual {item.actual || 0}</span>
+                  <span className="cn-chip cn-chip-warm">{money(item.profit || 0)} profit</span>
+                </div>
+              )}
+              {expandedItem === item.item && item.hourly && item.hourly.length > 0 && (
+                <div className="mt-4 border-t border-[var(--outline-variant)]/30 pt-4 animate-in slide-in-from-top-2">
+                  <p className="text-sm font-bold mb-4 text-[var(--on-surface-variant)] uppercase tracking-wider">Hourly Breakdown (8:00 - 18:00)</p>
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    {item.hourly.map((h, i) => {
+                      const hDiff = (h.actual || 0) - (h.predicted || 0);
+                      const ratio = Math.min(1, Math.max(0, (h.predicted || 0) / 500));
+                      const hue = 120 * (1 - ratio);
+                      const bgColor = `hsla(${hue}, 80%, 75%, 0.25)`;
+                      const borderColor = `hsla(${hue}, 80%, 70%, 0.6)`;
+                      
+                      return (
+                        <div key={i} className="flex flex-col items-center justify-center rounded-xl py-3 px-2 shadow-sm transition-colors duration-300" style={{ backgroundColor: bgColor, border: `1px solid ${borderColor}` }}>
+                          <span className="text-sm font-black mb-2">{h.time}:00</span>
+                          <div className="flex gap-4 w-full justify-center mb-1">
+                            <div className="text-center">
+                              <span className="text-[10px] font-bold text-[var(--on-surface-variant)] uppercase block mb-0.5">Pred</span>
+                              <span className="text-lg font-black text-[var(--on-surface)]">{h.predicted}</span>
+                            </div>
+                            {today && (
+                              <div className="text-center">
+                                <span className="text-[10px] font-bold text-[var(--on-surface-variant)] uppercase block mb-0.5">Act</span>
+                                <span className="text-lg font-black text-[var(--primary)]">{h.actual || 0}</span>
+                              </div>
+                            )}
+                          </div>
+                          {today && (
+                            <div className={`mt-1 text-[10px] font-black uppercase tracking-widest ${hDiff > 0 ? 'text-emerald-600' : hDiff < 0 ? 'text-red-600' : 'text-blue-600'}`}>
+                              {hDiff > 0 ? `${hDiff} demand ▲` : hDiff < 0 ? `${Math.abs(hDiff)} short ▼` : 'spot on ✅'}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+};
 
 const DataMaintenance = ({ orders, date, setDate, username, setUsername, showAllDays, setShowAllDays, onRefresh, doAction }) => {
   const totals = useMemo(() => {
@@ -646,6 +762,94 @@ const toDateInput = (date) => {
   const copy = new Date(date);
   copy.setMinutes(copy.getMinutes() - copy.getTimezoneOffset());
   return copy.toISOString().split('T')[0];
+};
+
+const MenuIntelligence = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const fetchIntelligence = async () => {
+    try {
+      setLoading(true);
+      const res = await getMenuIntelligence();
+      setData(res);
+    } catch (err) {
+      setError(err.error || 'Failed to fetch menu intelligence');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchIntelligence();
+  }, []);
+
+  return (
+    <div className="space-y-5">
+      <section className="ops-hero p-5 sm:p-7">
+        <div className="relative z-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="max-w-2xl">
+            <p className="eyebrow mb-2">Menu Optimization</p>
+            <h2 className="section-title">Menu Popularity Intelligence</h2>
+            <p className="section-copy">Identify trending, declining, and most profitable menu items based on historical data.</p>
+          </div>
+          <button className="cn-button cn-button-secondary" onClick={fetchIntelligence} type="button">
+            <RefreshCw size={16} />
+            Refresh
+          </button>
+        </div>
+      </section>
+
+      {loading ? (
+        <LoadingState label="Analyzing menu trends..." />
+      ) : error ? (
+        <EmptyState label={error} />
+      ) : data ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="glass-card p-5 sm:p-6 flex flex-col items-center justify-center text-center">
+            <div className="h-12 w-12 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
+              <BarChart3 className="text-emerald-600" size={24} />
+            </div>
+            <p className="text-sm font-bold uppercase tracking-wider text-[var(--on-surface-variant)] mb-2">Trending Items</p>
+            <h3 className="text-2xl font-black text-emerald-600 capitalize">
+              {data.trending?.slice(0, 3).join(', ') || 'None'}
+            </h3>
+          </div>
+
+          <div className="glass-card p-5 sm:p-6 flex flex-col items-center justify-center text-center">
+            <div className="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
+              <BarChart3 className="text-red-600 rotate-180" size={24} />
+            </div>
+            <p className="text-sm font-bold uppercase tracking-wider text-[var(--on-surface-variant)] mb-2">Declining Items</p>
+            <h3 className="text-2xl font-black text-red-600 capitalize">
+              {data.declining?.join(', ') || 'None'}
+            </h3>
+          </div>
+
+          <div className="glass-card p-5 sm:p-6 flex flex-col items-center justify-center text-center">
+            <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+              <Check className="text-blue-600" size={24} />
+            </div>
+            <p className="text-sm font-bold uppercase tracking-wider text-[var(--on-surface-variant)] mb-2">Fastest Growing</p>
+            <h3 className="text-2xl font-black text-blue-600 capitalize">
+              {data.fastestGrowing || 'None'}
+            </h3>
+          </div>
+
+          <div className="glass-card p-5 sm:p-6 flex flex-col items-center justify-center text-center">
+            <div className="h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center mb-4">
+              <Check className="text-amber-600" size={24} />
+            </div>
+            <p className="text-sm font-bold uppercase tracking-wider text-[var(--on-surface-variant)] mb-2">Most Profitable</p>
+            <h3 className="text-2xl font-black text-amber-600 capitalize">
+              {data.mostProfitable || 'None'}
+            </h3>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
 };
 
 export default AdminDashboard;

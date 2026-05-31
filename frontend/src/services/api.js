@@ -69,11 +69,9 @@ export const logoutUser = async () => {
 
 export const changePassword = async (username, currentPassword, newPassword) => {
     try {
-        // Attempt real API if exists, otherwise mock success
         const response = await axios.post(`${BASE_URL}/change_password`, { username, currentPassword, newPassword });
         return response.data;
     } catch (error) {
-        // Mock success if 404 (endpoint doesn't exist yet)
         if (error.response && error.response.status === 404) {
             return { message: "Password changed successfully (Mocked)" };
         }
@@ -89,6 +87,35 @@ export const getDemand = async () => {
         throw error.response?.data || { error: 'Fetching demand failed' };
     }
 };
+
+export const getDemandByDate = async (dateStr) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/admin/demand/${dateStr}`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { error: 'Fetching advanced demand failed' };
+    }
+};
+
+export const getIngredientsForecast = async (date = null) => {
+    try {
+        const url = date ? `${BASE_URL}/admin/ingredients?date=${date}` : `${BASE_URL}/admin/ingredients`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { error: 'Fetching ingredients forecast failed' };
+    }
+};
+
+export const getMenuIntelligence = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/admin/menu_intelligence`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { error: 'Fetching menu intelligence failed' };
+    }
+};
+
 export const getHistory = async (username) => {
     try {
         const response = await axios.get(`${BASE_URL}/history/${username}`);

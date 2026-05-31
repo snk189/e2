@@ -14,5 +14,5 @@ echo ===========================================
 set "NGROK_UPDATE="
 start "Ngrok Tunnel" cmd /k "ngrok.exe http 5173 --authtoken 36tFxCc1jtMj815lmQkNtd3Q0Ak_32HSVw9KNxX3bLt5xmG7Z"
 
-:: Start the backend and frontend in the current window
-npx --yes concurrently --kill-others -n "BACKEND,FRONTEND" -c "bgBlue.bold,bgMagenta.bold" "cd backend && node server.js" "cd frontend && npm run dev"
+:: Start the ML model server, the backend, and the frontend in the current window
+npx --yes concurrently --kill-others -n "ML_MODEL,BACKEND,FRONTEND" -c "bgGreen.bold,bgBlue.bold,bgMagenta.bold" "cd ml && python model_server.py" "cd backend && node server.js" "cd frontend && npm run dev"

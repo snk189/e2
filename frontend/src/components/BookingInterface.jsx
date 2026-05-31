@@ -244,16 +244,22 @@ const BookingInterface = ({ onLogout, username }) => {
       <div className="persistent-controls px-margin-mobile pt-4">
         <div className="glass-card p-4 shadow-sm border-white/50">
             <h2 className="text-[10px] font-label-bold uppercase tracking-widest text-on-surface-variant/60 mb-3">Select Experience</h2>
-            <div className="method-toggle" onClick={() => toggleMethod(currentMode === 'dine' ? 'book' : 'dine')}>
+            <div className="method-toggle">
                 <div 
                    className="method-slider" 
                    style={{ left: currentMode === 'book' ? 'calc(50% + 2px)' : '4px' }}>
                 </div>
-                <button className="relative z-10 flex-1 py-2 text-xs font-bold transition-colors flex items-center justify-center gap-2 active:scale-95">
+                <button 
+                    className="relative z-10 flex-1 py-2 text-xs font-bold transition-colors flex items-center justify-center gap-2 active:scale-95"
+                    onClick={() => toggleMethod('dine')}
+                >
                     <img src={iconImg} alt="" className={`w-4 h-4 object-contain ${currentMode === 'dine' ? 'brightness-0 invert' : 'brightness-0 opacity-70'}`} />
                     Dine-In
                 </button>
-                <button className="relative z-10 flex-1 py-2 text-xs font-bold transition-colors flex items-center justify-center gap-2 active:scale-95">
+                <button 
+                    className="relative z-10 flex-1 py-2 text-xs font-bold transition-colors flex items-center justify-center gap-2 active:scale-95"
+                    onClick={() => toggleMethod('book')}
+                >
                     <Calendar size={16} />
                     Prebook
                 </button>

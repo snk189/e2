@@ -29,10 +29,9 @@ def prepare_data(df):
     df['date_obj'] = df['effective_datetime'].dt.normalize()
     df['time_slot'] = df['effective_datetime'].dt.hour
     
-    # Filter dataset strictly to Jan 1, 2026 - Jun 30, 2026
+    # Do not drop data after 29-05-2026 here, so we can check actuals for today!
     start_date = pd.to_datetime('01-01-2026', format='%d-%m-%Y')
-    end_date = pd.to_datetime('30-06-2026', format='%d-%m-%Y')
-    df = df[(df['date_obj'] >= start_date) & (df['date_obj'] <= end_date)]
+    df = df[(df['date_obj'] >= start_date)]
     
     # Enforce Canteen Operating Hours (8 AM to 6 PM)
     df = df[(df['time_slot'] >= 8) & (df['time_slot'] < 18)]
@@ -108,7 +107,11 @@ def prepare_data(df):
         'user_avg_qty': train_df['quantity'].mean()
     }
 
-    return df, lookups, split_idx
+    model_cutoff = pd.to_datetime('29-05-2026', format='%d-%m-%Y')
+    model_end_idx_candidates = df[df['date_obj'] > model_cutoff].index
+    model_end_idx = model_end_idx_candidates[0] if len(model_end_idx_candidates) > 0 else len(df)
+
+    return df, lookups, split_idx, model_end_idx
 
 def extract_features(df):
     cat_cols = ['item', 'season', 'weather', 'meal_type']
@@ -136,9 +139,15 @@ def extract_features(df):
     
     return X, y, feature_cols, encoded_cat_cols
 
-def build_model(X, y, feature_cols, split_idx):
-    X_train, X_test = X.iloc[:split_idx], X.iloc[split_idx:]
-    y_train, y_test = y.iloc[:split_idx], y.iloc[split_idx:]
+def build_model(X, y, feature_cols, split_idx, model_end_idx):
+    X_model = X.iloc[:model_end_idx]
+    y_model = y.iloc[:model_end_idx]
+    
+    # split_idx is for hyperparam tuning. Make sure it doesn't exceed model_end_idx
+    split_idx = min(split_idx, model_end_idx)
+    
+    X_train, X_test = X_model.iloc[:split_idx], X_model.iloc[split_idx:]
+    y_train, y_test = y_model.iloc[:split_idx], y_model.iloc[split_idx:]
     
     print("\n[WAIT] Tuning Model using GridSearchCV (Takes a few seconds)...")
     param_grid = {
@@ -180,8 +189,8 @@ def build_model(X, y, feature_cols, split_idx):
     print("=====================================================\n")
 
     final_model = XGBRegressor(**grid.best_params_, random_state=42, n_jobs=-1)
-    final_model.fit(X, y)
-    print("[OK] Final Model Trained Successfully on Full Dataset.")
+    final_model.fit(X_model, y_model)
+    print("[OK] Final Model Trained Successfully on Model Dataset.")
     return final_model
 
 def predict_demand(target_date_str, df, model, feature_cols, encoded_cat_cols, lookups):
@@ -388,6 +397,12 @@ def get_forecast(target_date, df, model, feature_cols, lookups):
     return res
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--date', type=str, help='Target date in YYYY-MM-DD format')
+    parser.add_argument('--update', action='store_true', help='Update the existing model')
+    args = parser.parse_args()
+
     try:
         user = os.environ.get('PGUSER', 'postgres')
         password = os.environ.get('PGPASSWORD', 'admin')
@@ -402,99 +417,141 @@ def main():
         print(json.dumps({"error": str(e)}))
         return
 
-    # To avoid writing stdout to the JSON output by build_model grid search,
-    # we redirect stdout temporarily so that only our final JSON is printed.
     import io
     old_stdout = sys.stdout
     sys.stdout = io.StringIO()
 
     try:
-        df, lookups, split_idx = prepare_data(df)
+        df, lookups, split_idx, model_end_idx = prepare_data(df)
         X, y, feature_cols, encoded_cat_cols = extract_features(df)
-        model = build_model(X, y, feature_cols, split_idx)
+        
+        model_path = os.path.join(os.path.dirname(__file__), "xgboost_model.json")
+        if args.update or not os.path.exists(model_path):
+            model = build_model(X, y, feature_cols, split_idx, model_end_idx)
+            model.save_model(model_path)
+        else:
+            model = XGBRegressor(random_state=42, n_jobs=-1)
+            model.load_model(model_path)
+            try:
+                expected_features = model.get_booster().feature_names
+                if expected_features:
+                    for col in expected_features:
+                        if col not in X.columns:
+                            X[col] = 0
+                    X = X[expected_features]
+                    feature_cols = expected_features
+            except Exception:
+                pass
 
-        # get today's actual
-        today_date_str = datetime.now().strftime('%Y-%m-%d')
-        yesterday_date_str = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+        if args.date:
+            target_date = datetime.strptime(args.date, '%Y-%m-%d')
+            target_df = df[df['date_obj'].dt.strftime('%Y-%m-%d') == args.date]
+            target_actual = target_df.groupby('item')['quantity'].sum().to_dict()
+            target_actual_hourly = target_df.groupby(['item', 'time_slot'])['quantity'].sum().to_dict()
 
-        today_df = df[df['date_obj'].dt.strftime('%Y-%m-%d') == today_date_str]
-        yesterday_df = df[df['date_obj'].dt.strftime('%Y-%m-%d') == yesterday_date_str]
+            pred_dict = get_forecast(target_date, df, model, feature_cols, lookups)
+            unique_items = df['item'].unique()
+            demand_list = []
+            for item in unique_items:
+                item_pred = pred_dict.get(item, {'total': 0, 'hourly': []})
+                hourly_list = []
+                for h in item_pred.get('hourly', []):
+                    hr = h['time']
+                    hourly_list.append({
+                        'time': hr, 
+                        'predicted': h['predicted'], 
+                        'actual': int(target_actual_hourly.get((item, hr), 0))
+                    })
+                demand_list.append({
+                    "item": item.title(),
+                    "predicted": item_pred['total'],
+                    "actual": int(target_actual.get(item, 0)),
+                    "hourly": hourly_list
+                })
+            result = {
+                "customDate": args.date,
+                "demand": demand_list
+            }
+        else:
+            today_date_str = datetime.now().strftime('%Y-%m-%d')
+            yesterday_date_str = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
 
-        today_actual = today_df.groupby('item')['quantity'].sum().to_dict()
-        yesterday_actual = yesterday_df.groupby('item')['quantity'].sum().to_dict()
-        today_actual_hourly = today_df.groupby(['item', 'time_slot'])['quantity'].sum().to_dict()
+            today_df = df[df['date_obj'].dt.strftime('%Y-%m-%d') == today_date_str]
+            yesterday_df = df[df['date_obj'].dt.strftime('%Y-%m-%d') == yesterday_date_str]
 
-        today_target = datetime.now()
-        tomorrow_target = today_target + timedelta(days=1)
+            today_actual = today_df.groupby('item')['quantity'].sum().to_dict()
+            yesterday_actual = yesterday_df.groupby('item')['quantity'].sum().to_dict()
+            today_actual_hourly = today_df.groupby(['item', 'time_slot'])['quantity'].sum().to_dict()
 
-        today_pred = get_forecast(today_target, df, model, feature_cols, lookups)
-        tomorrow_pred = get_forecast(tomorrow_target, df, model, feature_cols, lookups)
+            today_target = datetime.now()
+            tomorrow_target = today_target + timedelta(days=1)
 
-        unique_items = df['item'].unique()
+            today_pred = get_forecast(today_target, df, model, feature_cols, lookups)
+            tomorrow_pred = get_forecast(tomorrow_target, df, model, feature_cols, lookups)
 
-        # Financials mapping
-        price_map = {'dosa': 60, 'pizza': 150, 'sandwich': 50, 'tea': 20, 'burger': 80, 'idly': 40, 'pulao': 100, 'coffee': 25, 'juice': 45, 'icecream': 50, 'samosa': 15, 'panipuri': 30}
-        cost_map = {'dosa': 25, 'pizza': 70, 'sandwich': 20, 'tea': 5, 'burger': 40, 'idly': 15, 'pulao': 45, 'coffee': 10, 'juice': 20, 'icecream': 25, 'samosa': 5, 'panipuri': 12}
+            unique_items = df['item'].unique()
 
-        total_revenue = 0
-        total_cost = 0
-        for item_key, qty in today_actual.items():
-            total_revenue += qty * price_map.get(item_key, 0)
-            total_cost += qty * cost_map.get(item_key, 0)
-        net_profit = total_revenue - total_cost
-        financials = {
-            "totalRevenue": int(total_revenue),
-            "totalCost": int(total_cost),
-            "netProfit": int(net_profit)
-        }
+            price_map = {'dosa': 60, 'pizza': 150, 'sandwich': 50, 'tea': 20, 'burger': 80, 'idly': 40, 'pulao': 100, 'coffee': 25, 'juice': 45, 'icecream': 50, 'samosa': 15, 'panipuri': 30}
+            cost_map = {'dosa': 25, 'pizza': 70, 'sandwich': 20, 'tea': 5, 'burger': 40, 'idly': 15, 'pulao': 45, 'coffee': 10, 'juice': 20, 'icecream': 25, 'samosa': 5, 'panipuri': 12}
 
-        # Format the response
-        current_hour = datetime.now().hour
+            total_revenue = 0
+            total_cost = 0
+            for item_key, qty in today_actual.items():
+                total_revenue += qty * price_map.get(item_key, 0)
+                total_cost += qty * cost_map.get(item_key, 0)
+            net_profit = total_revenue - total_cost
+            financials = {
+                "totalRevenue": int(total_revenue),
+                "totalCost": int(total_cost),
+                "netProfit": int(net_profit)
+            }
 
-        today_list = []
-        for item in unique_items:
-            item_pred = today_pred.get(item, {'total': 0, 'hourly': []})
-            hourly_list = []
-            for h in item_pred.get('hourly', []):
-                t_slot = h['time']
-                hr_actual = int(today_actual_hourly.get((item, t_slot), 0))
-                hourly_list.append({
-                    'time': t_slot,
-                    'predicted': h['predicted'],
-                    'actual': hr_actual
+            current_hour = datetime.now().hour
+
+            today_list = []
+            for item in unique_items:
+                item_pred = today_pred.get(item, {'total': 0, 'hourly': []})
+                hourly_list = []
+                for h in item_pred.get('hourly', []):
+                    t_slot = h['time']
+                    hr_actual = int(today_actual_hourly.get((item, t_slot), 0))
+                    hourly_list.append({
+                        'time': t_slot,
+                        'predicted': h['predicted'],
+                        'actual': hr_actual
+                    })
+
+                item_act = int(today_actual.get(item, 0))
+                item_yest = int(yesterday_actual.get(item, 0))
+                selling_price = price_map.get(item, 0)
+                cost_price = cost_map.get(item, 0)
+                item_profit = (selling_price - cost_price) * item_act
+
+                today_list.append({
+                    "item": item.title(),
+                    "predicted": item_pred['total'],
+                    "actual": item_act,
+                    "yesterday": item_yest,
+                    "profit": int(item_profit),
+                    "hourly": hourly_list
                 })
 
-            item_act = int(today_actual.get(item, 0))
-            item_yest = int(yesterday_actual.get(item, 0))
-            selling_price = price_map.get(item, 0)
-            cost_price = cost_map.get(item, 0)
-            item_profit = (selling_price - cost_price) * item_act
+            tomorrow_list = []
+            for item in unique_items:
+                item_pred = tomorrow_pred.get(item, {'total': 0, 'hourly': []})
+                hourly_list = [{'time': h['time'], 'predicted': h['predicted']} for h in item_pred.get('hourly', [])]
+                tomorrow_list.append({
+                    "item": item.title(),
+                    "predicted": item_pred['total'],
+                    "hourly": hourly_list
+                })
 
-            today_list.append({
-                "item": item.title(),
-                "predicted": item_pred['total'],
-                "actual": item_act,
-                "yesterday": item_yest,
-                "profit": int(item_profit),
-                "hourly": hourly_list
-            })
-
-        tomorrow_list = []
-        for item in unique_items:
-            item_pred = tomorrow_pred.get(item, {'total': 0, 'hourly': []})
-            hourly_list = [{'time': h['time'], 'predicted': h['predicted']} for h in item_pred.get('hourly', [])]
-            tomorrow_list.append({
-                "item": item.title(),
-                "predicted": item_pred['total'],
-                "hourly": hourly_list
-            })
-
-        result = {
-            "currentHour": current_hour,
-            "financials": financials,
-            "today": today_list,
-            "tomorrow": tomorrow_list
-        }
+            result = {
+                "currentHour": current_hour,
+                "financials": financials,
+                "today": today_list,
+                "tomorrow": tomorrow_list
+            }
     finally:
         sys.stdout = old_stdout
 

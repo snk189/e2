@@ -1,2 +1,2 @@
-when i move the ractangle in management the page shud scroll alsso appropriately coz the box is going down but screen is somewhere
-in user history when one status changes the order is moving up and down but it shudnt
+there is a bit of mismatch.for a date pizza predicted is 180 but pizza base required is 198 wheere one pizza base is needed for one pizza.idk why this discrepency..
+i want one change in api_logs.txt.i want the log of whatever the admin or management is trying to query

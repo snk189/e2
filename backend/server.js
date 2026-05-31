@@ -36,9 +36,6 @@ const SCRIPT_PATH = path.join(__dirname, '../ml/get_predictions.py');
 
 if (!fs.existsSync(MANAGEMENT_SETTINGS_FILE)) fs.writeFileSync(MANAGEMENT_SETTINGS_FILE, JSON.stringify(defaultSettings, null, 2));
 
-let cachedDemand = null;
-let isModelRunning = false;
-
 const LOG_FILE = path.join(__dirname, 'api_logs.txt');
 app.use((req, res, next) => {
     if (req.method === 'OPTIONS' || req.url.includes('/api/demand')) {
@@ -61,28 +58,25 @@ app.post('/api/logout', (req, res) => {
     res.status(200).json({ message: 'Logged out successfully' });
 });
 
-const runModelBackground = () => {
-    if (isModelRunning) return; 
-    
-    console.log("Dataset change detected. Running AI model in the background...");
-    isModelRunning = true;
-    
-    exec(`"${PYTHON_EXEC}" "${SCRIPT_PATH}"`, (error, stdout, stderr) => {
-        isModelRunning = false;
-        if (error) {
-            console.error("Background AI Model Error:", error);
-            return;
-        }
-        try {
-            cachedDemand = JSON.parse(stdout);
-            console.log("AI Model successfully updated predictions caching.");
-        } catch (e) {
-            console.error("Failed to parse background AI output:", e);
-        }
+// Helper for making requests to Python Model Server
+const http = require('http');
+const fetchPrediction = (path) => {
+    return new Promise((resolve, reject) => {
+        http.get(`http://localhost:5001${path}`, (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+                if (res.statusCode === 503) return reject(new Error('MODEL_TRAINING'));
+                if (res.statusCode >= 400) return reject(new Error(`Server Error: ${res.statusCode} ${data}`));
+                try {
+                    resolve(JSON.parse(data));
+                } catch(e) {
+                    reject(e);
+                }
+            });
+        }).on('error', (e) => reject(new Error(`Model Server Offline: ${e.message}`)));
     });
 };
-
-runModelBackground();
 
 // Check cooldown logic against DB
 const checkCooldown = async (username) => {
@@ -197,7 +191,7 @@ app.post('/api/order', async (req, res) => {
             }
             await client.query('COMMIT');
             
-            runModelBackground(); // Trigger AI update
+            // Retraining is handled internally by Python server's loop
             res.status(200).json({ message: 'Orders received successfully' });
         } catch (e) {
             await client.query('ROLLBACK');
@@ -309,16 +303,302 @@ app.post('/api/admin/settings', (req, res) => {
     }
 });
 
-app.get('/api/demand', (req, res) => {
+app.get('/api/demand', async (req, res) => {
     try {
-        if (cachedDemand) {
-            return res.status(200).json(cachedDemand);
-        } else {
-            return res.status(202).json({ error: 'AI Model is currently training in the background. Please try again in a few seconds.' });
+        let liveDemand;
+        try {
+            liveDemand = await fetchPrediction('/predict_today');
+        } catch (err) {
+            if (err.message === 'MODEL_TRAINING') {
+                return res.status(202).json({ error: 'AI Model is currently training in the background. Please try again in a few seconds.' });
+            }
+            throw err;
         }
+        
+        // Merge tomorrow's pre-booked actuals from DB (IST-aware)
+        const istOffset = 19800;
+        const now = Math.floor(Date.now() / 1000);
+        const todayStartIST = now - ((now + istOffset) % 86400);
+        const tomorrowStartIST = todayStartIST + 86400;
+        const tomorrowEndIST = tomorrowStartIST + 86400;
+
+        const r = await pool.query(
+            `SELECT item, quantity, prebooking_datetime FROM orders
+             WHERE quantity > 0 AND is_prebooking = '1'
+               AND prebooking_datetime >= $1 AND prebooking_datetime < $2`,
+            [tomorrowStartIST, tomorrowEndIST]
+        );
+
+        const tomorrowTotals = {};
+        const tomorrowHourly = {};
+        r.rows.forEach(row => {
+            const item = row.item.toLowerCase();
+            const qty = parseInt(row.quantity);
+            const hour = new Date((parseInt(row.prebooking_datetime) + istOffset) * 1000).getUTCHours();
+            tomorrowTotals[item] = (tomorrowTotals[item] || 0) + qty;
+            if (!tomorrowHourly[item]) tomorrowHourly[item] = {};
+            tomorrowHourly[item][hour] = (tomorrowHourly[item][hour] || 0) + qty;
+        });
+
+        const response = { ...liveDemand };
+        if (response.tomorrow) {
+            response.tomorrow = response.tomorrow.map(item => {
+                const key = item.item.toLowerCase();
+                const mergedHourly = (item.hourly || []).map(h => ({
+                    ...h,
+                    actual: tomorrowHourly[key] ? (tomorrowHourly[key][h.time] || 0) : 0
+                }));
+                return { ...item, actual: tomorrowTotals[key] || 0, hourly: mergedHourly };
+            });
+        }
+
+        return res.status(200).json(response);
     } catch (error) {
         console.error('Error getting demand:', error);
         res.status(500).json({ error: 'Failed to get demand data' });
+    }
+});
+
+
+app.get('/api/admin/demand/:date', async (req, res) => {
+    try {
+        const dateParam = req.params.date; // YYYY-MM-DD
+
+        // Fetch prediction from Python server
+        const [pythonData, dbResult] = await Promise.all([
+            fetchPrediction(`/predict?date=${dateParam}`),
+            (async () => {
+                // Fetch actuals from DB for the requested date using IST-aware timestamps
+                const [year, month, day] = dateParam.split('-').map(Number);
+                // Build IST start/end as UTC epoch (IST = UTC+5:30 = 19800 seconds offset)
+                const istOffset = 19800;
+                const startIST = Date.UTC(year, month - 1, day, 0, 0, 0) / 1000 - istOffset;
+                const endIST   = startIST + 86400;
+                const r = await pool.query(
+                    `SELECT item, quantity, order_timestamp, is_prebooking, prebooking_datetime
+                     FROM orders WHERE quantity > 0
+                       AND (
+                         (is_prebooking != '1' AND order_timestamp >= $1 AND order_timestamp < $2)
+                         OR
+                         (is_prebooking = '1'  AND prebooking_datetime >= $1 AND prebooking_datetime < $2)
+                       )`,
+                    [startIST, endIST]
+                );
+                const totals = {};
+                const hourly = {};
+                r.rows.forEach(row => {
+                    const item = row.item.toLowerCase();
+                    const qty  = parseInt(row.quantity);
+                    const ts   = parseInt(row.is_prebooking == 1 && row.prebooking_datetime ? row.prebooking_datetime : row.order_timestamp);
+                    // Convert UTC ts → IST hour
+                    const hour = new Date((ts + istOffset) * 1000).getUTCHours();
+                    totals[item] = (totals[item] || 0) + qty;
+                    if (!hourly[item]) hourly[item] = {};
+                    hourly[item][hour] = (hourly[item][hour] || 0) + qty;
+                });
+                return { totals, hourly };
+            })()
+        ]);
+
+        // Merge DB actuals into the Python prediction output
+        if (pythonData.demand && dbResult) {
+            pythonData.demand = pythonData.demand.map(item => {
+                const key = item.item.toLowerCase();
+                const dbActual = dbResult.totals[key] || 0;
+                const mergedHourly = (item.hourly || []).map(h => ({
+                    ...h,
+                    actual: dbResult.hourly[key] ? (dbResult.hourly[key][h.time] || 0) : 0
+                }));
+                return { ...item, actual: dbActual, hourly: mergedHourly };
+            });
+        }
+
+        res.status(200).json(pythonData);
+    } catch (error) {
+        console.error('Error getting custom demand:', error);
+        res.status(500).json({ error: 'Failed to get custom demand data' });
+    }
+});
+
+
+
+app.get('/api/admin/ingredients', async (req, res) => {
+    try {
+        const dateQuery = req.query.date;
+        let demandToUse = null;
+        let isCustomDate = false;
+
+        if (dateQuery) {
+            isCustomDate = true;
+            try {
+                const customData = await fetchPrediction(`/predict?date=${dateQuery}`);
+                demandToUse = customData.demand; // Note: customDate returns { customDate, demand }
+            } catch (err) {
+                if (err.message === 'MODEL_TRAINING') return res.status(202).json({ error: 'Demand data not ready' });
+                throw err;
+            }
+        } else {
+            try {
+                const todayData = await fetchPrediction('/predict_today');
+                demandToUse = todayData.today;
+            } catch (err) {
+                if (err.message === 'MODEL_TRAINING') return res.status(202).json({ error: 'Demand data not ready' });
+                throw err;
+            }
+        }
+        
+        const result = await pool.query('SELECT * FROM ingredients');
+        const ingredients = result.rows;
+        
+        const itemToIngredients = {};
+        ingredients.forEach(row => {
+            const item = row.item_name.toLowerCase();
+            if (!itemToIngredients[item]) itemToIngredients[item] = [];
+            itemToIngredients[item].push({
+                name: row.ingredient_name,
+                qty: parseFloat(row.quantity_per_serving),
+                unit: row.unit
+            });
+        });
+
+        const ingredientTotals = {}; 
+
+        demandToUse.forEach(pred => {
+            const item = pred.item.toLowerCase();
+            const calcQty = (isCustomDate && pred.actual !== undefined && pred.actual > 0) ? pred.actual : (pred.predicted || 0);
+            if (itemToIngredients[item]) {
+                itemToIngredients[item].forEach(ing => {
+                    if (!ingredientTotals[ing.name]) {
+                        ingredientTotals[ing.name] = { total: 0, unit: ing.unit, breakdown: [] };
+                    }
+                    const reqQty = ing.qty * calcQty;
+                    ingredientTotals[ing.name].total += reqQty;
+                    if (calcQty > 0) {
+                        ingredientTotals[ing.name].breakdown.push({ item: pred.item, qty: reqQty, unit: ing.unit });
+                    }
+                });
+            }
+        });
+
+        // Also add all ingredients that weren't in any demand prediction (0 demand)
+        Object.keys(itemToIngredients).forEach(item => {
+            itemToIngredients[item].forEach(ing => {
+                if (!ingredientTotals[ing.name]) {
+                    ingredientTotals[ing.name] = { total: 0, unit: ing.unit, breakdown: [] };
+                }
+            });
+        });
+
+        const responseData = Object.keys(ingredientTotals).map(name => ({
+            name,
+            total: ingredientTotals[name].total,
+            unit: ingredientTotals[name].unit,
+            breakdown: ingredientTotals[name].breakdown
+        }));
+
+        res.status(200).json({
+            date: dateQuery || 'today',
+            ingredients: responseData
+        });
+
+    } catch (error) {
+        console.error('Error fetching ingredients:', error);
+        res.status(500).json({ error: 'Failed to fetch ingredients' });
+    }
+});
+
+app.get('/api/admin/menu_intelligence', async (req, res) => {
+    try {
+        // Query to get quantities grouped by item and date.
+        // We will do the intelligence calculation directly in Node for simplicity.
+        const result = await pool.query(`
+            SELECT item, quantity, order_timestamp 
+            FROM orders 
+            WHERE quantity > 0
+        `);
+
+        const priceMap = {'dosa': 60, 'pizza': 150, 'sandwich': 50, 'tea': 20, 'burger': 80, 'idly': 40, 'pulao': 100, 'coffee': 25, 'juice': 45, 'icecream': 50, 'samosa': 15, 'panipuri': 30};
+        const costMap = {'dosa': 25, 'pizza': 70, 'sandwich': 20, 'tea': 5, 'burger': 40, 'idly': 15, 'pulao': 45, 'coffee': 10, 'juice': 20, 'icecream': 25, 'samosa': 5, 'panipuri': 12};
+
+        const now = Date.now() / 1000;
+        const oneDay = 86400;
+        const sevenDaysAgo = now - (7 * oneDay);
+        const thirtyDaysAgo = now - (30 * oneDay);
+
+        const currentMonthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).getTime() / 1000;
+        const prevMonthStart = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1).getTime() / 1000;
+
+        const itemStats = {};
+
+        result.rows.forEach(row => {
+            const item = row.item;
+            const qty = parseInt(row.quantity) || 0;
+            const ts = parseInt(row.order_timestamp) || 0;
+
+            if (!itemStats[item]) {
+                itemStats[item] = {
+                    last7Days: 0,
+                    last30Days: 0,
+                    thisMonth: 0,
+                    prevMonth: 0
+                };
+            }
+
+            if (ts >= sevenDaysAgo) itemStats[item].last7Days += qty;
+            if (ts >= thirtyDaysAgo) itemStats[item].last30Days += qty;
+            
+            if (ts >= currentMonthStart) itemStats[item].thisMonth += qty;
+            if (ts >= prevMonthStart && ts < currentMonthStart) itemStats[item].prevMonth += qty;
+        });
+
+        const trending = [];
+        const declining = [];
+        let fastestGrowing = { item: 'N/A', growth: -Infinity };
+        let mostProfitable = { item: 'N/A', profit: -Infinity };
+
+        Object.keys(itemStats).forEach(item => {
+            const stats = itemStats[item];
+            const avg7 = stats.last7Days / 7;
+            const avg30 = stats.last30Days / 30;
+
+            // Trending: 7-day average is > 20% higher than 30-day average, and volume > 0
+            if (avg7 > avg30 * 1.2 && stats.last7Days > 0) {
+                trending.push(item);
+            }
+            // Declining: 7-day average is < 20% lower than 30-day average
+            else if (avg7 < avg30 * 0.8 && stats.last30Days > 0) {
+                declining.push(item);
+            }
+
+            // Fastest growing this month vs last month
+            let growth = 0;
+            if (stats.prevMonth > 0) {
+                growth = ((stats.thisMonth - stats.prevMonth) / stats.prevMonth) * 100;
+            } else if (stats.thisMonth > 0) {
+                growth = 100; // Infinite growth, but let's cap it to 100% for baseline.
+            }
+
+            if (growth > fastestGrowing.growth && stats.thisMonth > 0) {
+                fastestGrowing = { item, growth };
+            }
+
+            // Most profitable
+            const profit = stats.thisMonth * ((priceMap[item] || 0) - (costMap[item] || 0));
+            if (profit > mostProfitable.profit) {
+                mostProfitable = { item, profit };
+            }
+        });
+
+        res.status(200).json({
+            trending: trending.length > 0 ? trending : ['No significant trends'],
+            declining: declining.length > 0 ? declining : ['No declining items'],
+            fastestGrowing: fastestGrowing.item,
+            mostProfitable: mostProfitable.item
+        });
+
+    } catch (error) {
+        console.error('Error calculating menu intelligence:', error);
+        res.status(500).json({ error: 'Failed to calculate menu intelligence' });
     }
 });
 
@@ -337,7 +617,7 @@ app.get('/api/admin/today_orders', async (req, res) => {
             
             if (effective_time >= startOfDay && effective_time < endOfDay) {
                 todayOrders.push({
-                    id: row.order_timestamp + "|" + row.user_id + "|" + row.item, // Use a compound key for frontend if needed, but original used row index. We'll send CTID or row ID later if needed. For now let's just use some id.
+                    id: `${row.order_timestamp}|${row.user_id}|${row.item}`,
                     username: row.user_id,
                     item: row.item,
                     quantity: parseInt(row.quantity),
@@ -348,7 +628,7 @@ app.get('/api/admin/today_orders', async (req, res) => {
                     is_delivered: row.is_delivered === 'True',
                     status: row.status ? row.status.trim() : (row.is_delivered === 'True' ? 'delivered' : 'pending'),
                     notes: row.instructions ? row.instructions.trim() : '',
-                    _db_ctid: row.ctid // we can't get ctid easily in standard select *, let's assume we use order_timestamp+user_id as id.
+                    _db_ctid: row.ctid 
                 });
             }
         });
