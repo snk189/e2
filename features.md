@@ -95,10 +95,13 @@ BiteSpeed is a full-stack canteen management and ML demand forecasting system. I
   - Temporal: hour of day, day of week, cyclical sine/cosine encoding
   - Historical: lag features, rolling averages, momentum indicators
   - Environmental: user-configured contextual factors
-- **Auto-retraining**: Backend watches PostgreSQL for changes and re-runs the inference pipeline automatically — no manual intervention required
-- **Financial projection**: Each prediction includes mapped revenue, cost, and net profit using menu price/cost tables
-- **Hourly granularity**: Forecasts broken down hour-by-hour (8:00–18:00) per item
-- **Ingredient mapping**: Predictions are translated into ingredient quantities via recipe mappings for procurement planning
+- **Rule-based overrides**: Hardcoded zero-demand predictions for weekends and declared holidays to prevent model hallucination on closed days.
+- **Async Server Architecture**: The ML server loads instantly from cached `.json` and `.cbm` model files to avoid blocking API startup. Background threads handle heavy database loading and retraining without downtime.
+- **Auto-retraining**: Backend automatically runs a background retraining cycle periodically, updating the persistent model files so predictions are always fresh.
+- **Financial projection**: Each prediction includes mapped revenue, cost, and net profit using menu price/cost tables.
+- **Hourly granularity**: Forecasts broken down hour-by-hour (8:00–18:00) per item.
+- **Ingredient mapping**: Predictions are translated into ingredient quantities via recipe mappings for procurement planning.
+- **Evaluation framework**: Includes `evaluate_model.py` for strict chronological train/test splitting (leak-proof) to benchmark R², MAE, RMSE, and exact integer match accuracy of individual models vs the ensemble.
 
 ---
 

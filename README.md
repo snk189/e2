@@ -125,17 +125,24 @@ python ml/xgb.py
 - Trains an **XGBoost** and **CatBoost** ensemble regressor per menu item
 - Saves trained weights to `ml/xgboost_model.json` and `ml/catboost_model.cbm`
 
-### Inference
-The backend automatically triggers `get_predictions.py` in the background whenever the database changes, caching forecasts for instant delivery to the frontend.
+### Evaluation
+To benchmark the accuracy of the model on a strictly chronological train/test split without data leakage, run the evaluation script:
+```bash
+python ml/evaluate_model.py
+```
+Outputs the R² score, Mean Absolute Error (MAE), RMSE, and Exact Integer Match Accuracy for XGBoost, CatBoost, and the Final Ensemble.
 
-Manual run:
+### Inference & Async Model Server
+The ML backend (`model_server.py`) operates as an asynchronous, non-blocking Flask API. Upon startup, it instantly loads the cached `.json` and `.cbm` models to guarantee zero downtime, while fetching data and retraining the models in the background.
+
+Manual inference run:
 ```bash
 python ml/get_predictions.py
 ```
 Outputs per-item hourly predicted demand and financial projections (revenue, cost, net profit).
 
 ### Auto-Retraining
-The Node.js backend watches for database changes and re-executes the ML model automatically, keeping predictions fresh without manual intervention.
+The background server thread periodically watches for database changes and re-executes the ML model automatically, keeping predictions fresh without manual intervention.
 
 ---
 

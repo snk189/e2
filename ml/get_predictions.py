@@ -174,7 +174,8 @@ def build_model(X, y, feature_cols, split_idx, model_end_idx):
         depth=6,
         loss_function='RMSE',
         verbose=0,
-        random_seed=42
+        random_seed=42,
+        allow_writing_files=False
     )
     cb_final.fit(X_model, y_model)
     print("[OK] Final CatBoost Model Trained Successfully.")
@@ -271,7 +272,7 @@ def get_forecast(target_date, df, model, feature_cols, lookups):
     xgb_preds = model["xgb"].predict(X_pred)
     cb_preds = model["cb"].predict(X_pred)
     
-    preds = 0.499 * xgb_preds + 0.501 * cb_preds
+    preds = 0.3 * xgb_preds + 0.7 * cb_preds
     
     scenarios_df['Predicted'] = np.round(preds).clip(min=0).astype(int)
 

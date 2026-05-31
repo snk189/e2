@@ -1952,3 +1952,295 @@
 [31-05-2026 23:06:19 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
 [31-05-2026 23:06:24 IST] [INFO] USER: Aa | Viewed today's orders
 [31-05-2026 23:06:24 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:06:29 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:06:29 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:06:34 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:06:34 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:06:39 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:06:39 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:06:44 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:06:44 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:06:53 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:06:53 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:06:54 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:06:54 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:06:59 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:07:00 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:07:04 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:07:04 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:07:09 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:07:09 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:07:14 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:07:14 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:07:19 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:07:19 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:07:24 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:07:24 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:07:29 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:07:29 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:07:34 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:07:34 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:07:39 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:07:39 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:07:44 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:07:44 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:07:49 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:07:49 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:07:54 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:07:54 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:07:59 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:07:59 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:08:04 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:08:04 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:08:09 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:08:09 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:08:14 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:08:14 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:08:19 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:08:19 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:08:24 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:08:24 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:08:29 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:08:30 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:08:34 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:08:34 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:08:39 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:08:39 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:08:44 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:08:44 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:08:49 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:08:49 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:08:54 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:08:54 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:09:14 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:09:14 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:09:19 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:09:19 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:09:24 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:09:24 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:09:29 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:09:29 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:09:34 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:09:34 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:09:39 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:09:39 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:09:44 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:09:44 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:09:49 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:09:49 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:09:54 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:09:54 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:09:59 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:09:59 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:10:04 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:10:04 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:10:09 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:10:09 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:10:14 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:10:14 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:10:19 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:10:19 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:10:24 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:10:24 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:10:29 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:10:29 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:10:34 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:10:34 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:10:39 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:10:39 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:10:44 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:10:44 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:10:49 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:10:49 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:10:54 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:10:54 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:10:59 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:10:59 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:11:04 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:11:04 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:11:09 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:11:09 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:11:14 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:11:14 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:11:19 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:11:19 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:11:24 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:11:24 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:11:29 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:11:29 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:11:34 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:11:34 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:11:39 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:11:39 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:11:44 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:11:44 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:11:49 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:11:49 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:11:54 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:11:54 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:11:59 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:11:59 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:12:04 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:12:04 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:12:09 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:12:09 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:16:57 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:17:00 IST] [INFO] USER: Aa | Logged in
+[31-05-2026 23:17:00 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:17:00 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:17:02 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:17:02 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:17:07 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:17:07 IST] [INFO] USER: Aa | Queried demand prediction for date: 2026-06-02
+[31-05-2026 23:17:07 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:17:11 IST] [INFO] USER: Aa | Queried demand prediction for date: 2026-06-20
+[31-05-2026 23:17:12 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:17:12 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:17:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:17:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:17:17 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:17:17 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:17:22 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:17:22 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:17:27 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:17:27 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:17:32 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:17:32 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:17:37 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:17:37 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:17:42 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:17:42 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:17:47 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:17:47 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:17:52 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:17:52 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:17:58 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:17:58 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:03 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:03 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:08 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:08 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:14 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:14 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:21 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:21 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:21 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:22 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:22 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:22 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:27 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:27 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:32 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:32 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:36 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:36 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:37 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:37 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:39 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:39 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:42 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:42 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:44 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:44 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:47 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:47 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:49 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:49 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:52 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:52 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:54 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:54 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:57 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:57 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:18:59 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:18:59 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:19:02 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:19:02 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:19:04 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:19:04 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:19:07 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:19:07 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:19:09 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:19:09 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:19:12 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:19:12 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:19:14 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:19:14 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:19:17 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:19:17 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:19:19 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:19:19 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:19:22 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:19:22 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:19:24 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:19:24 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:19:27 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:19:27 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:19:29 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:19:29 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:19:34 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:19:34 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:20:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:20:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:20:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:20:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:21:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:21:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:21:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:21:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:22:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:22:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:22:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:22:16 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:23:19 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:23:19 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:23:19 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:23:19 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:24:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:24:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:24:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:24:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:25:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:25:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:25:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:25:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:26:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:26:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:26:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:26:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:27:02 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:27:02 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:27:04 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:27:04 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:27:09 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:27:09 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:27:14 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:27:14 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:27:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:27:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:27:19 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:27:19 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:27:24 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:27:24 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:27:29 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:27:29 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:27:34 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:27:34 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:27:39 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:27:39 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:27:44 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:27:44 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:27:49 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:27:49 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:27:54 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:27:54 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:27:59 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:27:59 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:28:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:28:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:28:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:28:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:29:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:29:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 23:29:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 23:29:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
