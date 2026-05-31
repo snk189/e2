@@ -83,9 +83,18 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
 
             try:
                 target_date = datetime.strptime(date_str, '%Y-%m-%d')
-                target_df = global_df[global_df['date_obj'].dt.strftime('%Y-%m-%d') == date_str]
-                target_actual = target_df.groupby('item')['quantity'].sum().to_dict()
-                target_actual_hourly = target_df.groupby(['item', 'time_slot'])['quantity'].sum().to_dict()
+                today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+                is_past_date = target_date < today
+
+                if is_past_date:
+                    # For past dates: get real actuals (exclude pre-bookings for other dates)
+                    target_df = global_df[global_df['date_obj'].dt.strftime('%Y-%m-%d') == date_str]
+                    target_actual = target_df.groupby('item')['quantity'].sum().to_dict()
+                    target_actual_hourly = target_df.groupby(['item', 'time_slot'])['quantity'].sum().to_dict()
+                else:
+                    # For future dates: no actuals — pre-bookings are NOT actuals
+                    target_actual = {}
+                    target_actual_hourly = {}
 
                 pred_dict = get_forecast(target_date, global_df, global_model, global_feature_cols, global_lookups)
                 

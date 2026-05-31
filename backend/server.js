@@ -37,20 +37,103 @@ const SCRIPT_PATH = path.join(__dirname, '../ml/get_predictions.py');
 if (!fs.existsSync(MANAGEMENT_SETTINGS_FILE)) fs.writeFileSync(MANAGEMENT_SETTINGS_FILE, JSON.stringify(defaultSettings, null, 2));
 
 const LOG_FILE = path.join(__dirname, 'api_logs.txt');
-app.use((req, res, next) => {
-    if (req.method === 'OPTIONS' || req.url.includes('/api/demand')) {
-        return next();
+
+// IST timestamp helper
+const getISTTimestamp = () => {
+    const now = new Date();
+    // IST = UTC + 5:30
+    const istOffset = 5.5 * 60 * 60 * 1000;
+    const istDate = new Date(now.getTime() + istOffset);
+    const dd = String(istDate.getUTCDate()).padStart(2, '0');
+    const mm = String(istDate.getUTCMonth() + 1).padStart(2, '0');
+    const yyyy = istDate.getUTCFullYear();
+    const hh = String(istDate.getUTCHours()).padStart(2, '0');
+    const min = String(istDate.getUTCMinutes()).padStart(2, '0');
+    const ss = String(istDate.getUTCSeconds()).padStart(2, '0');
+    return `${dd}-${mm}-${yyyy} ${hh}:${min}:${ss} IST`;
+};
+
+// Rich action description builder
+const buildActionDescription = (req) => {
+    const url = req.url;
+    const method = req.method;
+    const body = req.body || {};
+    const query = req.query || {};
+    const params = req.params || {};
+
+    if (url === '/api/login') return `Logged in`;
+    if (url === '/api/logout') return `Logged out`;
+    if (url === '/api/register') return `Requested registration (type: ${body.type || 'n'})`;
+    if (url === '/api/order') {
+        const items = Array.isArray(body) ? body.map(o => `${o.item}x${o.quantity}`).join(', ') : 'unknown';
+        return `Placed order: [${items}]`;
     }
-    const timestamp = new Date().toISOString();
+    if (url.startsWith('/api/history/')) return `Viewed order history`;
+    if (url === '/api/admin/settings' && method === 'GET') return `Viewed canteen settings`;
+    if (url === '/api/admin/settings' && method === 'POST') return `Updated canteen settings: ${JSON.stringify(body)}`;
+    if (url === '/api/demand') return `Viewed Today/Tomorrow demand forecast`;
+    if (url.startsWith('/api/admin/demand/')) {
+        const date = url.split('/api/admin/demand/')[1];
+        return `Queried demand prediction for date: ${date}`;
+    }
+    if (url.startsWith('/api/admin/ingredients')) {
+        const date = query.date || 'today';
+        return `Queried ingredient requirements for date: ${date}`;
+    }
+    if (url === '/api/admin/menu_intelligence') return `Viewed menu intelligence report`;
+    if (url === '/api/admin/today_orders') return `Viewed today's orders`;
+    if (url.startsWith('/api/admin/orders_by_date')) {
+        const date = query.date || 'all';
+        const uname = query.username || '';
+        return `Viewed orders by date: ${date}${uname ? `, user: ${uname}` : ''}`;
+    }
+    if (url === '/api/admin/update_order_status') return `Updated order status for order ID: ${body.id} → ${body.status || (body.is_delivered ? 'delivered' : 'pending')}`;
+    if (url === '/api/pending_users') return `Viewed pending registration requests`;
+    if (url === '/api/approve_user') return `Approved registration for user: ${body.username}`;
+    if (url === '/api/reject_user') return `Rejected registration for user: ${body.username}`;
+    if (url === '/api/admin/users') return `Viewed all registered users`;
+    if (url === '/api/admin/add_user') return `Manually added user: ${body.username} (type: ${body.type})`;
+    if (url === '/api/admin/change_password') return `Changed password for user: ${body.username}`;
+    if (url === '/api/admin/remove_user') return `Removed user: ${body.username}`;
+    if (url === '/api/admin/block_user') return `Blocked user: ${body.username}`;
+    if (url === '/api/admin/unblock_user') return `Unblocked user: ${body.username}`;
+    if (url === '/api/admin/blocked_users') return `Viewed blocked users list`;
+    if (url === '/api/admin/rejected_users') return `Viewed rejected users list`;
+    if (url === '/api/admin/unfreeze_user') return `Unfroze cooldown for user: ${body.username}`;
+    if (url === '/api/admin/recent_data') return `Viewed recent orders dataset`;
+    if (url === '/api/admin/remove_data') return `Deleted data record ID: ${body.id}`;
+    return `${method} ${url}`;
+};
+
+// Central log writer
+const writeLog = (level, user, action, extra) => {
+    const ts = getISTTimestamp();
+    const line = `[${ts}] [${level}] USER: ${user} | ${action}${extra ? ` | ${extra}` : ''}\n`;
+    fs.appendFile(LOG_FILE, line, (err) => {
+        if (err) console.error('Failed to write to log file:', err);
+    });
+};
+
+app.use((req, res, next) => {
+    if (req.method === 'OPTIONS') return next();
     let user = req.headers['x-api-user'];
     if (!user || user === 'Unknown_User') {
         user = req.body?.username || req.query?.username || req.params?.username || 'Unknown_User';
     }
-    const logEntry = `[${timestamp}] USER: ${user} | METHOD: ${req.method} | ENDPOINT: ${req.url}\n`;
 
-    fs.appendFile(LOG_FILE, logEntry, (err) => {
-        if (err) console.error("Failed to write to log file:", err);
-    });
+    // Intercept response to capture status code and log errors
+    const originalJson = res.json.bind(res);
+    res.json = (data) => {
+        const statusCode = res.statusCode;
+        const action = buildActionDescription(req);
+        if (statusCode >= 400) {
+            writeLog('ERROR', user, action, `HTTP ${statusCode} — ${data?.error || JSON.stringify(data)}`);
+        } else {
+            writeLog('INFO', user, action);
+        }
+        return originalJson(data);
+    };
+
     next();
 });
 
@@ -420,8 +503,6 @@ app.get('/api/admin/demand/:date', async (req, res) => {
     }
 });
 
-
-
 app.get('/api/admin/ingredients', async (req, res) => {
     try {
         const dateQuery = req.query.date;
@@ -446,13 +527,21 @@ app.get('/api/admin/ingredients', async (req, res) => {
                 throw err;
             }
         }
-        
         const result = await pool.query('SELECT * FROM ingredients');
         const ingredients = result.rows;
         
+        // Normalize DB item names to match Python-generated keys
+        // Python uses item.title() on raw DB item names like 'icecream','panipuri'
+        // So "Ice Cream" in ingredients DB must be keyed as "icecream", "Pani Puri" as "panipuri"
+        const ITEM_NAME_NORMALIZE = {
+            'ice cream': 'icecream',
+            'pani puri': 'panipuri',
+        };
+
         const itemToIngredients = {};
         ingredients.forEach(row => {
-            const item = row.item_name.toLowerCase();
+            let item = row.item_name.toLowerCase().trim();
+            item = ITEM_NAME_NORMALIZE[item] || item; // normalize compound names
             if (!itemToIngredients[item]) itemToIngredients[item] = [];
             itemToIngredients[item].push({
                 name: row.ingredient_name,
@@ -461,11 +550,26 @@ app.get('/api/admin/ingredients', async (req, res) => {
             });
         });
 
-        const ingredientTotals = {}; 
+        const ingredientTotals = {};
 
-        demandToUse.forEach(pred => {
-            const item = pred.item.toLowerCase();
-            const calcQty = (isCustomDate && pred.actual !== undefined && pred.actual > 0) ? pred.actual : (pred.predicted || 0);
+        // Deduplicate demandToUse by item name (case-insensitive)
+        const seenItems = {};
+        const dedupedDemand = [];
+        for (const pred of demandToUse) {
+            const key = pred.item.toLowerCase().trim();
+            if (!seenItems[key]) {
+                seenItems[key] = true;
+                dedupedDemand.push(pred);
+            }
+        }
+
+        dedupedDemand.forEach(pred => {
+            const item = pred.item.toLowerCase().trim();
+            // Only use actual quantities for past dates — future dates (including today) always use predicted
+            const requestedDateObj = dateQuery ? new Date(dateQuery + 'T00:00:00') : null;
+            const todayMidnight = new Date(); todayMidnight.setHours(0, 0, 0, 0);
+            const isPastDate = requestedDateObj && requestedDateObj < todayMidnight;
+            const calcQty = (isPastDate && pred.actual !== undefined && pred.actual > 0) ? pred.actual : (pred.predicted || 0);
             if (itemToIngredients[item]) {
                 itemToIngredients[item].forEach(ing => {
                     if (!ingredientTotals[ing.name]) {
@@ -491,9 +595,9 @@ app.get('/api/admin/ingredients', async (req, res) => {
 
         const responseData = Object.keys(ingredientTotals).map(name => ({
             name,
-            total: ingredientTotals[name].total,
+            total: Math.ceil(ingredientTotals[name].total), // Round up — always prepare enough
             unit: ingredientTotals[name].unit,
-            breakdown: ingredientTotals[name].breakdown
+            breakdown: ingredientTotals[name].breakdown.map(b => ({ ...b, qty: Math.ceil(b.qty) }))
         }));
 
         res.status(200).json({

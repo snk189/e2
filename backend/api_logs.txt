@@ -331,3 +331,187 @@
 [2026-05-31T04:46:28.284Z] USER: Aa | METHOD: GET | ENDPOINT: /api/admin/ingredients
 [2026-05-31T04:46:33.268Z] USER: Aa | METHOD: GET | ENDPOINT: /api/admin/ingredients
 [2026-05-31T04:46:38.346Z] USER: Aa | METHOD: GET | ENDPOINT: /api/admin/ingredients
+[2026-05-31T04:47:15.279Z] USER: Aa | METHOD: GET | ENDPOINT: /api/admin/ingredients
+[2026-05-31T04:48:15.305Z] USER: Aa | METHOD: GET | ENDPOINT: /api/admin/ingredients
+[2026-05-31T04:49:15.286Z] USER: Aa | METHOD: GET | ENDPOINT: /api/admin/ingredients
+[2026-05-31T04:50:15.279Z] USER: Aa | METHOD: GET | ENDPOINT: /api/admin/ingredients
+[2026-05-31T04:51:15.290Z] USER: Aa | METHOD: GET | ENDPOINT: /api/admin/ingredients
+[2026-05-31T04:51:40.425Z] USER: Aa | METHOD: GET | ENDPOINT: /api/admin/ingredients
+[2026-05-31T04:51:43.268Z] USER: Aa | METHOD: GET | ENDPOINT: /api/admin/ingredients
+[2026-05-31T04:51:48.271Z] USER: Aa | METHOD: GET | ENDPOINT: /api/admin/ingredients
+[2026-05-31T04:51:53.313Z] USER: Aa | METHOD: GET | ENDPOINT: /api/admin/ingredients
+[2026-05-31T04:51:58.423Z] USER: Aa | METHOD: GET | ENDPOINT: /api/admin/ingredients
+[2026-05-31T04:52:02.526Z] USER: Aa | METHOD: GET | ENDPOINT: /api/admin/ingredients
+[31-05-2026 10:22:14 IST] [ERROR] USER: Unknown_User | Viewed Today/Tomorrow demand forecast | HTTP 500 — Failed to get demand data
+[31-05-2026 10:22:17 IST] [ERROR] USER: Unknown_User | Viewed Today/Tomorrow demand forecast | HTTP 500 — Failed to get demand data
+[31-05-2026 10:22:40 IST] [ERROR] USER: Unknown_User | Viewed Today/Tomorrow demand forecast | HTTP 500 — Failed to get demand data
+[31-05-2026 10:23:19 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:23:24 IST] [INFO] USER: Aa | Logged in
+[31-05-2026 10:23:24 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:23:24 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:23:25 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:23:26 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:23:27 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:23:30 IST] [INFO] USER: Aa | Queried ingredient requirements for date: 2026-06-11
+[31-05-2026 10:23:32 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:23:34 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:23:34 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:23:39 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:23:39 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:23:39 IST] [INFO] USER: Aa | Queried demand prediction for date: 2026-06-11
+[31-05-2026 10:23:44 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:23:44 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:23:49 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:23:49 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:23:54 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:23:54 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:23:59 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:23:59 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:24:04 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:24:04 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:24:09 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:24:09 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:24:14 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:24:14 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:24:19 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:24:19 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:24:24 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:24:24 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:24:29 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:24:29 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:24:34 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:24:34 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:24:39 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:24:39 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:24:44 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:24:44 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:24:49 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:24:49 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:24:54 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:24:54 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:24:59 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:24:59 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:25:04 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:25:04 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:25:09 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:25:09 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:25:14 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:25:14 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:25:19 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:25:19 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:25:24 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:25:24 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:25:29 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:25:29 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:25:34 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:25:34 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:25:39 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:25:39 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:25:44 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:25:44 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:25:49 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:25:49 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:26:16 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:26:16 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:27:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:27:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:28:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:28:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:29:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:29:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:30:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:30:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:31:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:31:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:32:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:32:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:33:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:33:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:34:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:34:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:35:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:35:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:36:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:36:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:37:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:37:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:38:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:38:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:39:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:39:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:40:16 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:40:16 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:41:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:41:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:42:15 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:42:15 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:43:35 IST] [ERROR] USER: Unknown_User | Viewed Today/Tomorrow demand forecast | HTTP 500 — Failed to get demand data
+[31-05-2026 10:43:35 IST] [ERROR] USER: Aa | Viewed Today/Tomorrow demand forecast | HTTP 500 — Failed to get demand data
+[31-05-2026 10:43:35 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:43:36 IST] [ERROR] USER: Unknown_User | Viewed Today/Tomorrow demand forecast | HTTP 500 — Failed to get demand data
+[31-05-2026 10:43:38 IST] [ERROR] USER: Unknown_User | Viewed Today/Tomorrow demand forecast | HTTP 500 — Failed to get demand data
+[31-05-2026 10:43:42 IST] [ERROR] USER: Unknown_User | Viewed Today/Tomorrow demand forecast | HTTP 500 — Failed to get demand data
+[31-05-2026 10:44:12 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:44:15 IST] [INFO] USER: Aa | Logged in
+[31-05-2026 10:44:16 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:44:16 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:44:17 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:44:17 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:44:22 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 10:44:22 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 10:44:25 IST] [INFO] USER: Aa | Queried demand prediction for date: 2026-06-11
+[31-05-2026 10:44:27 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:44:30 IST] [INFO] USER: Aa | Queried ingredient requirements for date: 2026-06-11
+[31-05-2026 10:44:32 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:44:37 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:44:42 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:44:47 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:44:52 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:44:57 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:45:02 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:45:07 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:45:12 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:45:17 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:45:22 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:45:27 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:45:32 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:45:40 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:45:42 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:45:47 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:45:52 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:45:57 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:46:02 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:46:07 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:46:12 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:46:17 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:46:22 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:46:27 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:46:32 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:46:37 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:46:42 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:47:15 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:48:15 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:49:15 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:50:15 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:51:16 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:52:15 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:53:15 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:54:15 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:55:15 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:56:15 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:57:15 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:58:15 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 10:59:15 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 11:00:15 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 11:01:15 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 11:01:34 IST] [ERROR] USER: Aa | Queried ingredient requirements for date: today | HTTP 500 — Failed to fetch ingredients
+[31-05-2026 11:01:36 IST] [ERROR] USER: Unknown_User | Viewed Today/Tomorrow demand forecast | HTTP 500 — Failed to get demand data
+[31-05-2026 11:04:34 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[31-05-2026 11:04:37 IST] [INFO] USER: Aa | Logged in
+[31-05-2026 11:04:37 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 11:04:37 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 11:04:38 IST] [INFO] USER: Aa | Viewed today's orders
+[31-05-2026 11:04:39 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[31-05-2026 11:04:39 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[31-05-2026 11:04:42 IST] [INFO] USER: Aa | Queried ingredient requirements for date: 2026-06-11
+[31-05-2026 11:04:44 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
