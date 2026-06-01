@@ -93,17 +93,36 @@ def train_and_load_model():
         
         print("[SERVER] Model successfully saved via joblib.")
         
-        # Save model training metadata
+        # Save model training metadata and generate VS Code report
         try:
             from datetime import datetime, timezone, timedelta
             ist = timezone(timedelta(hours=5, minutes=30))
-            model_info = {
-                "last_trained_ist": datetime.now(ist).strftime("%Y-%m-%d %H:%M:%S")
-            }
+            last_trained = datetime.now(ist).strftime("%Y-%m-%d %H:%M:%S")
+            
+            model_info = {"last_trained_ist": last_trained}
             with open('model_info.json', 'w') as f:
                 json.dump(model_info, f)
+                
+            # Build the VS Code output file
+            report = f"Model Training Status\nLast Retrain Finished: {last_trained}\n\n"
+            report += "LightGBM + Optuna Parameters\n"
+            
+            if os.path.exists('optuna_params.json'):
+                with open('optuna_params.json', 'r') as f:
+                    op = json.load(f)
+                params = op.get('params', {})
+                report += f"N-Estimators\n{params.get('n_estimators', 'N/A')}\n\n"
+                report += f"Max Depth\n{params.get('max_depth', 'N/A')}\n\n"
+                report += f"Learning Rate\n{params.get('learning_rate', 'N/A')}\n\n"
+                report += f"Num Leaves\n{params.get('num_leaves', 'N/A')}\n\n"
+                report += f"Last tuned: {op.get('last_run_ist', 'N/A')}\n"
+            else:
+                report += "No Optuna Tuning Data Available.\n"
+                
+            with open('vscode_model_status.txt', 'w') as f:
+                f.write(report)
         except Exception as e:
-            print("[SERVER] Failed to save model info:", e)
+            print("[SERVER] Failed to save model info/report:", e)
         
         # Reload model into globals
         global_model = model
@@ -117,12 +136,25 @@ def train_and_load_model():
     finally:
         is_training = False
 
+def get_ml_settings():
+    try:
+        settings_path = os.path.join(os.path.dirname(__file__), 'ml_settings.json')
+        with open(settings_path, 'r') as f:
+            return json.load(f)
+    except Exception:
+        return {"auto_train": False, "auto_optuna": False}
+
 def background_trainer():
+    global last_training_time
     while True:
         time.sleep(60) # Check every minute
+        settings = get_ml_settings()
+        if not settings.get('auto_train', False):
+            continue
+            
         # Retrain every 2 hours (7200 seconds)
         if time.time() - last_training_time >= 7200:
-            print("[SERVER] 2 hours elapsed. Initiating background retraining...")
+            print("[SERVER] 2 hours elapsed. Initiating background retraining (auto_train is ON)...")
             train_and_load_model()
 
 class ModelRequestHandler(BaseHTTPRequestHandler):
@@ -356,38 +388,54 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
 
 def startup_worker():
     loaded = load_data_and_model_if_exists()
+    settings = get_ml_settings()
     
-    # Check optuna_params.json age
+    if not loaded:
+        print("[SERVER] Model not found on disk. Forcing an initial train to boot up...")
+        if settings.get('auto_optuna', False):
+            print("[SERVER] auto_optuna is ON. Running Optuna before initial train...")
+            run_optuna_background()
+        train_and_load_model()
+        return
+
     optuna_needs_run = False
-    if os.path.exists('optuna_params.json'):
-        try:
-            from datetime import datetime, timezone, timedelta
-            with open('optuna_params.json', 'r') as f:
-                optuna_data = json.load(f)
-            last_run_str = optuna_data.get('last_run_ist', '')
-            if last_run_str:
-                ist = timezone(timedelta(hours=5, minutes=30))
-                last_run_time = datetime.strptime(last_run_str, "%Y-%m-%d %H:%M:%S")
-                last_run_time = last_run_time.replace(tzinfo=ist)
-                now_ist = datetime.now(ist)
-                if (now_ist - last_run_time).days >= 7:
+    if settings.get('auto_optuna', False):
+        if os.path.exists('optuna_params.json'):
+            try:
+                from datetime import datetime, timezone, timedelta
+                with open('optuna_params.json', 'r') as f:
+                    optuna_data = json.load(f)
+                last_run_str = optuna_data.get('last_run_ist', '')
+                if last_run_str:
+                    ist = timezone(timedelta(hours=5, minutes=30))
+                    last_run_time = datetime.strptime(last_run_str, "%Y-%m-%d %H:%M:%S")
+                    last_run_time = last_run_time.replace(tzinfo=ist)
+                    now_ist = datetime.now(ist)
+                    if (now_ist - last_run_time).days >= 7:
+                        optuna_needs_run = True
+                else:
                     optuna_needs_run = True
-            else:
+            except Exception as e:
+                print("[SERVER] Error checking optuna age:", e)
                 optuna_needs_run = True
-        except Exception as e:
-            print("[SERVER] Error checking optuna age:", e)
+        else:
             optuna_needs_run = True
-    else:
-        optuna_needs_run = True
 
     if optuna_needs_run:
-        print("[SERVER] Optuna tuning is >1 week old or missing. Running Optuna...")
-        run_optuna_background() # run optuna (will save optuna_params.json)
-        print("[SERVER] Optuna finished. Training model...")
-        train_and_load_model()
+        print("[SERVER] Optuna tuning is >1 week old or missing. Running Optuna (auto_optuna is ON)...")
+        run_optuna_background()
+        if settings.get('auto_train', False):
+            print("[SERVER] Optuna finished. Training model (auto_train is ON)...")
+            train_and_load_model()
     else:
-        print("[SERVER] Optuna params are recent (<1 week). Skipping Optuna. Triggering model retrain...")
-        train_and_load_model()
+        if settings.get('auto_optuna', False):
+            print("[SERVER] Optuna params are recent (<1 week). Skipping Optuna.")
+        
+        if settings.get('auto_train', False):
+            print("[SERVER] Triggering startup model retrain (auto_train is ON)...")
+            train_and_load_model()
+        else:
+            print("[SERVER] Startup auto_train and auto_optuna logic skipped (disabled in ml_settings.json).")
 
 def run_optuna_background():
     global global_df, global_feature_cols, global_lookups, is_training

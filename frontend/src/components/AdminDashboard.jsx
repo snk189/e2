@@ -322,48 +322,7 @@ const AdminDemand = ({ demandData, onRefresh }) => {
           </div>
         </div>
         
-        {modelStats && (
-          <div className="mt-4 rounded-xl bg-white/50 p-4 border border-[var(--outline-variant)] text-sm space-y-4">
-            
-            {modelStats.model_info && (
-              <div>
-                <h4 className="font-bold mb-2 flex items-center gap-2">
-                  <Activity size={16} className="text-emerald-500" />
-                  Model Training Status
-                </h4>
-                <p className="text-xs text-[var(--on-surface-variant)]">Last Retrain Finished: <span className="font-bold text-[var(--on-surface)]">{modelStats.model_info.last_trained_ist}</span></p>
-              </div>
-            )}
 
-            {modelStats.optuna && (
-              <div>
-                <h4 className="font-bold mb-2 flex items-center gap-2 border-t border-[var(--outline-variant)] pt-4">
-                  <Activity size={16} className="text-[var(--primary)]" />
-                  LightGBM + Optuna Parameters
-                </h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div>
-                    <p className="text-xs text-[var(--on-surface-variant)] uppercase tracking-wider font-bold">N-Estimators</p>
-                    <p className="font-mono">{modelStats.optuna.params.n_estimators}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-[var(--on-surface-variant)] uppercase tracking-wider font-bold">Max Depth</p>
-                    <p className="font-mono">{modelStats.optuna.params.max_depth}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-[var(--on-surface-variant)] uppercase tracking-wider font-bold">Learning Rate</p>
-                    <p className="font-mono">{Number(modelStats.optuna.params.learning_rate).toFixed(4)}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-[var(--on-surface-variant)] uppercase tracking-wider font-bold">Num Leaves</p>
-                    <p className="font-mono">{modelStats.optuna.params.num_leaves}</p>
-                  </div>
-                </div>
-                <p className="text-xs text-[var(--on-surface-variant)] mt-3">Last tuned: {modelStats.optuna.last_run_ist}</p>
-              </div>
-            )}
-          </div>
-        )}
       </section>
 
       <div className="flex border-b border-[var(--outline-variant)] overflow-x-auto no-scrollbar mb-4">
