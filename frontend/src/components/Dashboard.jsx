@@ -4,7 +4,7 @@ import iconImg from '../../assets/icon.png';
 
 const IconImgComponent = ({ size, className }) => <img src={iconImg} alt="" className={`object-contain ${className || ''}`} style={{ width: size, height: size }} />;
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { getDemand, getTodayOrders, updateOrderStatus, getDemandByDate, getIngredientsForecast, retrainModel, getModelStatus } from '../services/api';
+import { getDemand, getTodayOrders, updateOrderStatus, getDemandByDate, getIngredientsForecast, subscribeToModelUpdates } from '../services/api';
 import EnvironmentSettings from './EnvironmentSettings';
 
 const STATUSES = ['pending', 'preparing', 'ready', 'delivered'];
@@ -34,8 +34,13 @@ const Dashboard = ({ onLogout }) => {
     try {
       if (activeTab === 'demand') {
         const [data, orders] = await Promise.all([getDemand(), getTodayOrders()]);
-        if (data?.error) setError(data.error);
-        else setDemand(data);
+        // getDemand now returns {error} instead of throwing for soft failures (202/training)
+        if (data?.error) {
+          setError(data.error);
+          setDemand(null);
+        } else {
+          setDemand(data);
+        }
         setTodayOrders(Array.isArray(orders) ? orders : []);
       } else if (activeTab === 'orders') {
         const orders = await getTodayOrders();
@@ -54,9 +59,12 @@ const Dashboard = ({ onLogout }) => {
 
   useEffect(() => {
     fetchData(true);
-    const interval = window.setInterval(() => fetchData(false), 5000);
-    return () => window.clearInterval(interval);
-  }, [fetchData]);
+    // Subscribe to SSE model_updated events for dynamic demand refresh
+    const unsubscribe = subscribeToModelUpdates(() => {
+      if (activeTab === 'demand') fetchData(false);
+    });
+    return unsubscribe;
+  }, [fetchData, activeTab]);
 
   const handleUpdateOrderStatus = async (orderId, currentStatus, direction) => {
     try {
@@ -484,31 +492,6 @@ const DemandView = ({ demand, loading, onRefresh, todayOrders }) => {
   const [advancedDate, setAdvancedDate] = useState('');
   const [advancedDemand, setAdvancedDemand] = useState(null);
   const [advancedLoading, setAdvancedLoading] = useState(false);
-  const [modelStatus, setModelStatus] = useState('idle');
-
-  useEffect(() => {
-    let intervalId;
-    const checkStatus = async () => {
-      try {
-        const res = await getModelStatus();
-        setModelStatus(res.is_training ? 'training' : 'idle');
-      } catch (err) {
-        console.error("Failed to fetch model status", err);
-      }
-    };
-    checkStatus();
-    intervalId = setInterval(checkStatus, 5000);
-    return () => clearInterval(intervalId);
-  }, []);
-
-  const handleRetrain = async () => {
-    try {
-      await retrainModel();
-      setModelStatus('training');
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const isClosed = demand ? (demand.currentHour < 8 || demand.currentHour >= 18) : true;
   const tomorrow = useMemo(() => {
@@ -611,25 +594,10 @@ const DemandView = ({ demand, loading, onRefresh, todayOrders }) => {
               <h2 className="section-title">Demand Analytics</h2>
               <p className="section-copy">Live forecast, actuals, variance, and profit signals for kitchen planning.</p>
             </div>
-            <div className="flex items-center gap-3">
-              {modelStatus === 'training' ? (
-                <span className="flex items-center gap-2 text-xs font-bold text-blue-500">
-                  <RefreshCw size={14} className="animate-spin" /> Training model...
-                </span>
-              ) : (
-                <span className="flex items-center gap-2 text-xs font-bold text-emerald-500">
-                  <CheckCircle2 size={14} /> Model Ready
-                </span>
-              )}
-              <button className="cn-button cn-button-secondary" onClick={handleRetrain} disabled={modelStatus === 'training'} type="button">
-                <RefreshCw size={16} className={modelStatus === 'training' ? "animate-spin" : ""} />
-                Retrain Model
-              </button>
-              <button className="cn-button cn-button-primary" onClick={onRefresh} type="button">
-                <RefreshCw size={16} />
-                Refresh Data
-              </button>
-            </div>
+            <button className="cn-button cn-button-secondary" onClick={onRefresh} type="button">
+              <RefreshCw size={16} />
+              Refresh
+            </button>
           </div>
           <div className="relative z-10 mt-5 flex flex-wrap gap-3">
             <span className={`cn-chip ${isClosed ? '!bg-red-100 !text-red-700 !border-red-200' : 'cn-chip-success'}`}>
@@ -679,11 +647,7 @@ const DemandView = ({ demand, loading, onRefresh, todayOrders }) => {
             {advancedLoading ? (
               <LoadingState label="Running advanced AI prediction models..." />
             ) : advancedDemand ? (
-              advancedDemand.error ? (
-                <EmptyState label={advancedDemand.error} />
-              ) : (
-                <ForecastSection title={`Advanced Forecast for ${advancedDemand.customDate}`} items={advancedDemand.demand || []} mode="advanced" />
-              )
+              <ForecastSection title={`Advanced Forecast for ${advancedDemand.customDate}`} items={advancedDemand.demand || []} mode="advanced" />
             ) : (
               <EmptyState label="Select a date and run analysis to see advanced demand." />
             )}
@@ -693,8 +657,16 @@ const DemandView = ({ demand, loading, onRefresh, todayOrders }) => {
         {demandTab === 'normal' && (
           loading ? (
             <LoadingState label="Analyzing demand..." />
-          ) : !demand || demand.error || !today || !tomorrow ? (
-            <EmptyState label={demand?.error || "Demand data is not available yet."} />
+          ) : !demand ? (
+            <div className="glass-card p-8 text-center">
+              <p className="text-lg font-bold text-[var(--on-surface-variant)] mb-4">
+                {error || 'Demand data is not available yet.'}
+              </p>
+              <button className="cn-button cn-button-secondary" onClick={() => fetchData(true)} type="button">
+                <RefreshCw size={16} />
+                Retry
+              </button>
+            </div>
           ) : (
             <>
               <section className="grid gap-4 sm:grid-cols-3">

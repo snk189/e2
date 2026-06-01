@@ -14,7 +14,8 @@ from xgboost import XGBRegressor
 from get_predictions import prepare_data, extract_features, build_model, get_forecast
 
 # Global states
-global_model = None
+global_xgb_model = None
+global_cb_model = None
 global_df = None
 global_feature_cols = None
 global_lookups = None
@@ -60,18 +61,21 @@ def load_data_and_model_if_exists():
         print("[SERVER] Found existing model files. Loading...")
         from xgboost import XGBRegressor
         from catboost import CatBoostRegressor
+        
         xgb = XGBRegressor()
         xgb.load_model(model_path_xgb)
+        
         cb = CatBoostRegressor()
         cb.load_model(model_path_cb)
         
-        global_model = {"xgb": xgb, "cb": cb}
+        global_xgb_model = xgb
+        global_cb_model = cb
         return True
         
     return False
 
 def train_and_load_model():
-    global global_model, global_df, global_feature_cols, global_lookups, last_training_time, is_training
+    global global_xgb_model, global_cb_model, global_df, global_feature_cols, global_lookups, last_training_time, is_training
     if is_training:
         print("[SERVER] Training already in progress, skipping...")
         return
@@ -91,17 +95,18 @@ def train_and_load_model():
         X, y, feature_cols, encoded_cat_cols = extract_features(df)
         
         print("[SERVER] Building and Training Model...")
-        models = build_model(X, y, feature_cols, split_idx, model_end_idx)
+        xgb_model, cb_model = build_model(X, y, feature_cols, split_idx, model_end_idx)
         
         xgb_path = os.path.join(os.path.dirname(__file__), "xgboost_model.json")
         cb_path = os.path.join(os.path.dirname(__file__), "catboost_model.cbm")
         
-        models["xgb"].save_model(xgb_path)
-        models["cb"].save_model(cb_path)
+        xgb_model.save_model(xgb_path)
+        cb_model.save_model(cb_path)
         
         print(f"[SERVER] Models trained and saved successfully.")
         
-        global_model = models
+        global_xgb_model = xgb_model
+        global_cb_model = cb_model
         global_df = df
         global_feature_cols = feature_cols
         global_lookups = lookups
@@ -156,8 +161,8 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
                 self.send_error(400, "Missing 'date' parameter (YYYY-MM-DD)")
                 return
                 
-            if global_model is None:
-                self.send_error(503, "Model is currently training, please wait")
+            if global_xgb_model is None or global_cb_model is None:
+                self.send_error(503, "Models are currently training, please wait")
                 return
 
             try:
@@ -175,7 +180,7 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
                     target_actual = {}
                     target_actual_hourly = {}
 
-                pred_dict = get_forecast(target_date, global_df, global_model, global_feature_cols, global_lookups)
+                pred_dict = get_forecast(target_date, global_df, (global_xgb_model, global_cb_model), global_feature_cols, global_lookups)
                 
                 unique_items = global_df['item'].unique()
                 demand_list = []
@@ -210,13 +215,13 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
                 self.send_error(500, str(e))
                 
         elif parsed_url.path == '/predict_today':
-            if global_model is None:
-                self.send_error(503, "Model is currently training, please wait")
+            if global_xgb_model is None or global_cb_model is None:
+                self.send_error(503, "Models are currently training, please wait")
                 return
 
             try:
                 df = global_df
-                model = global_model
+                models = (global_xgb_model, global_cb_model)
                 feature_cols = global_feature_cols
                 lookups = global_lookups
                 
@@ -233,8 +238,8 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
                 today_target = datetime.now()
                 tomorrow_target = today_target + timedelta(days=1)
 
-                today_pred = get_forecast(today_target, df, model, feature_cols, lookups)
-                tomorrow_pred = get_forecast(tomorrow_target, df, model, feature_cols, lookups)
+                today_pred = get_forecast(today_target, df, models, feature_cols, lookups)
+                tomorrow_pred = get_forecast(tomorrow_target, df, models, feature_cols, lookups)
 
                 unique_items = df['item'].unique()
 

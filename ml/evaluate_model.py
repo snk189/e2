@@ -49,31 +49,23 @@ def evaluate_models():
     grid = GridSearchCV(xgb, param_grid, cv=tscv, scoring='neg_mean_absolute_error', n_jobs=-1)
     grid.fit(X_train, y_train)
 
-    print("\n[WAIT] Training Final XGBoost on Training Set...")
+    print("[WAIT] Training Final XGBoost on Training Set...")
     xgb_final = XGBRegressor(**grid.best_params_, random_state=42, n_jobs=-1)
     xgb_final.fit(X_train, y_train)
 
     print("[WAIT] Training Final CatBoost on Training Set...")
-    cb_final = CatBoostRegressor(
-        iterations=1000,
-        learning_rate=0.05,
-        depth=6,
-        loss_function='RMSE',
-        verbose=0,
-        random_seed=42,
-        allow_writing_files=False
-    )
+    cb_final = CatBoostRegressor(iterations=700, depth=6, learning_rate=0.05, random_seed=42, verbose=False)
     cb_final.fit(X_train, y_train)
 
     print("\n[EVALUATION] Generating Predictions on Test Set (Unseen Future Days)...")
     xgb_preds = xgb_final.predict(X_test)
     cb_preds = cb_final.predict(X_test)
     
-    # Final Ensemble
-    ensemble_preds = 0.3 * xgb_preds + 0.7 * cb_preds
+    ensemble_preds = 0.499 * xgb_preds + 0.501 * cb_preds
     
     def evaluate(name, preds):
         preds_rounded = np.round(preds).clip(min=0)
+        
         r2 = r2_score(y_test, preds)
         mae = mean_absolute_error(y_test, preds)
         rmse = np.sqrt(mean_squared_error(y_test, preds))
@@ -85,9 +77,7 @@ def evaluate_models():
         print(f"Root Mean Squared Error (RMSE): {rmse:.4f}")
         print(f"Exact Integer Match Accuracy: {exact_acc:.2f}%")
 
-    evaluate("XGBoost Only", xgb_preds)
-    evaluate("CatBoost Only", cb_preds)
-    evaluate("Final Ensemble ()", ensemble_preds)
+    evaluate("XGBoost + CatBoost Ensemble", ensemble_preds)
 
 if __name__ == "__main__":
     evaluate_models()

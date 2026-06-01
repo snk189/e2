@@ -2,13 +2,11 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
 from xgboost import XGBRegressor
-from catboost import CatBoostRegressor
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
-from datetime import datetime, timedelta
-import json
-import sys
-import os
+from datetime import datetime
 import warnings
+import os
+from sqlalchemy import create_engine
 
 warnings.filterwarnings('ignore')
 
@@ -22,17 +20,18 @@ def get_meal_type(t):
 def prepare_data(df):
     # Dynamic Feature Generation for natively dropped columns
     # Calculate effective_timestamp based on prebooking status
-    df['effective_timestamp'] = pd.to_numeric(np.where(df['is_prebooking'] == 1, df['prebooking_datetime'], df['order_timestamp']), errors='coerce')
+    df['effective_timestamp'] = np.where(df['is_prebooking'] == 1, df['prebooking_datetime'], df['order_timestamp'])
     
     # Convert to datetime and adjust to local time if needed (assuming local timezone or naive works)
     # We will derive date_obj and time_slot directly from effective_timestamp
-    df['effective_datetime'] = pd.to_datetime(df['effective_timestamp'], unit='s', utc=True).dt.tz_convert('Asia/Kolkata')
-    df['date_obj'] = df['effective_datetime'].dt.normalize().dt.tz_localize(None)
+    df['effective_datetime'] = pd.to_datetime(df['effective_timestamp'], unit='s')
+    df['date_obj'] = df['effective_datetime'].dt.normalize()
     df['time_slot'] = df['effective_datetime'].dt.hour
     
-    # Do not drop data after 29-05-2026 here, so we can check actuals for today!
+    # Filter dataset strictly to Jan 1, 2026 - Jun 30, 2026
     start_date = pd.to_datetime('01-01-2026', format='%d-%m-%Y')
-    df = df[(df['date_obj'] >= start_date)]
+    end_date = pd.to_datetime('30-06-2026', format='%d-%m-%Y')
+    df = df[(df['date_obj'] >= start_date) & (df['date_obj'] <= end_date)]
     
     # Enforce Canteen Operating Hours (8 AM to 6 PM)
     df = df[(df['time_slot'] >= 8) & (df['time_slot'] < 18)]
@@ -47,20 +46,11 @@ def prepare_data(df):
     df = df.sort_values(['date_obj', 'time_slot']).reset_index(drop=True)
     
     # Lag features must use shift(1) to avoid leaking current row's target
-    df['prev_qty'] = df.groupby(['item', 'time_slot'])['quantity'].shift(1).fillna(0)
-    df['rolling_mean_3'] = df.groupby(['item', 'time_slot'])['quantity'].transform(lambda x: x.shift(1).rolling(3).mean()).fillna(0)
-    df['rolling_mean_7'] = df.groupby(['item', 'time_slot'])['quantity'].transform(lambda x: x.shift(1).rolling(7).mean()).fillna(0)
-    df['lag_7'] = df.groupby(['item', 'time_slot'])['quantity'].shift(7).fillna(0)
+    df['prev_qty'] = df.groupby('item')['quantity'].shift(1).fillna(0)
+    df['rolling_mean_3'] = df.groupby('item')['quantity'].shift(1).rolling(3).mean().reset_index(level=0, drop=True).fillna(0)
+    df['rolling_mean_7'] = df.groupby('item')['quantity'].shift(1).rolling(7).mean().reset_index(level=0, drop=True).fillna(0)
+    df['lag_7'] = df.groupby('item')['quantity'].shift(7).fillna(0)
     df['momentum'] = df['rolling_mean_3'] - df['rolling_mean_7']
-    
-    # --- Event-Based Flags ---
-    df['is_morning_break'] = (df['time_slot'] == 11).astype(int)
-    df['is_lunch_break'] = df['time_slot'].isin([13, 14]).astype(int)
-    df['is_afternoon_break'] = (df['time_slot'] == 16).astype(int)
-    df['extreme_heat'] = (df['temperature_celsius'] >= 35).astype(int)
-    df['is_social_peak'] = ((df['time_slot'] >= 15) & (df['is_weekend'] == 0)).astype(int)
-    df['is_crowd_burst'] = (df['momentum'] > 15).astype(int)
-    # -------------------------
 
     # Chronologically split before building averages to prevent Data Leakage!
     # True Forecasting cut: train up to Apr 20, test from Apr 21 onwards
@@ -95,14 +85,13 @@ def prepare_data(df):
     df['month_sin'] = np.sin(2 * np.pi * df['month'] / 12.0)
     df['month_cos'] = np.cos(2 * np.pi * df['month'] / 12.0)
     
-    latest_trend = train_df.groupby(['item', 'time_slot']).last()['rolling_mean_3'].to_dict()
-    latest_lag7 = train_df.groupby(['item', 'time_slot']).last()['lag_7'].to_dict()
-    latest_prev = train_df.groupby(['item', 'time_slot']).last()['prev_qty'].to_dict()
+    latest_trend = df.groupby(['item', 'time_slot']).last()['rolling_mean_3'].to_dict()
+    latest_lag7 = df.groupby(['item', 'time_slot']).last()['lag_7'].to_dict()
     
     monthly_temp = train_df.groupby('month')['temperature_celsius'].mean().to_dict()
     monthly_weather = train_df.groupby('month')['weather'].agg(lambda x: x.mode()[0]).to_dict()
     monthly_season = train_df.groupby('month')['season'].agg(lambda x: x.mode()[0]).to_dict()
-    
+
     lookups = {
         'hist_avg': hist_avg,
         'item_meal': item_meal_dict,
@@ -112,18 +101,13 @@ def prepare_data(df):
         'item_avg': item_avg,
         'latest_trend': latest_trend,
         'latest_lag7': latest_lag7,
-        'latest_prev': latest_prev,
         'm_temp': monthly_temp,
         'm_weath': monthly_weather,
         'm_seas': monthly_season,
         'user_avg_qty': train_df['quantity'].mean()
     }
 
-    model_cutoff = pd.to_datetime('29-05-2026', format='%d-%m-%Y')
-    model_end_idx_candidates = df[df['date_obj'] > model_cutoff].index
-    model_end_idx = model_end_idx_candidates[0] if len(model_end_idx_candidates) > 0 else len(df)
-
-    return df, lookups, split_idx, model_end_idx
+    return df, lookups, split_idx
 
 def extract_features(df):
     cat_cols = ['item', 'season', 'weather', 'meal_type']
@@ -133,8 +117,6 @@ def extract_features(df):
         'time_slot', 'day_of_week', 'is_weekend', 'is_holiday', 'is_bridge_day', 
         'month', 'temperature_celsius', 'is_peak_hour', 'is_exam_week', 
         'prev_qty', 'rolling_mean_3', 'rolling_mean_7', 'lag_7', 'momentum',
-        'is_morning_break', 'is_lunch_break', 'is_afternoon_break', 
-        'extreme_heat', 'is_social_peak', 'is_crowd_burst',
         'item_time_avg', 'item_meal_avg', 'item_weather_avg', 'item_season_avg', 'item_bridge_avg',
         'weekend_lunch', 'user_avg_qty',
         'time_slot_sin', 'time_slot_cos', 'day_of_week_sin', 'day_of_week_cos',
@@ -153,17 +135,11 @@ def extract_features(df):
     
     return X, y, feature_cols, encoded_cat_cols
 
-def build_model(X, y, feature_cols, split_idx, model_end_idx):
-    X_model = X.iloc[:model_end_idx]
-    y_model = y.iloc[:model_end_idx]
+def build_model(X, y, feature_cols, split_idx):
+    X_train, X_test = X.iloc[:split_idx], X.iloc[split_idx:]
+    y_train, y_test = y.iloc[:split_idx], y.iloc[split_idx:]
     
-    # split_idx is for hyperparam tuning. Make sure it doesn't exceed model_end_idx
-    split_idx = min(split_idx, model_end_idx)
-    
-    X_train, X_test = X_model.iloc[:split_idx], X_model.iloc[split_idx:]
-    y_train, y_test = y_model.iloc[:split_idx], y_model.iloc[split_idx:]
-    
-    print("\n[WAIT] Tuning XGBoost Model using GridSearchCV (Takes a few seconds)...")
+    print("\n[WAIT] Tuning Model using GridSearchCV (Takes a few seconds)...")
     param_grid = {
         'n_estimators': [300, 500, 700],
         'max_depth': [6, 8],
@@ -174,53 +150,74 @@ def build_model(X, y, feature_cols, split_idx, model_end_idx):
     tscv = TimeSeriesSplit(n_splits=3)
     grid = GridSearchCV(xgb, param_grid, cv=tscv, scoring='neg_mean_absolute_error', n_jobs=-1)
     grid.fit(X_train, y_train)
+    
+    model = grid.best_estimator_
+    print(f"[OK] Tuning Complete! Best Model Parameters: {grid.best_params_}")
+    
+    y_pred = model.predict(X_test)
+    y_pred_rounded = np.round(y_pred).clip(min=0)
+    
+    r2 = r2_score(y_test, y_pred)
+    mae = mean_absolute_error(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred)
+    rmse = np.sqrt(mse)
+    exact_acc = np.mean(y_pred_rounded == y_test) * 100
+    
+    print(f"\n============= Leak-Proof Model Evaluation on Test Data =============")
+    print(f"R² Score: {r2:.4f}")
+    print(f"Mean Absolute Error (MAE): {mae:.4f}")
+    print(f"Mean Squared Error (MSE): {mse:.4f}")
+    print(f"Root Mean Squared Error (RMSE): {rmse:.4f}")
+    print(f"Exact Integer Match Accuracy: {exact_acc:.2f}%\n")
+    
+    # Quick feature importance top 5
+    importances = model.feature_importances_
+    features_df = pd.DataFrame({'Feature': feature_cols, 'Importance': importances}).sort_values(by='Importance', ascending=False).head(5)
+    print(f"============= Top 5 Important Features =============")
+    for idx, row in features_df.iterrows():
+        print(f" - {row['Feature']}: {row['Importance']:.4f}")
+    print("=====================================================\n")
 
-    print("[WAIT] Training Final XGBoost Model...")
-    xgb_final = XGBRegressor(**grid.best_params_, random_state=42, n_jobs=-1)
-    xgb_final.fit(X_model, y_model)
-    print("[OK] Final XGBoost Model Trained Successfully.")
+    final_model = XGBRegressor(**grid.best_params_, random_state=42, n_jobs=-1)
+    final_model.fit(X, y)
+    print("[OK] Final Model Trained Successfully on Full Dataset.")
+    return final_model
 
-    print("[WAIT] Training Final CatBoost Model...")
-    cb_final = CatBoostRegressor(iterations=700, depth=6, learning_rate=0.05, random_seed=42, verbose=False)
-    cb_final.fit(X_model, y_model)
-    print("[OK] Final CatBoost Model Trained Successfully.")
-
-    return xgb_final, cb_final
-
-def get_forecast(target_date, df, models, feature_cols, lookups):
+def predict_demand(target_date_str, df, model, feature_cols, encoded_cat_cols, lookups):
+    target_date = datetime.strptime(target_date_str, '%d-%m-%Y')
+    
     month = target_date.month
     day_of_week = target_date.weekday()
     is_weekend = 1 if day_of_week >= 5 else 0
-
+    
     holidays = ['01-01', '14-01', '26-01', '30-03', '03-04', '14-04', '01-05', '15-08', '02-10', '25-12']
     bridge_days = ['02-01', '23-01', '27-03', '02-04', '13-04', '30-04']
-
+    
     is_holiday = 1 if target_date.strftime('%d-%m') in holidays else 0
     is_bridge_day = 1 if target_date.strftime('%d-%m') in bridge_days else 0
-
+    
     if is_weekend == 1 or is_holiday == 1:
-        items = df['item'].unique()
-        time_slots = sorted(df['time_slot'].unique())
-        res = {}
-        for item in items:
-            hourly = [{'time': int(t), 'predicted': 0} for t in time_slots]
-            res[item] = {'total': 0, 'hourly': hourly}
-        return res
-
-    # Automatically fallback to historical averages
+        print(f"\n============= Demand Forecast for {target_date.strftime('%B %d, %Y')} =============")
+        print("Notice: Canteen is closed on weekends and holidays. Demand is 0.")
+        print("========================================================================\n")
+        return
+    
+    # Automatically fallback to historical averages 
     temp = lookups['m_temp'].get(month, 25.0)
     weather = lookups['m_weath'].get(month, 'sunny')
     season = lookups['m_seas'].get(month, 'winter')
-
+    
     items = df['item'].unique()
     time_slots = sorted(df['time_slot'].unique())
-
+    
     scenarios = []
+    
     for item in items:
         for t in time_slots:
             meal_type = get_meal_type(t)
+            
             item_avg_qty = lookups['item_avg'].get(item, 1.0)
-
+            
             row = {
                 'time_slot': t,
                 'day_of_week': day_of_week,
@@ -229,71 +226,110 @@ def get_forecast(target_date, df, models, feature_cols, lookups):
                 'is_bridge_day': is_bridge_day,
                 'month': month,
                 'temperature_celsius': temp,
-                'is_peak_hour': 1 if t in [8, 9, 13, 14] else 0,
+                'is_peak_hour': 1 if t in [8,9,13,14] else 0,
                 'is_exam_week': 0,
                 'user_avg_qty': lookups['user_avg_qty'] if 'user_avg_qty' in lookups else 30.0,
-                'is_morning_break': 1 if t == 11 else 0,
-                'is_lunch_break': 1 if t in [13, 14] else 0,
-                'is_afternoon_break': 1 if t == 16 else 0,
-                'extreme_heat': 1 if temp >= 35 else 0,
-                'is_social_peak': 1 if t >= 15 and is_weekend == 0 else 0,
-                'is_crowd_burst': 0,
             }
-
-            his_val = lookups['hist_avg'].get((item, day_of_week, t), item_avg_qty)
-            row['prev_qty'] = lookups['latest_prev'].get((item, t), his_val)
+            
+            his_val = lookups['hist_avg'].get((item, day_of_week, t), 0)
+            row['prev_qty'] = his_val
             row['item_time_avg'] = his_val
-            row['item_meal_avg'] = lookups['item_meal'].get((item, meal_type), item_avg_qty)
-            row['item_weather_avg'] = lookups['item_weather'].get((item, weather), item_avg_qty)
-            row['item_season_avg'] = lookups['item_season'].get((item, season), item_avg_qty)
+            row['item_meal_avg'] = lookups['item_meal'].get((item, meal_type), 0)
+            row['item_weather_avg'] = lookups['item_weather'].get((item, weather), 0)
+            row['item_season_avg'] = lookups['item_season'].get((item, season), 0)
             row['item_bridge_avg'] = lookups['item_bridge'].get((item, is_bridge_day), item_avg_qty)
-
+            
             row['rolling_mean_3'] = lookups['latest_trend'].get((item, t), 0)
-            row['rolling_mean_7'] = lookups['latest_trend'].get((item, t), 0)
+            row['rolling_mean_7'] = row['rolling_mean_3']
             row['lag_7'] = lookups['latest_lag7'].get((item, t), 0)
             row['momentum'] = 0
             row['weekend_lunch'] = row['is_weekend'] * (1 if meal_type == 'lunch' else 0)
-
+            
             row['time_slot_sin'] = np.sin(2 * np.pi * t / 24.0)
             row['time_slot_cos'] = np.cos(2 * np.pi * t / 24.0)
             row['day_of_week_sin'] = np.sin(2 * np.pi * day_of_week / 7.0)
             row['day_of_week_cos'] = np.cos(2 * np.pi * day_of_week / 7.0)
             row['month_sin'] = np.sin(2 * np.pi * month / 12.0)
             row['month_cos'] = np.cos(2 * np.pi * month / 12.0)
-
+            
             row['item'] = item
             row['season'] = season
             row['weather'] = weather
             row['meal_type'] = meal_type
-
+            
+            row['Item_Name'] = item.capitalize()
+            row['Time_Slot'] = f"{t:02d}:00"
+            
             scenarios.append(row)
-
+                
     scenarios_df = pd.DataFrame(scenarios)
+    
     scenarios_df_encoded = pd.get_dummies(scenarios_df, columns=['item', 'season', 'weather', 'meal_type'])
-
+    
     for col in feature_cols:
         if col not in scenarios_df_encoded.columns:
             scenarios_df_encoded[col] = 0
-
+            
     X_pred = scenarios_df_encoded[feature_cols].astype(float)
     
-    xgb_model, cb_model = models
-    xgb_preds = xgb_model.predict(X_pred)
-    cb_preds = cb_model.predict(X_pred)
-    preds = 0.499 * xgb_preds + 0.501 * cb_preds
+    preds = model.predict(X_pred)
+    scenarios_df['Total Expected Orders'] = np.round(preds).clip(min=0).astype(int)
     
-    scenarios_df['Predicted'] = np.round(preds).clip(min=0).astype(int)
+    pivot = scenarios_df.pivot_table(
+        index=['Time_Slot', 'Item_Name'],
+        values='Total Expected Orders',
+        aggfunc='sum'
+    ).fillna(0).astype(int)
+    
+    pivot = pivot[pivot['Total Expected Orders'] > 0]
+    
+    if pivot.empty:
+        print(f"\n============= Demand Forecast for {target_date.strftime('%B %d, %Y')} =============")
+        print("No active demand times predicted for this date.")
+        print("========================================================================\n")
+    else:
+        pd.set_option('display.max_rows', None)
+        print(f"\n============= Demand Forecast for {target_date.strftime('%B %d, %Y')} =============")
+        print(f"Weather Context: {weather.capitalize()} | Season Context: {season.capitalize()}")
+        print("------------------------------------------------------------------------")
+        print(pivot.to_string())
+        pd.reset_option('display.max_rows')
+        print("========================================================================\n")
 
-    res = {}
-    for item in items:
-        item_df = scenarios_df[scenarios_df['item'] == item]
-        hourly = []
-        slot_groups = item_df.groupby('time_slot')['Predicted'].sum().to_dict()
-        for t in time_slots:
-            hourly.append({'time': int(t), 'predicted': int(slot_groups.get(t, 0))})
-        res[item] = {
-            'total': int(item_df['Predicted'].sum()),
-            'hourly': hourly
-        }
-    return res
+def main():
+    print("[1/3] Fetching dataset from PostgreSQL...")
+    user = os.environ.get('PGUSER', 'postgres')
+    password = os.environ.get('PGPASSWORD', 'admin')
+    host = os.environ.get('PGHOST', 'localhost')
+    port = os.environ.get('PGPORT', '5432')
+    database = os.environ.get('PGDATABASE', 'bitespeed')
+    
+    try:
+        engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
+        df = pd.read_sql('SELECT * FROM orders', engine)
+    except Exception as e:
+        print(f"Error connecting to database: {e}")
+        return
+        
+    
+    df, lookups, split_idx = prepare_data(df)
+    
+    print("[2/3] Extracting features...")
+    X, y, feature_cols, encoded_cat_cols = extract_features(df)
+    
+    print("[3/3] Training and Evaluating Leak-Proof Models...")
+    model = build_model(X, y, feature_cols, split_idx)
+    
+    while True:
+        date_input = input("\nEnter a date (DD-MM-YYYY) to forecast demand (or type 'q' to quit): ").strip()
+        if date_input.lower() == 'q':
+            break
+        try:
+            predict_demand(date_input, df, model, feature_cols, encoded_cat_cols, lookups)
+        except ValueError as e:
+            print(f"Error or Invalid date format. Please use DD-MM-YYYY (e.g. 15-08-2026).")
+        except Exception as e:
+            print(f"Prediction Error: {e}")
 
+if __name__ == "__main__":
+    main()
