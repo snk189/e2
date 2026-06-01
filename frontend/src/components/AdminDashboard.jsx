@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  Activity,
   BarChart3,
   Check,
   Database,
@@ -10,6 +11,8 @@ import {
   UserPlus,
   Users,
   X,
+  Settings,
+  CheckCircle2,
 } from 'lucide-react';
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import EnvironmentSettings from './EnvironmentSettings';
@@ -32,7 +35,9 @@ import {
   getDemandByDate,
   getMenuIntelligence,
   retrainModel,
-  getModelStatus
+  getModelStatus,
+  getModelStats,
+  triggerOptunaTuning
 } from '../services/api';
 import { MENU_ITEMS } from '../data/items';
 
@@ -217,13 +222,22 @@ const AdminDemand = ({ demandData, onRefresh }) => {
   const [advancedDemand, setAdvancedDemand] = useState(null);
   const [advancedLoading, setAdvancedLoading] = useState(false);
   const [modelStatus, setModelStatus] = useState('idle'); // 'idle' or 'training'
+  const [modelProgress, setModelProgress] = useState(0);
+  const [modelStats, setModelStats] = useState(null);
 
   useEffect(() => {
     let intervalId;
     const checkStatus = async () => {
       try {
         const res = await getModelStatus();
-        setModelStatus(res.is_training ? 'training' : 'idle');
+        setModelStatus(res.is_training ? res.is_training : 'idle');
+        setModelProgress(res.progress || 0);
+        
+        // Fetch stats if not training
+        if (!res.is_training) {
+          const statsRes = await getModelStats();
+          setModelStats(statsRes);
+        }
       } catch (err) {
         console.error("Failed to fetch model status", err);
       }
@@ -233,10 +247,20 @@ const AdminDemand = ({ demandData, onRefresh }) => {
     return () => clearInterval(intervalId);
   }, []);
 
+  
+  const handleOptuna = async () => {
+    try {
+      await triggerOptunaTuning();
+      setModelStatus('optuna');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleRetrain = async () => {
     try {
       await retrainModel();
-      setModelStatus('training');
+      setModelStatus('model');
     } catch (err) {
       console.error(err);
     }
@@ -272,18 +296,24 @@ const AdminDemand = ({ demandData, onRefresh }) => {
             <p className="section-copy">Forecast accuracy, tomorrow planning, and financial health in one command surface.</p>
           </div>
           <div className="flex items-center gap-3">
-            {modelStatus === 'training' ? (
+            {modelStatus === 'optuna' ? (
+              <span className="flex items-center gap-2 text-xs font-bold text-indigo-500">
+                <RefreshCw size={14} className="animate-spin" /> Running Optuna Tuning ({modelProgress}%)...
+              </span>
+            ) : modelStatus === 'model' || modelStatus === 'training' || modelStatus === true ? (
               <span className="flex items-center gap-2 text-xs font-bold text-blue-500">
-                <RefreshCw size={14} className="animate-spin" /> Training model...
+                <RefreshCw size={14} className="animate-spin" /> Retraining model ({modelProgress}%)...
               </span>
             ) : (
               <span className="flex items-center gap-2 text-xs font-bold text-emerald-500">
-                <Check size={14} /> Model Ready
+                <CheckCircle2 size={14} /> System Idle
               </span>
             )}
-            <button className="cn-button cn-button-secondary" onClick={handleRetrain} disabled={modelStatus === 'training'} type="button">
-              <RefreshCw size={16} className={modelStatus === 'training' ? "animate-spin" : ""} />
-              Retrain Model
+            <button className="cn-button cn-button-secondary" onClick={handleOptuna} disabled={modelStatus !== 'idle'} type="button">
+              <Settings size={14} /> Run Optuna Tuning
+            </button>
+            <button className="cn-button cn-button-primary" onClick={handleRetrain} disabled={modelStatus !== 'idle'} type="button">
+              <RefreshCw size={14} className={modelStatus !== 'idle' ? "animate-spin" : ""} /> Retrain Model
             </button>
             <button className="cn-button cn-button-primary" onClick={onRefresh} type="button">
               <RefreshCw size={16} />
@@ -291,6 +321,49 @@ const AdminDemand = ({ demandData, onRefresh }) => {
             </button>
           </div>
         </div>
+        
+        {modelStats && (
+          <div className="mt-4 rounded-xl bg-white/50 p-4 border border-[var(--outline-variant)] text-sm space-y-4">
+            
+            {modelStats.model_info && (
+              <div>
+                <h4 className="font-bold mb-2 flex items-center gap-2">
+                  <Activity size={16} className="text-emerald-500" />
+                  Model Training Status
+                </h4>
+                <p className="text-xs text-[var(--on-surface-variant)]">Last Retrain Finished: <span className="font-bold text-[var(--on-surface)]">{modelStats.model_info.last_trained_ist}</span></p>
+              </div>
+            )}
+
+            {modelStats.optuna && (
+              <div>
+                <h4 className="font-bold mb-2 flex items-center gap-2 border-t border-[var(--outline-variant)] pt-4">
+                  <Activity size={16} className="text-[var(--primary)]" />
+                  LightGBM + Optuna Parameters
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <p className="text-xs text-[var(--on-surface-variant)] uppercase tracking-wider font-bold">N-Estimators</p>
+                    <p className="font-mono">{modelStats.optuna.params.n_estimators}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-[var(--on-surface-variant)] uppercase tracking-wider font-bold">Max Depth</p>
+                    <p className="font-mono">{modelStats.optuna.params.max_depth}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-[var(--on-surface-variant)] uppercase tracking-wider font-bold">Learning Rate</p>
+                    <p className="font-mono">{Number(modelStats.optuna.params.learning_rate).toFixed(4)}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-[var(--on-surface-variant)] uppercase tracking-wider font-bold">Num Leaves</p>
+                    <p className="font-mono">{modelStats.optuna.params.num_leaves}</p>
+                  </div>
+                </div>
+                <p className="text-xs text-[var(--on-surface-variant)] mt-3">Last tuned: {modelStats.optuna.last_run_ist}</p>
+              </div>
+            )}
+          </div>
+        )}
       </section>
 
       <div className="flex border-b border-[var(--outline-variant)] overflow-x-auto no-scrollbar mb-4">
@@ -411,7 +484,7 @@ const DemandList = ({ title, items, today = false }) => {
     <section className="glass-card p-5 sm:p-6">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="section-title text-2xl">{title}</h2>
-        <span className="cn-chip">{items.length} rows</span>
+        <span className="cn-chip">{items.length} items</span>
       </div>
       {items.length === 0 ? <EmptyState label="No demand rows." /> : (
         <div className="grid gap-3 md:grid-cols-2">
@@ -424,14 +497,26 @@ const DemandList = ({ title, items, today = false }) => {
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="m-0 text-xl font-bold capitalize">{item.item}</h3>
-                  <p className="m-0 mt-1 text-xs font-bold uppercase text-[var(--on-surface-variant)]">{today ? `Predicted ${item.predicted || 0}` : 'Expected Demand'}</p>
                 </div>
-                <p className="m-0 text-4xl font-bold text-[var(--primary)]">{today ? item.actual || 0 : item.predicted || 0}</p>
+                <div className="flex items-center gap-6 text-right">
+                  {today && (
+                    <div>
+                      <p className="m-0 text-xs font-bold uppercase tracking-wider text-[var(--on-surface-variant)]">Predicted</p>
+                      <p className="m-0 text-3xl font-black text-[var(--on-surface)]">{item.predicted || 0}</p>
+                    </div>
+                  )}
+                  <div>
+                    <p className="m-0 text-xs font-bold uppercase tracking-wider text-[var(--primary)]">{today ? 'Actual' : 'Expected'}</p>
+                    <p className="m-0 text-4xl font-black text-[var(--primary)]">{today ? item.actual || 0 : item.predicted || 0}</p>
+                  </div>
+                </div>
               </div>
               <div className="forecast-meter mt-4"><span style={{ width: `${Math.max(8, Math.round(((today ? item.actual || 0 : item.predicted || 0) / Math.max(...items.map((entry) => today ? entry.actual || 0 : entry.predicted || 0), 1)) * 100))}%` }} /></div>
               {today && (
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <span className="cn-chip cn-chip-success">Actual {item.actual || 0}</span>
+                  <span className={`cn-chip ${((item.actual||0) - (item.predicted||0)) > 0 ? 'cn-chip-success' : ((item.actual||0) - (item.predicted||0)) < 0 ? '!bg-red-100 !text-red-700' : 'cn-chip-primary'}`}>
+                    {((item.actual||0) - (item.predicted||0)) > 0 ? `+${(item.actual||0) - (item.predicted||0)} Variance` : ((item.actual||0) - (item.predicted||0)) < 0 ? `${(item.actual||0) - (item.predicted||0)} Variance` : 'Exact Match'}
+                  </span>
                   <span className="cn-chip cn-chip-warm">{money(item.profit || 0)} profit</span>
                 </div>
               )}

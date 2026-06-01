@@ -8,14 +8,12 @@ import time
 from datetime import datetime, timedelta
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
-from xgboost import XGBRegressor
 
 # Import functions from get_predictions
-from get_predictions import prepare_data, extract_features, build_model, get_forecast
+from get_predictions import prepare_data, extract_features, build_model, get_forecast, run_optuna_tuning
 
 # Global states
-global_xgb_model = None
-global_cb_model = None
+global_model = None
 global_df = None
 global_feature_cols = None
 global_lookups = None
@@ -55,32 +53,24 @@ def load_data_and_model_if_exists():
     global_feature_cols = feature_cols
     global_lookups = lookups
     
-    model_path_xgb = os.path.join(os.path.dirname(__file__), "xgboost_model.json")
-    model_path_cb = os.path.join(os.path.dirname(__file__), "catboost_model.cbm")
-    if os.path.exists(model_path_xgb) and os.path.exists(model_path_cb):
-        print("[SERVER] Found existing model files. Loading...")
-        from xgboost import XGBRegressor
-        from catboost import CatBoostRegressor
+    model_path = os.path.join(os.path.dirname(__file__), "lightgbm_model.joblib")
+    if os.path.exists(model_path):
+        print("[SERVER] Found existing model file. Loading...")
+        import joblib
+        model = joblib.load(model_path)
         
-        xgb = XGBRegressor()
-        xgb.load_model(model_path_xgb)
-        
-        cb = CatBoostRegressor()
-        cb.load_model(model_path_cb)
-        
-        global_xgb_model = xgb
-        global_cb_model = cb
+        global_model = model
         return True
         
     return False
 
 def train_and_load_model():
-    global global_xgb_model, global_cb_model, global_df, global_feature_cols, global_lookups, last_training_time, is_training
+    global global_model, global_df, global_feature_cols, global_lookups, last_training_time, is_training
     if is_training:
         print("[SERVER] Training already in progress, skipping...")
         return
         
-    is_training = True
+    is_training = 'model'
     try:
         print("[SERVER] Connecting to DB to fetch orders for training...")
         df = fetch_orders_from_db()
@@ -95,18 +85,28 @@ def train_and_load_model():
         X, y, feature_cols, encoded_cat_cols = extract_features(df)
         
         print("[SERVER] Building and Training Model...")
-        xgb_model, cb_model = build_model(X, y, feature_cols, split_idx, model_end_idx)
+        model = build_model(X, y, feature_cols, split_idx, model_end_idx)
         
-        xgb_path = os.path.join(os.path.dirname(__file__), "xgboost_model.json")
-        cb_path = os.path.join(os.path.dirname(__file__), "catboost_model.cbm")
+        model_path = os.path.join(os.path.dirname(__file__), "lightgbm_model.joblib")
+        import joblib
+        joblib.dump(model, model_path)
         
-        xgb_model.save_model(xgb_path)
-        cb_model.save_model(cb_path)
+        print("[SERVER] Model successfully saved via joblib.")
         
-        print(f"[SERVER] Models trained and saved successfully.")
+        # Save model training metadata
+        try:
+            from datetime import datetime, timezone, timedelta
+            ist = timezone(timedelta(hours=5, minutes=30))
+            model_info = {
+                "last_trained_ist": datetime.now(ist).strftime("%Y-%m-%d %H:%M:%S")
+            }
+            with open('model_info.json', 'w') as f:
+                json.dump(model_info, f)
+        except Exception as e:
+            print("[SERVER] Failed to save model info:", e)
         
-        global_xgb_model = xgb_model
-        global_cb_model = cb_model
+        # Reload model into globals
+        global_model = model
         global_df = df
         global_feature_cols = feature_cols
         global_lookups = lookups
@@ -130,13 +130,47 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
         parsed_url = urlparse(self.path)
         
         if parsed_url.path == '/status':
+            progress_file = os.path.join(os.path.dirname(__file__), "training_progress.json")
+            progress = 0
+            if is_training:
+                try:
+                    if os.path.exists(progress_file):
+                        with open(progress_file, "r") as f:
+                            data = json.load(f)
+                            progress = data.get("progress", 0)
+                except Exception:
+                    pass
+                    
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
-            self.wfile.write(json.dumps({'is_training': is_training}).encode('utf-8'))
+            self.wfile.write(json.dumps({'is_training': is_training, 'progress': progress}).encode('utf-8'))
             return
-
-        if parsed_url.path == '/retrain':
+        elif parsed_url.path == '/trigger_optuna':
+            threading.Thread(target=run_optuna_background).start()
+            res_data = {'status': 'Optuna tuning started in background'}
+            
+        elif parsed_url.path == '/stats':
+            stats = {}
+            if os.path.exists('optuna_params.json'):
+                try:
+                    with open('optuna_params.json', 'r') as f:
+                        stats['optuna'] = json.load(f)
+                except Exception:
+                    pass
+            if os.path.exists('model_info.json'):
+                try:
+                    with open('model_info.json', 'r') as f:
+                        stats['model_info'] = json.load(f)
+                except Exception:
+                    pass
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(stats).encode('utf-8'))
+            return
+            
+        elif parsed_url.path == '/retrain':
             if is_training:
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')
@@ -161,7 +195,7 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
                 self.send_error(400, "Missing 'date' parameter (YYYY-MM-DD)")
                 return
                 
-            if global_xgb_model is None or global_cb_model is None:
+            if global_model is None:
                 self.send_error(503, "Models are currently training, please wait")
                 return
 
@@ -180,7 +214,7 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
                     target_actual = {}
                     target_actual_hourly = {}
 
-                pred_dict = get_forecast(target_date, global_df, (global_xgb_model, global_cb_model), global_feature_cols, global_lookups)
+                pred_dict = get_forecast(target_date, global_df, (global_model), global_feature_cols, global_lookups)
                 
                 unique_items = global_df['item'].unique()
                 demand_list = []
@@ -215,13 +249,13 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
                 self.send_error(500, str(e))
                 
         elif parsed_url.path == '/predict_today':
-            if global_xgb_model is None or global_cb_model is None:
+            if global_model is None:
                 self.send_error(503, "Models are currently training, please wait")
                 return
 
             try:
                 df = global_df
-                models = (global_xgb_model, global_cb_model)
+                models = (global_model)
                 feature_cols = global_feature_cols
                 lookups = global_lookups
                 
@@ -322,9 +356,58 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
 
 def startup_worker():
     loaded = load_data_and_model_if_exists()
-    if not loaded:
-        print("[SERVER] No existing model found. Training in background...")
+    
+    # Check optuna_params.json age
+    optuna_needs_run = False
+    if os.path.exists('optuna_params.json'):
+        try:
+            from datetime import datetime, timezone, timedelta
+            with open('optuna_params.json', 'r') as f:
+                optuna_data = json.load(f)
+            last_run_str = optuna_data.get('last_run_ist', '')
+            if last_run_str:
+                ist = timezone(timedelta(hours=5, minutes=30))
+                last_run_time = datetime.strptime(last_run_str, "%Y-%m-%d %H:%M:%S")
+                last_run_time = last_run_time.replace(tzinfo=ist)
+                now_ist = datetime.now(ist)
+                if (now_ist - last_run_time).days >= 7:
+                    optuna_needs_run = True
+            else:
+                optuna_needs_run = True
+        except Exception as e:
+            print("[SERVER] Error checking optuna age:", e)
+            optuna_needs_run = True
+    else:
+        optuna_needs_run = True
+
+    if optuna_needs_run:
+        print("[SERVER] Optuna tuning is >1 week old or missing. Running Optuna...")
+        run_optuna_background() # run optuna (will save optuna_params.json)
+        print("[SERVER] Optuna finished. Training model...")
         train_and_load_model()
+    else:
+        print("[SERVER] Optuna params are recent (<1 week). Skipping Optuna. Triggering model retrain...")
+        train_and_load_model()
+
+def run_optuna_background():
+    global global_df, global_feature_cols, global_lookups, is_training
+    if is_training:
+        print("[SERVER] Process already in progress, skipping optuna...")
+        return
+        
+    try:
+        is_training = 'optuna'
+        print("[SERVER] Starting background Optuna tuning...")
+        from get_predictions import prepare_data, extract_features, run_optuna_tuning
+        df = fetch_orders_from_db()
+        df, lookups, split_idx, model_end_idx = prepare_data(df)
+        X, y, feature_cols, encoded_cat_cols = extract_features(df)
+        run_optuna_tuning(X, y, split_idx, model_end_idx)
+        print("[SERVER] Background Optuna tuning finished.")
+    except Exception as e:
+        print(f"[SERVER] Background Optuna tuning failed: {e}")
+    finally:
+        is_training = False
 
 if __name__ == '__main__':
     threading.Thread(target=startup_worker, daemon=True).start()
@@ -334,3 +417,6 @@ if __name__ == '__main__':
     httpd = HTTPServer(server_address, ModelRequestHandler)
     print("[SERVER] HTTP Model Server running on port 5001...")
     httpd.serve_forever()
+
+
+

@@ -2,10 +2,28 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { BarChart3, CheckCircle2, ChevronLeft, ChevronRight, ClipboardList, LogOut, RefreshCw, Settings, Clock, ShoppingCart } from 'lucide-react';
 import iconImg from '../../assets/icon.png';
 
-const IconImgComponent = ({ size, className }) => <img src={iconImg} alt="" className={`object-contain ${className || ''}`} style={{ width: size, height: size }} />;
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { getDemand, getTodayOrders, updateOrderStatus, getDemandByDate, getIngredientsForecast, subscribeToModelUpdates } from '../services/api';
+import { getDemand, getTodayOrders, updateOrderStatus, getDemandByDate, getIngredientsForecast, subscribeToModelUpdates, retrainModel, getModelStatus, triggerOptunaTuning } from '../services/api';
 import EnvironmentSettings from './EnvironmentSettings';
+
+const IconImgComponent = ({ size, className }) => <img src={iconImg} alt="" className={`object-contain ${className || ''}`} style={{ width: size, height: size }} />;
+
+const money = (value) => `Rs. ${value}`;
+
+const buildChartData = (items) => {
+  const hourMap = {};
+  items.forEach((item) => {
+    (item.hourly || []).forEach((hour) => {
+      const key = `${hour.time}:00`;
+      if (!hourMap[key]) hourMap[key] = { time: key, totalPred: 0, totalAct: 0 };
+      hourMap[key][`${item.item}_pred`] = Number(hour.predicted || 0);
+      hourMap[key][`${item.item}_act`] = Number(hour.actual || 0);
+      hourMap[key].totalPred += Number(hour.predicted || 0);
+      hourMap[key].totalAct += Number(hour.actual || 0);
+    });
+  });
+  return Object.values(hourMap).sort((a, b) => Number.parseInt(a.time, 10) - Number.parseInt(b.time, 10));
+};
 
 const STATUSES = ['pending', 'preparing', 'ready', 'delivered'];
 const CHART_COLORS = [
@@ -219,9 +237,7 @@ const Dashboard = ({ onLogout }) => {
           </section>
         )}
 
-        {activeTab === 'demand' && (
-          <DemandView demand={demand} loading={loading} onRefresh={fetchData} todayOrders={todayOrders} />
-        )}
+        {activeTab === 'demand' && <DemandView demand={demand} loading={loading} error={error} onRefresh={() => fetchData(true)} todayOrders={todayOrders} />}
         {activeTab === 'ingredients' && (
           <IngredientsView initialIngredients={ingredients} onRefresh={fetchData} />
         )}
@@ -487,11 +503,47 @@ const IngredientsView = ({ initialIngredients, onRefresh }) => {
   );
 };
 
-const DemandView = ({ demand, loading, onRefresh, todayOrders }) => {
+const DemandView = ({ demand, loading, onRefresh, todayOrders, error }) => {
   const [demandTab, setDemandTab] = useState('normal');
   const [advancedDate, setAdvancedDate] = useState('');
   const [advancedDemand, setAdvancedDemand] = useState(null);
   const [advancedLoading, setAdvancedLoading] = useState(false);
+  const [modelStatus, setModelStatus] = useState('idle');
+  const [modelProgress, setModelProgress] = useState(0);
+
+  useEffect(() => {
+    let intervalId;
+    const checkStatus = async () => {
+      try {
+        const res = await getModelStatus();
+        setModelStatus(res.is_training ? res.is_training : 'idle');
+        setModelProgress(res.progress || 0);
+      } catch (err) {
+        console.error("Failed to fetch model status", err);
+      }
+    };
+    checkStatus();
+    intervalId = setInterval(checkStatus, 5000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const handleOptuna = async () => {
+    try {
+      await triggerOptunaTuning();
+      setModelStatus('optuna');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleRetrain = async () => {
+    try {
+      await retrainModel();
+      setModelStatus('model');
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const isClosed = demand ? (demand.currentHour < 8 || demand.currentHour >= 18) : true;
   const tomorrow = useMemo(() => {
@@ -594,17 +646,44 @@ const DemandView = ({ demand, loading, onRefresh, todayOrders }) => {
               <h2 className="section-title">Demand Analytics</h2>
               <p className="section-copy">Live forecast, actuals, variance, and profit signals for kitchen planning.</p>
             </div>
-            <button className="cn-button cn-button-secondary" onClick={onRefresh} type="button">
-              <RefreshCw size={16} />
-              Refresh
-            </button>
+            <div className="flex gap-2">
+              <button className="cn-button cn-button-secondary" onClick={onRefresh} type="button">
+                <RefreshCw size={16} />
+                Refresh
+              </button>
+            </div>
           </div>
-          <div className="relative z-10 mt-5 flex flex-wrap gap-3">
+          <div className="relative z-10 flex flex-wrap items-center gap-3 mt-5">
             <span className={`cn-chip ${isClosed ? '!bg-red-100 !text-red-700 !border-red-200' : 'cn-chip-success'}`}>
               <span className="pulse-dot" style={{ backgroundColor: isClosed ? '#dc2626' : undefined }} />
               {isClosed ? 'Canteen closed' : 'Canteen open'}
             </span>
             <span className="cn-chip"><Clock size={14} /> Hour {demand?.currentHour ?? '--'}:00</span>
+
+            <div className="flex-1" />
+
+            <div className="flex items-center gap-3 bg-[var(--surface)] px-4 py-2 rounded-lg border border-[var(--outline-variant)]">
+              {modelStatus === 'optuna' ? (
+                <span className="flex items-center gap-2 text-xs font-bold text-indigo-500">
+                  <RefreshCw size={14} className="animate-spin" /> Running Optuna ({modelProgress}%)...
+                </span>
+              ) : modelStatus === 'model' || modelStatus === 'training' || modelStatus === true ? (
+                <span className="flex items-center gap-2 text-xs font-bold text-blue-500">
+                  <RefreshCw size={14} className="animate-spin" /> Retraining Model ({modelProgress}%)...
+                </span>
+              ) : (
+                <span className="flex items-center gap-2 text-xs font-bold text-emerald-500">
+                  <CheckCircle2 size={14} /> AI Ready
+                </span>
+              )}
+              <div className="h-4 w-px bg-[var(--outline-variant)] mx-1" />
+              <button className="text-xs font-bold text-[var(--on-surface-variant)] hover:text-[var(--primary)] flex items-center gap-1 transition-colors disabled:opacity-50" onClick={handleOptuna} disabled={modelStatus !== 'idle'} type="button">
+                <Settings size={12} /> Tune
+              </button>
+              <button className="text-xs font-bold text-[var(--on-surface-variant)] hover:text-[var(--primary)] flex items-center gap-1 transition-colors disabled:opacity-50" onClick={handleRetrain} disabled={modelStatus !== 'idle'} type="button">
+                <RefreshCw size={12} className={modelStatus !== 'idle' ? "animate-spin" : ""} /> Retrain
+              </button>
+            </div>
           </div>
         </section>
 
@@ -662,7 +741,7 @@ const DemandView = ({ demand, loading, onRefresh, todayOrders }) => {
               <p className="text-lg font-bold text-[var(--on-surface-variant)] mb-4">
                 {error || 'Demand data is not available yet.'}
               </p>
-              <button className="cn-button cn-button-secondary" onClick={() => fetchData(true)} type="button">
+              <button className="cn-button cn-button-secondary" onClick={() => onRefresh()} type="button">
                 <RefreshCw size={16} />
                 Retry
               </button>
@@ -912,21 +991,6 @@ const formatTime = (timestamp) => {
   return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
-const money = (value) => `Rs. ${value}`;
 
-const buildChartData = (items) => {
-  const hourMap = {};
-  items.forEach((item) => {
-    (item.hourly || []).forEach((hour) => {
-      const key = `${hour.time}:00`;
-      if (!hourMap[key]) hourMap[key] = { time: key, totalPred: 0, totalAct: 0 };
-      hourMap[key][`${item.item}_pred`] = Number(hour.predicted || 0);
-      hourMap[key][`${item.item}_act`] = Number(hour.actual || 0);
-      hourMap[key].totalPred += Number(hour.predicted || 0);
-      hourMap[key].totalAct += Number(hour.actual || 0);
-    });
-  });
-  return Object.values(hourMap).sort((a, b) => Number.parseInt(a.time, 10) - Number.parseInt(b.time, 10));
-};
 
 export default Dashboard;

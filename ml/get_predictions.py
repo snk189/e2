@@ -1,14 +1,14 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
-from xgboost import XGBRegressor
-from catboost import CatBoostRegressor
+from sklearn.model_selection import TimeSeriesSplit
+from lightgbm import LGBMRegressor
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from datetime import datetime, timedelta
 import json
 import sys
 import os
 import warnings
+import optuna
 
 warnings.filterwarnings('ignore')
 
@@ -48,8 +48,13 @@ def prepare_data(df):
     
     # Lag features must use shift(1) to avoid leaking current row's target
     df['prev_qty'] = df.groupby(['item', 'time_slot'])['quantity'].shift(1).fillna(0)
+    df['lag_1'] = df.groupby(['item', 'time_slot'])['quantity'].shift(1).fillna(0)
+    df['lag_2'] = df.groupby(['item', 'time_slot'])['quantity'].shift(2).fillna(0)
+    df['lag_3'] = df.groupby(['item', 'time_slot'])['quantity'].shift(3).fillna(0)
     df['rolling_mean_3'] = df.groupby(['item', 'time_slot'])['quantity'].transform(lambda x: x.shift(1).rolling(3).mean()).fillna(0)
     df['rolling_mean_7'] = df.groupby(['item', 'time_slot'])['quantity'].transform(lambda x: x.shift(1).rolling(7).mean()).fillna(0)
+    df['rolling_mean_14'] = df.groupby(['item', 'time_slot'])['quantity'].transform(lambda x: x.shift(1).rolling(14).mean()).fillna(0)
+    df['item_variance'] = df.groupby(['item', 'time_slot'])['quantity'].transform(lambda x: x.shift(1).rolling(7).var()).fillna(0)
     df['lag_7'] = df.groupby(['item', 'time_slot'])['quantity'].shift(7).fillna(0)
     df['momentum'] = df['rolling_mean_3'] - df['rolling_mean_7']
     
@@ -60,6 +65,11 @@ def prepare_data(df):
     df['extreme_heat'] = (df['temperature_celsius'] >= 35).astype(int)
     df['is_social_peak'] = ((df['time_slot'] >= 15) & (df['is_weekend'] == 0)).astype(int)
     df['is_crowd_burst'] = (df['momentum'] > 15).astype(int)
+    
+    # New Mocks
+    df['is_event_festival'] = df['date_obj'].apply(lambda d: 1 if d.day in [14, 15, 25, 26, 31] else 0)
+    df['exam_intensity'] = df['date_obj'].apply(lambda d: 0.85 if d.month in [4, 5, 11, 12] else (0.4 if d.month in [3, 10] else 0.1))
+    df['attendance_estimate'] = df.apply(lambda r: 0.3 if r['is_weekend'] == 1 else (0.6 if r['exam_intensity'] > 0.6 else 0.95), axis=1)
     # -------------------------
 
     # Chronologically split before building averages to prevent Data Leakage!
@@ -95,13 +105,18 @@ def prepare_data(df):
     df['month_sin'] = np.sin(2 * np.pi * df['month'] / 12.0)
     df['month_cos'] = np.cos(2 * np.pi * df['month'] / 12.0)
     
-    latest_trend = train_df.groupby(['item', 'time_slot']).last()['rolling_mean_3'].to_dict()
-    latest_lag7 = train_df.groupby(['item', 'time_slot']).last()['lag_7'].to_dict()
-    latest_prev = train_df.groupby(['item', 'time_slot']).last()['prev_qty'].to_dict()
+    latest_trend = df.groupby(['item', 'time_slot']).last()['rolling_mean_3'].to_dict()
+    latest_lag7 = df.groupby(['item', 'time_slot']).last()['lag_7'].to_dict()
+    latest_prev = df.groupby(['item', 'time_slot']).last()['prev_qty'].to_dict()
+    latest_lag1 = df.groupby(['item', 'time_slot']).last()['lag_1'].to_dict()
+    latest_lag2 = df.groupby(['item', 'time_slot']).last()['lag_2'].to_dict()
+    latest_lag3 = df.groupby(['item', 'time_slot']).last()['lag_3'].to_dict()
+    latest_rolling14 = df.groupby(['item', 'time_slot']).last()['rolling_mean_14'].to_dict()
+    latest_item_variance = df.groupby(['item', 'time_slot']).last()['item_variance'].to_dict()
     
-    monthly_temp = train_df.groupby('month')['temperature_celsius'].mean().to_dict()
-    monthly_weather = train_df.groupby('month')['weather'].agg(lambda x: x.mode()[0]).to_dict()
-    monthly_season = train_df.groupby('month')['season'].agg(lambda x: x.mode()[0]).to_dict()
+    monthly_temp = df.groupby('month')['temperature_celsius'].mean().to_dict()
+    monthly_weather = df.groupby('month')['weather'].agg(lambda x: x.mode()[0]).to_dict()
+    monthly_season = df.groupby('month')['season'].agg(lambda x: x.mode()[0]).to_dict()
     
     lookups = {
         'hist_avg': hist_avg,
@@ -113,6 +128,11 @@ def prepare_data(df):
         'latest_trend': latest_trend,
         'latest_lag7': latest_lag7,
         'latest_prev': latest_prev,
+        'latest_lag1': latest_lag1,
+        'latest_lag2': latest_lag2,
+        'latest_lag3': latest_lag3,
+        'latest_rolling14': latest_rolling14,
+        'latest_item_variance': latest_item_variance,
         'm_temp': monthly_temp,
         'm_weath': monthly_weather,
         'm_seas': monthly_season,
@@ -132,10 +152,11 @@ def extract_features(df):
     numeric_cols = [
         'time_slot', 'day_of_week', 'is_weekend', 'is_holiday', 'is_bridge_day', 
         'month', 'temperature_celsius', 'is_peak_hour', 'is_exam_week', 
-        'prev_qty', 'rolling_mean_3', 'rolling_mean_7', 'lag_7', 'momentum',
-        'is_morning_break', 'is_lunch_break', 'is_afternoon_break', 
+        'prev_qty', 'lag_1', 'lag_2', 'lag_3', 'rolling_mean_3', 'rolling_mean_7', 'rolling_mean_14', 'lag_7', 'momentum',
+        'item_variance', 'is_morning_break', 'is_lunch_break', 'is_afternoon_break', 
         'extreme_heat', 'is_social_peak', 'is_crowd_burst',
-        'item_time_avg', 'item_meal_avg', 'item_weather_avg', 'item_season_avg', 'item_bridge_avg',
+        'is_event_festival', 'exam_intensity', 'attendance_estimate',
+        'item_time_avg', 'item_meal_avg', 'item_bridge_avg',
         'weekend_lunch', 'user_avg_qty',
         'time_slot_sin', 'time_slot_cos', 'day_of_week_sin', 'day_of_week_cos',
         'month_sin', 'month_cos'
@@ -153,41 +174,176 @@ def extract_features(df):
     
     return X, y, feature_cols, encoded_cat_cols
 
+def run_optuna_tuning(X, y, split_idx, model_end_idx):
+    print("\n[WAIT] Running Optuna Hyperparameter Tuning for LightGBM...")
+
+    import optuna as _optuna_module
+    _optuna_module.logging.set_verbosity(_optuna_module.logging.WARNING)
+
+    X_model = X.iloc[:model_end_idx]
+    y_model = y.iloc[:model_end_idx]
+    split_idx = min(split_idx, model_end_idx)
+
+    X_train, X_test = X_model.iloc[:split_idx], X_model.iloc[split_idx:]
+    y_train, y_test = y_model.iloc[:split_idx], y_model.iloc[split_idx:]
+
+    progress_file = os.path.join(os.path.dirname(__file__), "training_progress.json")
+    iterations_file = os.path.join(os.path.dirname(__file__), "optuna_history.json")
+    try:
+        with open(progress_file, "w") as f:
+            json.dump({"progress": 0, "status": "optuna"}, f)
+        with open(iterations_file, "w") as f:
+            json.dump([], f)
+    except Exception:
+        pass
+
+    def objective(trial):
+        param = {
+            'n_estimators':      trial.suggest_int('n_estimators', 500, 2000, step=100),
+            'max_depth':         trial.suggest_int('max_depth', 5, 15),
+            'learning_rate':     trial.suggest_float('learning_rate', 0.01, 0.1, log=True),
+            'num_leaves':        trial.suggest_int('num_leaves', 20, 150),
+            'min_child_samples': trial.suggest_int('min_child_samples', 10, 100),
+            'subsample':         trial.suggest_float('subsample', 0.5, 1.0),
+            'subsample_freq':    trial.suggest_int('subsample_freq', 1, 7),
+            'colsample_bytree':  trial.suggest_float('colsample_bytree', 0.5, 1.0),
+            'reg_alpha':         trial.suggest_float('reg_alpha', 0.0, 5.0),
+            'reg_lambda':        trial.suggest_float('reg_lambda', 0.0, 5.0),
+            'random_state': 42,
+            'n_jobs': 1,
+            'verbose': 1,
+            'device_type': 'gpu',
+            'gpu_platform_id': 1,
+            'gpu_device_id': 0
+        }
+
+        tscv = TimeSeriesSplit(n_splits=3)
+        scores = []
+        for train_index, valid_index in tscv.split(X_train):
+            cv_X_train, cv_X_valid = X_train.iloc[train_index], X_train.iloc[valid_index]
+            cv_y_train, cv_y_valid = y_train.iloc[train_index], y_train.iloc[valid_index]
+
+            model = LGBMRegressor(**param)
+            model.fit(cv_X_train, cv_y_train)
+            preds = model.predict(cv_X_valid)
+            scores.append(mean_absolute_error(cv_y_valid, preds))
+
+        return np.mean(scores)
+
+    def optuna_callback(study, trial):
+        progress_file = os.path.join(os.path.dirname(__file__), "training_progress.json")
+        iterations_file = os.path.join(os.path.dirname(__file__), "optuna_history.json")
+        progress_pct = int((trial.number + 1) / 40 * 100)
+        
+        try:
+            with open(progress_file, "w") as f:
+                json.dump({"progress": progress_pct, "status": "optuna"}, f)
+        except Exception:
+            pass
+            
+        try:
+            history = []
+            if os.path.exists(iterations_file):
+                with open(iterations_file, "r") as f:
+                    history = json.load(f)
+            history.append({
+                "trial": trial.number + 1,
+                "value_mae": trial.value,
+                "params": trial.params
+            })
+            with open(iterations_file, "w") as f:
+                json.dump(history, f, indent=2)
+        except Exception:
+            pass
+
+    study = optuna.create_study(direction='minimize')
+    study.optimize(objective, n_trials=40, callbacks=[optuna_callback])
+
+    best_params = study.best_params
+    print(f"[OK] Optuna Complete! Best CV-MAE: {study.best_value:.4f} | Params: {best_params}")
+
+    model = LGBMRegressor(**best_params, random_state=42, n_jobs=1, verbose=1, device_type='gpu', gpu_platform_id=1, gpu_device_id=0)
+    model.fit(X_train, y_train)
+    y_pred         = model.predict(X_test)
+    y_pred_rounded = np.round(y_pred).clip(min=0)
+
+    r2        = r2_score(y_test, y_pred)
+    mae       = mean_absolute_error(y_test, y_pred)
+    rmse      = np.sqrt(mean_squared_error(y_test, y_pred))
+    exact_acc = np.mean(y_pred_rounded == y_test) * 100
+
+    ist_time = datetime.utcnow() + timedelta(hours=5, minutes=30)
+    last_run_ist = ist_time.strftime('%Y-%m-%d %H:%M:%S')
+
+    optuna_data = {
+        "params": best_params,
+        "last_run_ist": last_run_ist,
+        "metrics": {
+            "r2": round(r2, 4),
+            "mae": round(mae, 4),
+            "rmse": round(rmse, 4),
+            "exact_pct": round(exact_acc, 2)
+        }
+    }
+    optuna_file = os.path.join(os.path.dirname(__file__), "optuna_params.json")
+    with open(optuna_file, "w") as f:
+        json.dump(optuna_data, f, indent=4)
+
+    print(f"[OK] Saved Optuna parameters to {optuna_file}")
+
 def build_model(X, y, feature_cols, split_idx, model_end_idx):
     X_model = X.iloc[:model_end_idx]
     y_model = y.iloc[:model_end_idx]
     
-    # split_idx is for hyperparam tuning. Make sure it doesn't exceed model_end_idx
-    split_idx = min(split_idx, model_end_idx)
+    # Load stored params if available
+    optuna_file = os.path.join(os.path.dirname(__file__), "optuna_params.json")
+    params = {'random_state': 42, 'n_jobs': 1, 'verbose': 1, 'device_type': 'gpu', 'gpu_platform_id': 1, 'gpu_device_id': 0}
     
-    X_train, X_test = X_model.iloc[:split_idx], X_model.iloc[split_idx:]
-    y_train, y_test = y_model.iloc[:split_idx], y_model.iloc[split_idx:]
+    if os.path.exists(optuna_file):
+        try:
+            with open(optuna_file, "r") as f:
+                data = json.load(f)
+                if "params" in data:
+                    params.update(data["params"])
+                    print(f"[OK] Loaded Optuna parameters from {optuna_file}")
+        except Exception as e:
+            print(f"[WARNING] Failed to load optuna parameters: {e}")
+    else:
+        print(f"[WARNING] No optuna_params.json found. Using default LightGBM parameters.")
+
+    print("[WAIT] Training Final LightGBM Model...")
     
-    print("\n[WAIT] Tuning XGBoost Model using GridSearchCV (Takes a few seconds)...")
-    param_grid = {
-        'n_estimators': [300, 500, 700],
-        'max_depth': [6, 8],
-        'learning_rate': [0.03, 0.05, 0.1]
-    }
+    progress_file = os.path.join(os.path.dirname(__file__), "training_progress.json")
+    try:
+        with open(progress_file, "w") as f:
+            json.dump({"progress": 0, "status": "model"}, f)
+    except Exception:
+        pass
+        
+    def lgb_progress_callback(env):
+        progress_file = os.path.join(os.path.dirname(__file__), "training_progress.json")
+        pct = int((env.iteration + 1) / env.end_iteration * 100)
+        if pct % 5 == 0 or pct == 100:
+            try:
+                with open(progress_file, "w") as f:
+                    json.dump({"progress": pct, "status": "model"}, f)
+            except Exception:
+                pass
+
+    final_model = LGBMRegressor(**params)
+    final_model.fit(X_model, y_model, callbacks=[lgb_progress_callback])
     
-    xgb = XGBRegressor(random_state=42, n_jobs=-1)
-    tscv = TimeSeriesSplit(n_splits=3)
-    grid = GridSearchCV(xgb, param_grid, cv=tscv, scoring='neg_mean_absolute_error', n_jobs=-1)
-    grid.fit(X_train, y_train)
+    try:
+        with open(progress_file, "w") as f:
+            json.dump({"progress": 100, "status": "idle"}, f)
+    except Exception:
+        pass
+        
+    print("[OK] Final LightGBM Model Trained Successfully.")
 
-    print("[WAIT] Training Final XGBoost Model...")
-    xgb_final = XGBRegressor(**grid.best_params_, random_state=42, n_jobs=-1)
-    xgb_final.fit(X_model, y_model)
-    print("[OK] Final XGBoost Model Trained Successfully.")
+    return final_model
 
-    print("[WAIT] Training Final CatBoost Model...")
-    cb_final = CatBoostRegressor(iterations=700, depth=6, learning_rate=0.05, random_seed=42, verbose=False)
-    cb_final.fit(X_model, y_model)
-    print("[OK] Final CatBoost Model Trained Successfully.")
-
-    return xgb_final, cb_final
-
-def get_forecast(target_date, df, models, feature_cols, lookups):
+def get_forecast(target_date, df, model, feature_cols, lookups):
     month = target_date.month
     day_of_week = target_date.weekday()
     is_weekend = 1 if day_of_week >= 5 else 0
@@ -198,6 +354,7 @@ def get_forecast(target_date, df, models, feature_cols, lookups):
     is_holiday = 1 if target_date.strftime('%d-%m') in holidays else 0
     is_bridge_day = 1 if target_date.strftime('%d-%m') in bridge_days else 0
 
+    # Ensure 0 predictions for holidays and weekends (Sunday=6, Saturday=5)
     if is_weekend == 1 or is_holiday == 1:
         items = df['item'].unique()
         time_slots = sorted(df['time_slot'].unique())
@@ -207,7 +364,6 @@ def get_forecast(target_date, df, models, feature_cols, lookups):
             res[item] = {'total': 0, 'hourly': hourly}
         return res
 
-    # Automatically fallback to historical averages
     temp = lookups['m_temp'].get(month, 25.0)
     weather = lookups['m_weath'].get(month, 'sunny')
     season = lookups['m_seas'].get(month, 'winter')
@@ -242,6 +398,10 @@ def get_forecast(target_date, df, models, feature_cols, lookups):
 
             his_val = lookups['hist_avg'].get((item, day_of_week, t), item_avg_qty)
             row['prev_qty'] = lookups['latest_prev'].get((item, t), his_val)
+            row['lag_1'] = lookups['latest_lag1'].get((item, t), his_val)
+            row['lag_2'] = lookups['latest_lag2'].get((item, t), his_val)
+            row['lag_3'] = lookups['latest_lag3'].get((item, t), his_val)
+            
             row['item_time_avg'] = his_val
             row['item_meal_avg'] = lookups['item_meal'].get((item, meal_type), item_avg_qty)
             row['item_weather_avg'] = lookups['item_weather'].get((item, weather), item_avg_qty)
@@ -250,6 +410,8 @@ def get_forecast(target_date, df, models, feature_cols, lookups):
 
             row['rolling_mean_3'] = lookups['latest_trend'].get((item, t), 0)
             row['rolling_mean_7'] = lookups['latest_trend'].get((item, t), 0)
+            row['rolling_mean_14'] = lookups['latest_rolling14'].get((item, t), 0)
+            row['item_variance'] = lookups['latest_item_variance'].get((item, t), 0)
             row['lag_7'] = lookups['latest_lag7'].get((item, t), 0)
             row['momentum'] = 0
             row['weekend_lunch'] = row['is_weekend'] * (1 if meal_type == 'lunch' else 0)
@@ -277,12 +439,11 @@ def get_forecast(target_date, df, models, feature_cols, lookups):
 
     X_pred = scenarios_df_encoded[feature_cols].astype(float)
     
-    xgb_model, cb_model = models
-    xgb_preds = xgb_model.predict(X_pred)
-    cb_preds = cb_model.predict(X_pred)
-    preds = 0.499 * xgb_preds + 0.501 * cb_preds
-    
+    preds = model.predict(X_pred)
     scenarios_df['Predicted'] = np.round(preds).clip(min=0).astype(int)
+    
+    # Enforce 0 demand for holidays/weekends (Sunday is 6)
+    scenarios_df.loc[scenarios_df['day_of_week'] == 6, 'Predicted'] = 0
 
     res = {}
     for item in items:
@@ -296,4 +457,3 @@ def get_forecast(target_date, df, models, feature_cols, lookups):
             'hourly': hourly
         }
     return res
-

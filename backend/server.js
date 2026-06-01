@@ -424,6 +424,37 @@ app.get('/api/demand', async (req, res) => {
         });
 
         const response = { ...liveDemand };
+        
+        // Merge today's actuals
+        const rToday = await pool.query('SELECT item, quantity, is_prebooking, prebooking_datetime, order_timestamp FROM orders WHERE quantity > 0');
+        const todayTotals = {};
+        const todayHourly = {};
+        rToday.rows.forEach(row => {
+            const is_prebooking = parseInt(row.is_prebooking) === 1;
+            const effective_time = is_prebooking && row.prebooking_datetime ? parseInt(row.prebooking_datetime) : parseInt(row.order_timestamp);
+            if (effective_time >= todayStartIST && effective_time < tomorrowStartIST) {
+                const item = row.item.toLowerCase();
+                const qty = parseInt(row.quantity);
+                let hour = new Date(effective_time * 1000).getHours();
+                if (hour < 8) hour = 8;
+                if (hour > 18) hour = 18;
+                todayTotals[item] = (todayTotals[item] || 0) + qty;
+                if (!todayHourly[item]) todayHourly[item] = {};
+                todayHourly[item][hour] = (todayHourly[item][hour] || 0) + qty;
+            }
+        });
+
+        if (response.today) {
+            response.today = response.today.map(item => {
+                const key = item.item.toLowerCase();
+                const mergedHourly = (item.hourly || []).map(h => ({
+                    ...h,
+                    actual: todayHourly[key] ? (todayHourly[key][h.time] || 0) : 0
+                }));
+                return { ...item, actual: todayTotals[key] || 0, hourly: mergedHourly };
+            });
+        }
+
         if (response.tomorrow) {
             response.tomorrow = response.tomorrow.map(item => {
                 const key = item.item.toLowerCase();
@@ -450,6 +481,16 @@ app.get('/api/model_status', async (req, res) => {
     } catch (error) {
         console.error('Error getting model status:', error);
         res.status(500).json({ error: 'Failed to get model status' });
+    }
+});
+
+app.get('/api/model_stats', async (req, res) => {
+    try {
+        const pythonData = await fetchPrediction('/stats');
+        res.status(200).json(pythonData);
+    } catch (error) {
+        console.error('Error getting model stats:', error);
+        res.status(500).json({ error: 'Failed to get model stats' });
     }
 });
 
@@ -1011,6 +1052,44 @@ app.post('/api/admin/remove_data', async (req, res) => {
     }
 });
 
+
+app.post('/api/admin/trigger_optuna', async (req, res) => {
+    try {
+        const pythonData = await fetchPrediction('/trigger_optuna');
+        res.status(200).json(pythonData);
+    } catch (error) {
+        console.error('Error triggering optuna:', error);
+        res.status(500).json({ error: 'Failed to trigger optuna tuning' });
+    }
+});
+
+app.post('/api/admin/trigger_retrain', async (req, res) => {
+    try {
+        const pythonData = await fetchPrediction('/retrain');
+        res.status(200).json(pythonData);
+    } catch (error) {
+        console.error('Error triggering retrain:', error);
+        res.status(500).json({ error: 'Failed to trigger model retrain' });
+    }
+});
+
+app.get('/api/events', (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    
+    // Send a comment to keep connection alive
+    const interval = setInterval(() => {
+        res.write(': keepalive\n\n');
+    }, 15000);
+    
+    // We would need to properly proxy SSE from python server, but since this is just a quick fix:
+    // A simplified implementation
+    req.on('close', () => {
+        clearInterval(interval);
+        res.end();
+    });
+});
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
 });

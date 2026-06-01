@@ -1,115 +1,87 @@
 # BiteSpeed — Feature Reference
 
-BiteSpeed is a full-stack canteen management and ML demand forecasting system. It serves three user roles — Normal users, Management staff, and Admins — each with a purpose-built interface.
+BiteSpeed is a full-stack canteen management and AI-driven demand forecasting system. It serves three user roles — Normal users, Management staff, and Admins — each with a purpose-built interface and real-time backend synchronization.
 
 ---
 
 ## 1. Authentication & Role-Based Access
 
-- **Three-tier roles**: Normal (`n`), Management (`m`), Admin (`a`) — each routed to a distinct dashboard on login
-- **Registration with approval flow**: New users register and wait for admin approval before accessing the system
-- **Cooldown / freeze system**: Failed login attempts trigger a cooldown; repeated violations escalate to permanent block
-- **Session persistence**: Login state persisted locally; auto-redirect on return visits
-- **Admin user lifecycle**: Approve, reject, block, unblock, unfreeze, remove, and change passwords — all from the admin console
+- **Three-tier roles**: Normal (`n`), Management (`m`), Admin (`a`) — each routed to a distinct dashboard on login.
+- **Registration with approval flow**: New users register and wait for admin approval before accessing the system.
+- **Cooldown / freeze system**: Failed login attempts trigger a cooldown; repeated violations escalate to a permanent block.
+- **Session persistence**: Login state is persisted locally; auto-redirect on return visits.
+- **Admin user lifecycle**: Approve, reject, block, unblock, unfreeze, remove, and change passwords from the admin console.
 
 ---
 
 ## 2. Normal User — Food Ordering Interface
 
-- **Menu browsing**: Full menu with item cards, descriptions, and pricing
-- **Floating cart tray**: Interactive slide-up cart popup, optimized for both desktop and mobile
+- **Menu browsing**: Full menu with item cards, descriptions, and pricing.
+- **Floating cart tray**: Interactive slide-up cart popup, optimized for both desktop and mobile.
 - **Order types**:
-  - **Dine-in**: Instant order placement for immediate kitchen processing
-  - **Pre-book**: Schedule orders for the next day at a **5% discount**
-- **Notes**: Attach special instructions to any order
-- **Cross-platform**: Web app wrapped with **Capacitor** for native Android APK compilation
+  - **Dine-in**: Instant order placement for immediate kitchen processing.
+  - **Pre-book**: Schedule orders for the next day at a **5% discount**.
+- **Cross-platform**: Web app wrapped with **Capacitor** for native Android APK compilation.
 
 ---
 
 ## 3. Management Dashboard
 
 ### Orders Tab
-- **Live order table**: Real-time auto-refreshing view of all today's orders (5-second polling)
-- **Status pipeline**: Each order flows through Pending → Preparing → Ready → Delivered
-- **Status controls**: Advance or revert status via on-row buttons
-- **Keyboard navigation**: Full keyboard control — ↑↓ to select rows, ←→ to change status, no mouse needed
-- **Visual coding**: Color-coded rows per status (amber = pending, blue = preparing, green = ready, grey = delivered)
-- **Order metadata**: Shows time, username, item, quantity, notes, and dine-in vs pre-book type
+- **Live order table**: Real-time auto-refreshing view of all today's orders.
+- **Status pipeline**: Each order flows through Pending → Preparing → Ready → Delivered.
+- **Status controls**: Advance or revert status via on-row buttons.
+- **Keyboard navigation**: Full keyboard control — ↑↓ to select rows, ←→ to change status.
+- **Visual coding**: Color-coded rows per status (amber = pending, blue = preparing, green = ready, grey = delivered).
 
-### Demand Tab — Normal Subtab
-- **Today's Performance**: Per-item cards showing predicted quantity; actual count surfaced as a small chip; variance indicator (demand ▲ / short ▼ / spot on ✅); profit chip
-- **Tomorrow's Forecast**: Dark-contrast card layout with AI-projected quantities and pre-booked count; hourly breakdown on expand; heat-colored hour tiles
-- **Financial metrics**: Live Revenue, Cost, and Net Profit cards calculated from actual orders placed today
-
-### Demand Tab — Advanced Subtab
-- **Date-picker forecasting**: Select any future date and run the ML model for a full demand prediction
-- **Prediction-only view**: No actual numbers shown — purely forward-looking forecast with hourly breakdown
+### Demand Tab
+- **Today's Performance**: Live per-item cards contrasting AI predicted quantity vs absolute real-time actuals. Features a precise variance indicator (+/-) and active profit calculations.
+- **Tomorrow's Forecast**: Dark-contrast card layout with AI-projected quantities and pre-booked count; hourly breakdown on expand; heat-colored hour tiles.
+- **Financial metrics**: Live Revenue, Cost, and Net Profit cards calculated from actual orders placed today.
 
 ### Ingredients Tab
-- **AI-driven ingredient forecast**: Calculates required ingredient quantities based on predicted menu demand for today or any selected date
-- **Per-ingredient cards**: Shows total quantity needed with unit; expandable breakdown by recipe contribution with mini progress bars
-- **Checklist mode**: Tap checkbox to mark an ingredient as procured; checked items sort to bottom with strikethrough
-- **Keyboard navigation**: ↑↓ to navigate, Enter to toggle check
-
-### Settings Tab
-- **Environmental factors**: Tune contextual inputs (e.g., weather, special events) that influence the ML model's demand predictions
+- **AI-driven ingredient forecast**: Calculates required ingredient quantities based on predicted menu demand for today or any selected date.
+- **Checklist mode**: Tap checkbox to mark an ingredient as procured; checked items sort to bottom with strikethrough.
 
 ---
 
 ## 4. Admin Console
 
 ### Demand Tab
-- **Financial overview**: Total Revenue, Cost, and Net Profit metrics
-- **Model performance chart**: Interactive Recharts line chart — total predicted vs actual demand by hour; toggle per-item breakdown by clicking item chips
-- **Today's Performance list**: Predicted vs actual per item with profit and variance; hourly breakdown on expand
-- **Tomorrow's Forecast list**: AI-projected quantities per item
-- **Advanced date forecast**: Date-picker driven ML prediction for any date (prediction-only)
+- **Real-Time Data Feed**: Features the exact same live actual vs predicted pipeline as the Management dashboard, ensuring complete data consistency across the hierarchy.
+- **Model Tuning Engine**: 
+  - **Retrain**: Trigger an immediate background LightGBM fit using existing best parameters.
+  - **Optuna Search**: Triggers an aggressive background 40-trial Optuna hyperparameter search across the GPU.
+- **Live Progress Tracking**: Web UI subscribes to the Python backend to stream real-time training progress (0% -> 100%) without freezing the page.
 
 ### Intelligence Tab
-- **Menu popularity intelligence**: Analyzes historical order data to surface:
-  - **Top 3 trending items** (fastest rising in recent periods)
-  - **Declining items** (falling demand)
-  - **Fastest growing item** (highest growth rate)
-  - **Most profitable item** (best margin contribution)
+- **Menu popularity intelligence**: Analyzes historical order data to surface top trending, declining, and most profitable items.
 
 ### Data Maintenance Tab
-- **Order inspection**: View all orders filtered by date and/or username
-- **Quick date presets**: Yesterday / Today / Tomorrow buttons
-- **Financial summaries**: Item count, revenue, cost, and profit for the filtered set
-- **Order deletion**: Remove individual records to clean up test or erroneous data
-
-### Users Tab
-- **Pending approvals**: Review and approve or reject new registrations; block directly from pending queue
-- **All users**: Add users manually (username, password, role); remove or block existing users; inline password change mode
-- **Blocked & Frozen**: View permanently blocked users (unblock) and cooldown-frozen users (unfreeze without losing strike count)
-
-### Settings Tab
-- Same environmental settings panel as management — shared persistence
+- **Order inspection**: View all orders filtered by date and/or username.
+- **Order deletion**: Remove individual records to clean up test or erroneous data.
 
 ---
 
-## 5. Machine Learning Pipeline
+## 5. Machine Learning Pipeline (LightGBM + Optuna)
 
-- **Algorithm**: Ensemble of XGBoost and CatBoost (0.499 × XGBoost + 0.501 × CatBoost), trained per menu item
-- **Feature engineering**:
-  - Temporal: hour of day, day of week, cyclical sine/cosine encoding
-  - Historical: lag features, rolling averages, momentum indicators
-  - Environmental: user-configured contextual factors
-- **Rule-based overrides**: Hardcoded zero-demand predictions for weekends and declared holidays to prevent model hallucination on closed days.
-- **Async Server Architecture**: The ML server loads instantly from cached `.json` and `.cbm` model files to avoid blocking API startup. Background threads handle heavy database loading and retraining without downtime.
-- **Auto-retraining**: Backend automatically runs a background retraining cycle periodically, updating the persistent model files so predictions are always fresh.
-- **Financial projection**: Each prediction includes mapped revenue, cost, and net profit using menu price/cost tables.
-- **Hourly granularity**: Forecasts broken down hour-by-hour (8:00–18:00) per item.
-- **Ingredient mapping**: Predictions are translated into ingredient quantities via recipe mappings for procurement planning.
-- **Evaluation framework**: Includes `evaluate_model.py` for strict chronological train/test splitting (leak-proof) to benchmark R², MAE, RMSE, and exact integer match accuracy of individual models vs the ensemble.
+- **Algorithm**: State-of-the-art **LightGBM Regressor** customized for extreme accuracy on high-variance retail data.
+- **Hardware Acceleration**: Configured strictly with `device_type: 'gpu'` to heavily accelerate parallel tree building during Optuna searches.
+- **Automated Optuna Hyperparameter Tuning**:
+  - Background worker conducts 40 trials of Time-Series Cross Validation (TimeSeriesSplit).
+  - Actively explores a massive search space including `num_leaves`, `min_child_samples`, `colsample_bytree`, `subsample_freq`, and powerful L1/L2 regularizations (`reg_alpha`, `reg_lambda`).
+  - Dumps a live audit trail of every trial into `optuna_history.json`.
+- **Advanced Feature Engineering**:
+  - **Temporal**: Sine/cosine encoding of hours, days, and months.
+  - **Lags & Trends**: Tracks absolute `lag_1` (previous day identical slot) and `lag_7` (previous week identical slot), rolling momentum, and high-variance spikes.
+  - **Mock Heuristics**: Automatically tracks proxy indicators like `is_event_festival`, `exam_intensity`, and `attendance_estimate` to modulate demand natively.
+- **Async Python Server Architecture**: The ML server executes all heavy LightGBM tasks on secondary threads. Real-time Node.js backend seamlessly polls the Python thread for AI demand and streams it to the React UI.
 
 ---
 
 ## 6. Infrastructure & Developer Experience
 
-- **Quick start**: `start.bat` launches backend and frontend simultaneously from the root
-- **Hot reload**: Vite-powered frontend with instant HMR during development
-- **Auto-refresh**: All dashboards poll the backend every 5 seconds for live data
-- **PostgreSQL integration**: All orders, users, and settings stored in a structured relational database
-- **Android build**: Capacitor integration for building a native Android APK from the web app
-- **Local network support**: Clear firewall setup guidance for mobile device testing on the same network
+- **Quick start**: `start.bat` launches backend, frontend, and Python Server simultaneously from the root.
+- **Hot reload**: Vite-powered frontend with instant HMR during development.
+- **Auto-refresh**: Dashboards poll the Node backend every 5 seconds for live data.
+- **PostgreSQL**: Robust relational database tracking all historical orders,user profiles, and caching state.

@@ -2,9 +2,9 @@
 
 ## Overview
 
-BiteSpeed is a full-stack canteen management platform combining a **React + Vite** frontend, a **Node.js + Express** backend, and an **XGBoost + CatBoost ML pipeline** to provide real-time demand forecasting, order management, and financial analytics for canteen operations.
+BiteSpeed is a full-stack, AI-driven canteen management platform. It seamlessly integrates a **React + Vite** frontend, a **Node.js + Express + PostgreSQL** backend, and a **GPU-accelerated LightGBM** machine learning pipeline. BiteSpeed provides real-time demand forecasting, live order orchestration, and financial analytics for canteen operations.
 
-The system supports three roles — **Normal users** (ordering), **Management staff** (kitchen & demand view), and **Admin** (full system control) — each with a distinct dashboard tailored to their workflow.
+The system supports three heavily-optimized roles — **Normal users** (ordering), **Management staff** (kitchen & demand tracking), and **Admin** (full system control & AI tuning) — each routed to a distinct, real-time dashboard tailored strictly to their workflow.
 
 ---
 
@@ -24,24 +24,23 @@ The system supports three roles — **Normal users** (ordering), **Management st
 │   │   │   ├── Auth.jsx              # Login & registration UI
 │   │   │   ├── BookingInterface.jsx  # Normal user ordering interface
 │   │   │   ├── Dashboard.jsx         # Management staff dashboard
-│   │   │   ├── AdminDashboard.jsx    # Admin console
+│   │   │   ├── AdminDashboard.jsx    # Admin console (w/ AI Controls)
 │   │   │   └── EnvironmentSettings.jsx  # Environmental factor controls
 │   │   ├── services/
 │   │   │   └── api.js        # Centralized API client
 │   │   └── data/
 │   │       └── items.js      # Menu item definitions
 │   ├── android/              # Capacitor Android project
-│   ├── public/               # Static assets
 │   └── package.json
 │
-├── ml/                       # Machine Learning pipeline
-│   ├── xgb.py                # XGBoost model training script
-│   ├── get_predictions.py    # Inference script (outputs JSON predictions)
-│   ├── update_dataset.py     # Dataset maintenance utility
-│   └── xgboost_model.json    # Trained model weights
+├── ml/                       # Machine Learning Python backend
+│   ├── model_server.py       # Async Python HTTP Server for AI inference & tuning
+│   ├── get_predictions.py    # Feature engineering, LightGBM model, and Optuna tuning
+│   └── optuna_history.json   # Live audit trail of hyperparameter tuning
 │
-├── start.bat                 # One-click launcher for backend + frontend
-├── features.md               # Feature documentation
+├── old/                      # Archived experimentation scripts
+├── start.bat                 # One-click launcher for all 3 servers
+├── features.md               # Detailed feature documentation
 └── README.md                 # This file
 ```
 
@@ -55,9 +54,8 @@ The system supports three roles — **Normal users** (ordering), **Management st
 | **npm** | v9+ | Package management |
 | **Python** | 3.9+ | ML training & inference |
 | **PostgreSQL** | 14+ | Primary database |
-| **Android Studio** | latest | Optional — Android APK build |
 
-**Python packages**: `xgboost`, `psycopg2`, `pandas`, `scikit-learn`, `numpy`
+**Python packages**: `lightgbm`, `optuna`, `psycopg2`, `pandas`, `scikit-learn`, `numpy`
 
 ---
 
@@ -65,13 +63,13 @@ The system supports three roles — **Normal users** (ordering), **Management st
 
 ### Quick Start (Recommended)
 ```bash
-# From the project root — launches backend AND frontend simultaneously
+# From the project root — launches Node Backend, React Frontend, and Python ML Server simultaneously!
 start.bat
 ```
 
 ### Manual Setup
 
-#### 1. Backend
+#### 1. Node Backend
 ```bash
 cd backend
 npm install
@@ -80,7 +78,7 @@ node server.js
 ```
 Database: connects to PostgreSQL `bitespeed` (default: user `postgres`, password `admin`).
 
-#### 2. Frontend
+#### 2. React Frontend
 ```bash
 cd frontend
 npm install
@@ -88,84 +86,42 @@ npm run dev
 # App starts on http://localhost:5173
 ```
 
----
-
-## User Roles & Dashboards
-
-### 🧑 Normal User — `BookingInterface`
-- Browse the menu and add items to a floating interactive cart
-- Place **Dine-in** orders (instant) or **Pre-book** orders (scheduled for next day with 5% discount)
-- View personal order history and live status updates
-
-### 👨‍🍳 Management Staff — `Dashboard`
-- **Orders tab**: Live table of today's orders with status pipeline (Pending → Preparing → Ready → Delivered). Full keyboard navigation (↑↓ select, ←→ advance status).
-- **Demand tab**:
-  - *Normal subtab*: Today's performance (predicted vs actual per item + profit chips), Tomorrow's forecast in dark-contrast card layout, Revenue/Cost/Profit metrics
-  - *Advanced subtab*: Date-picker driven ML forecast for any future date (predicted only, no actuals)
-- **Ingredients tab**: AI-driven ingredient requirements for today or any selected date, with per-item checklist and expandable breakdown by recipe
-- **Settings tab**: Environmental factor management
-
-### 🛡️ Admin — `AdminDashboard`
-- **Demand tab**: Full demand analytics with XGBoost model performance chart, today's actuals, tomorrow's forecast, advanced date-based prediction
-- **Intelligence tab**: Menu popularity intelligence — **top 3 trending**, declining items, fastest growing, most profitable
-- **Data tab**: Order maintenance — inspect, filter, and delete individual order records by date/user
-- **Users tab**: Full user lifecycle management — approve/reject pending registrations, add users manually, block/unblock/unfreeze accounts, change passwords inline
-- **Settings tab**: Environmental settings (same as management)
-
----
-
-## Machine Learning Pipeline
-
-### Training
+#### 3. Python AI Server
 ```bash
-python ml/xgb.py
+cd ml
+python model_server.py
+# Server starts on http://localhost:5001
 ```
-- Pulls order history directly from PostgreSQL
-- Feature engineering: temporal (hour, day-of-week, cyclical encoding), lag/rolling statistics (momentum, historical averages), environmental factors
-- Trains an **XGBoost** and **CatBoost** ensemble regressor per menu item
-- Saves trained weights to `ml/xgboost_model.json` and `ml/catboost_model.cbm`
-
-### Evaluation
-To benchmark the accuracy of the model on a strictly chronological train/test split without data leakage, run the evaluation script:
-```bash
-python ml/evaluate_model.py
-```
-Outputs the R² score, Mean Absolute Error (MAE), RMSE, and Exact Integer Match Accuracy for XGBoost, CatBoost, and the Final Ensemble.
-
-### Inference & Async Model Server
-The ML backend (`model_server.py`) operates as an asynchronous, non-blocking Flask API. Upon startup, it instantly loads the cached `.json` and `.cbm` models to guarantee zero downtime, while fetching data and retraining the models in the background.
-
-Manual inference run:
-```bash
-python ml/get_predictions.py
-```
-Outputs per-item hourly predicted demand and financial projections (revenue, cost, net profit).
-
-### Auto-Retraining
-The background server thread periodically watches for database changes and re-executes the ML model automatically, keeping predictions fresh without manual intervention.
 
 ---
 
-## Android Build (Optional)
+## Machine Learning Architecture
 
-> **⚠️ Windows Firewall** — Your phone must reach the laptop on port `5000`. Add an inbound rule for TCP port 5000 in Windows Defender Firewall.
+### 🚀 LightGBM GPU Engine
+The backbone of BiteSpeed is a highly optimized **LightGBM Regressor**. The model is configured to utilize CUDA/OpenCL natively (`device_type: 'gpu'`), allowing it to build deep, 150-leaf trees exponentially faster than standard CPU bounds.
 
-1. Set your laptop's local IP in `frontend/src/services/api.js`
-2. Build and sync:
-```bash
-cd frontend
-npm run build
-npx cap sync android
-```
-3. Open `frontend/android` in Android Studio → **Build → Build APK(s)**
-4. Install the `.apk` on your device
+### 🧠 Automated Optuna Tuning
+Instead of static weights, BiteSpeed features an aggressive **Optuna hyperparameter tuning** protocol. 
+Admins can hit "Retrain Model" or "Run Optuna Tuning" straight from the frontend UI. The Python server spins up a background worker to run 40 cross-validated trials across a massive search space (`num_leaves`, `colsample_bytree`, L1/L2 regularization, etc.). 
+- The React UI subscribes to the background Python process to show a **live 0-100% progress bar**.
+- Every iteration is cleanly dumped into `ml/optuna_history.json`.
 
----
-
-## Environmental Settings
-
-Admins and management staff can tune environmental factors (e.g., weather, events, holidays) via the Settings tab. These factors are persisted in `backend/management_settings.json` and fed into the ML model at inference time, improving prediction accuracy during unusual days.
+### ⚡ Feature Engineering
+BiteSpeed natively tracks and calculates highly complex indicators before feeding them to the model:
+- **Lags & Trends**: Tracks absolute `lag_1` (previous day identical slot) and `lag_7` (previous week identical slot), rolling momentum, and high-variance spikes.
+- **Mock Heuristics**: Calculates proximity indicators like `is_event_festival`, `exam_intensity`, and `attendance_estimate` mathematically to automatically module demand during atypical seasons.
 
 ---
 
-*BiteSpeed — smart canteen management, powered by real data.*
+## Developer Experience
+
+- **Quick start**: `start.bat` is all you need.
+- **Hot reload**: Vite-powered frontend with instant HMR during development.
+- **Auto-refresh**: Dashboards poll the Node backend every 5 seconds for live data.
+- **Android Ready**: Full Capacitor integration enables compiling the React web app directly into a native Android APK.
+
+For a full deep-dive into User Roles and UI capabilities, see [features.md](./features.md).
+
+---
+
+*BiteSpeed — smart canteen management*

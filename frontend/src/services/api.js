@@ -82,12 +82,13 @@ export const changePassword = async (username, currentPassword, newPassword) => 
 export const getDemand = async () => {
     try {
         const response = await axios.get(`${BASE_URL}/demand`);
+        if (response.status === 202 || response.data?.error) {
+            return { error: response.data?.error || 'Model is warming up, please wait...' };
+        }
         return response.data;
     } catch (error) {
-        if (error.response?.status === 202) {
-            throw new Error('MODEL_TRAINING');
-        }
-        throw error;
+        const msg = error.response?.data?.error || error.response?.data || 'Fetching demand failed';
+        return { error: typeof msg === 'string' ? msg : 'Fetching demand failed' };
     }
 };
 
@@ -96,8 +97,18 @@ export const getModelStatus = async () => {
         const response = await axios.get(`${BASE_URL}/model_status`);
         return response.data;
     } catch (error) {
-        console.error("Failed to get model status:", error);
-        return { is_training: false };
+        console.error("Failed to fetch model status:", error);
+        throw error.response?.data || { error: 'Failed to fetch model status' };
+    }
+}
+
+export const getModelStats = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/model_stats`);
+        return response.data;
+    } catch (error) {
+        console.error("Failed to fetch model stats:", error);
+        throw error.response?.data || { error: 'Failed to fetch model stats' };
     }
 };
 
@@ -295,4 +306,35 @@ export const updateOrderStatus = async (id, status) => {
     } catch (error) {
         throw error.response?.data || { error: 'Failed' };
     }
+};
+
+export const triggerOptunaTuning = async () => {
+    try {
+        const response = await axios.post(`${BASE_URL}/admin/trigger_optuna`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { error: 'Failed to trigger Optuna tuning' };
+    }
+};
+
+export const triggerModelRetrain = async () => {
+    try {
+        const response = await axios.post(`${BASE_URL}/admin/trigger_retrain`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { error: 'Failed to trigger model retrain' };
+    }
+};
+
+export const subscribeToModelUpdates = (callback) => {
+    const eventSource = new EventSource(`${BASE_URL}/events`);
+    eventSource.addEventListener('model_updated', (e) => {
+        try {
+            const data = JSON.parse(e.data);
+            callback(data);
+        } catch (err) {
+            console.error('Error parsing SSE data', err);
+        }
+    });
+    return () => eventSource.close();
 };
