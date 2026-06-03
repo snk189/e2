@@ -26,7 +26,7 @@ BiteSpeed operates on a distributed, microservices-inspired architecture compris
 ### 3. Machine Learning Inference & Training Server (Python + LightGBM + Optuna)
 - **Async Python HTTP Server**: Hosts the ML models (`model_server.py`) independent of the transactional backend, ensuring heavy computations don't block the Node.js API.
 - **GPU-Accelerated LightGBM**: Utilizes `device_type: 'gpu'` to build deep trees across a massive dataset with minimal latency.
-- **Live Hyperparameter Tuning**: Features an integrated Optuna worker that runs cross-validated trials natively triggered from the Admin UI.
+- **Pre-tuned Hyperparameters**: Uses scientifically pre-optimized, hardcoded Optuna parameters specifically tailored to the dual-model split to prevent runtime crashes and ensure stability.
 
 ## Directory Structure
 ```text
@@ -100,8 +100,8 @@ BiteSpeed utilizes a **split-model architecture**, running two independent, high
 - **Model 1 (Solid Foods / Snacks)**: Specifically trained to forecast demand for heavy items and snacks (`idly`, `dosa`, `pulao`, `sandwich`, `burger`, `pizza`, `samosa`, `panipuri`).
 - **Model 2 (Beverages & Desserts)**: Specifically trained to forecast demand for drinks and sweets (`milkshake`, `tea`, `coffee`, `juice`, `icecream`).
 
-### 🧠 Automated Optuna Tuning
-Instead of static weights, BiteSpeed employs an aggressive Optuna hyperparameter optimization protocol. Administrators can trigger "Retrain Model" or "Run Optuna Tuning" from the frontend UI. A background Python worker executes Time-Series Cross Validation trials, optimizing parameters like `num_leaves`, `colsample_bytree`, and regularization techniques. Progress is streamed directly to the UI.
+### 🧠 Pre-Optimized Dual-Model Hyperparameters
+Instead of running risky live hyperparameter tuning, BiteSpeed employs scientifically pre-optimized Optuna dictionaries hardcoded into the pipeline for maximum stability. Administrators can trigger a "Retrain Model" from the frontend UI, which forces both models to immediately fit on the latest database entries using their respective optimized parameters (`num_leaves`, `colsample_bytree`, L1/L2 regularizations). Progress is streamed directly to the UI.
 
 ### ⚡ Advanced Feature Engineering
 The model is fed deeply engineered features to accurately anticipate demand:

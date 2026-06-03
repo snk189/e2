@@ -55,8 +55,7 @@ BiteSpeed provides a deeply integrated feature set customized for three distinct
 ### Demand & AI Tuning
 - **Synchronized Real-Time Data**: Mirrors the Management dashboard's live actuals vs. predicted data pipeline.
 - **Model Tuning Engine**:
-  - **Immediate Retrain**: One-click background trigger to fit the LightGBM model on the latest data using pre-optimized parameters.
-  - **Optuna Hyperparameter Search**: Initiates an aggressive 40-trial Optuna optimization cycle leveraging the server GPU.
+  - **Immediate Retrain**: One-click background trigger to fit both LightGBM models on the latest data simultaneously using their respective pre-optimized, hardcoded parameters.
 - **Live WebSocket/Polling Telemetry**: The UI subscribes to the Python worker to stream training progress (0% → 100%) in real-time without locking the client thread.
 
 ### Advanced Business Intelligence
@@ -74,10 +73,9 @@ BiteSpeed provides a deeply integrated feature set customized for three distinct
   - **Model 1 (Solid Foods / Snacks)**: Predicts demand for `idly`, `dosa`, `pulao`, `sandwich`, `burger`, `pizza`, `samosa`, and `panipuri`.
   - **Model 2 (Beverages & Desserts)**: Predicts demand for `milkshake`, `tea`, `coffee`, `juice`, and `icecream`.
 - **Hardware Acceleration**: Natively invokes `device_type: 'gpu'` to heavily accelerate parallel tree building.
-- **Automated Hyperparameter Optimization (Optuna)**:
-  - Background processes conduct extensive Time-Series Cross Validation (`TimeSeriesSplit`).
-  - Explores complex topological spaces including `num_leaves`, `min_child_samples`, `colsample_bytree`, and L1/L2 regularizations.
-  - Every trial is persistently logged to `ml/optuna_history.json`.
+- **Pre-Optimized Hyperparameters (Optuna)**:
+  - Instead of running risky live tuning, the system utilizes hardcoded parameter dictionaries that were historically discovered via extensive Time-Series Cross Validation.
+  - Fixes complex topological spaces including `num_leaves`, `min_child_samples`, `colsample_bytree`, and L1/L2 regularizations for both Model 1 and Model 2 independently to ensure 100% server stability.
 - **Advanced Feature Engineering**:
   - **Temporal Mapping**: Mathematical sine/cosine encoding of temporal boundaries (hours, days).
   - **Lag & Momentum Tracking**: Evaluates `lag_1` (previous day identical slot) and `lag_7` (previous week identical slot), rolling averages, and high-variance anomaly detection.
