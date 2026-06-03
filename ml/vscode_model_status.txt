@@ -1,17 +1,17 @@
 Model Training Status
-Last Retrain Finished: 2026-06-02 00:09:12
+Last Retrain Finished: 2026-06-03 12:13:04
 
 LightGBM + Optuna Parameters
 N-Estimators
-600
+1900
 
 Max Depth
 11
 
 Learning Rate
-0.017903596614795746
+0.03337919294971768
 
 Num Leaves
-116
+125
 
-Last tuned: 2026-06-01 22:40:19
+Last tuned: 2026-06-03 08:06:52

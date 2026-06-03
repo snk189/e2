@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import json
 import sys
 import os
+import joblib
 import warnings
 import optuna
 
@@ -74,7 +75,7 @@ def prepare_data(df):
 
     # Chronologically split before building averages to prevent Data Leakage!
     # True Forecasting cut: train up to Apr 20, test from Apr 21 onwards
-    cutoff_date = pd.to_datetime('20-04-2026', format='%d-%m-%Y')
+    cutoff_date = pd.to_datetime('20-05-2026', format='%d-%m-%Y')
     split_idx_candidates = df[df['date_obj'] > cutoff_date].index
     split_idx = split_idx_candidates[0] if len(split_idx_candidates) > 0 else len(df)
     
@@ -139,7 +140,7 @@ def prepare_data(df):
         'user_avg_qty': train_df['quantity'].mean()
     }
 
-    model_cutoff = pd.to_datetime('29-05-2026', format='%d-%m-%Y')
+    model_cutoff = pd.to_datetime('31-05-2026', format='%d-%m-%Y')
     model_end_idx_candidates = df[df['date_obj'] > model_cutoff].index
     model_end_idx = model_end_idx_candidates[0] if len(model_end_idx_candidates) > 0 else len(df)
 
@@ -174,174 +175,78 @@ def extract_features(df):
     
     return X, y, feature_cols, encoded_cat_cols
 
-def run_optuna_tuning(X, y, split_idx, model_end_idx):
-    print("\n[WAIT] Running Optuna Hyperparameter Tuning for LightGBM...")
-
-    import optuna as _optuna_module
-    _optuna_module.logging.set_verbosity(_optuna_module.logging.WARNING)
+def train_split_models(X, y, split_idx, model_end_idx):
+    print("\n[WAIT] Training Split Models with Pre-Tuned Parameters...")
 
     X_model = X.iloc[:model_end_idx]
     y_model = y.iloc[:model_end_idx]
-    split_idx = min(split_idx, model_end_idx)
+    
+    # Split the dataset into group 1 and group 2
+    group1_items = ['idly', 'dosa', 'pulao', 'sandwich', 'burger', 'pizza', 'samosa', 'panipuri']
+    
+    # Create mask for group 1 (checking if any of the group 1 items are 1)
+    g1_cols = [f'item_{it}' for it in group1_items if f'item_{it}' in X_model.columns]
+    mask_g1 = X_model[g1_cols].sum(axis=1) > 0
+    
+    X_train = X_model.iloc[:split_idx]
+    y_train = y_model.iloc[:split_idx]
+    
+    mask_g1_train = X_train[g1_cols].sum(axis=1) > 0
 
-    X_train, X_test = X_model.iloc[:split_idx], X_model.iloc[split_idx:]
-    y_train, y_test = y_model.iloc[:split_idx], y_model.iloc[split_idx:]
-
-    progress_file = os.path.join(os.path.dirname(__file__), "training_progress.json")
-    iterations_file = os.path.join(os.path.dirname(__file__), "optuna_history.json")
-    try:
-        with open(progress_file, "w") as f:
-            json.dump({"progress": 0, "status": "optuna"}, f)
-        with open(iterations_file, "w") as f:
-            json.dump([], f)
-    except Exception:
-        pass
-
-    def objective(trial):
-        param = {
-            'n_estimators':      trial.suggest_int('n_estimators', 500, 2000, step=100),
-            'max_depth':         trial.suggest_int('max_depth', 5, 15),
-            'learning_rate':     trial.suggest_float('learning_rate', 0.01, 0.1, log=True),
-            'num_leaves':        trial.suggest_int('num_leaves', 20, 150),
-            'min_child_samples': trial.suggest_int('min_child_samples', 10, 100),
-            'subsample':         trial.suggest_float('subsample', 0.5, 1.0),
-            'subsample_freq':    trial.suggest_int('subsample_freq', 1, 7),
-            'colsample_bytree':  trial.suggest_float('colsample_bytree', 0.5, 1.0),
-            'reg_alpha':         trial.suggest_float('reg_alpha', 0.0, 5.0),
-            'reg_lambda':        trial.suggest_float('reg_lambda', 0.0, 5.0),
-            'random_state': 42,
-            'n_jobs': 1,
-            'verbose': 1,
-            'device_type': 'gpu',
-            'gpu_platform_id': 1,
-            'gpu_device_id': 0
-        }
-
-        tscv = TimeSeriesSplit(n_splits=3)
-        scores = []
-        for train_index, valid_index in tscv.split(X_train):
-            cv_X_train, cv_X_valid = X_train.iloc[train_index], X_train.iloc[valid_index]
-            cv_y_train, cv_y_valid = y_train.iloc[train_index], y_train.iloc[valid_index]
-
-            model = LGBMRegressor(**param)
-            model.fit(cv_X_train, cv_y_train)
-            preds = model.predict(cv_X_valid)
-            scores.append(mean_absolute_error(cv_y_valid, preds))
-
-        return np.mean(scores)
-
-    def optuna_callback(study, trial):
-        progress_file = os.path.join(os.path.dirname(__file__), "training_progress.json")
-        iterations_file = os.path.join(os.path.dirname(__file__), "optuna_history.json")
-        progress_pct = int((trial.number + 1) / 40 * 100)
-        
-        try:
-            with open(progress_file, "w") as f:
-                json.dump({"progress": progress_pct, "status": "optuna"}, f)
-        except Exception:
-            pass
-            
-        try:
-            history = []
-            if os.path.exists(iterations_file):
-                with open(iterations_file, "r") as f:
-                    history = json.load(f)
-            history.append({
-                "trial": trial.number + 1,
-                "value_mae": trial.value,
-                "params": trial.params
-            })
-            with open(iterations_file, "w") as f:
-                json.dump(history, f, indent=2)
-        except Exception:
-            pass
-
-    study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=40, callbacks=[optuna_callback])
-
-    best_params = study.best_params
-    print(f"[OK] Optuna Complete! Best CV-MAE: {study.best_value:.4f} | Params: {best_params}")
-
-    model = LGBMRegressor(**best_params, random_state=42, n_jobs=1, verbose=1, device_type='gpu', gpu_platform_id=1, gpu_device_id=0)
-    model.fit(X_train, y_train)
-    y_pred         = model.predict(X_test)
-    y_pred_rounded = np.round(y_pred).clip(min=0)
-
-    r2        = r2_score(y_test, y_pred)
-    mae       = mean_absolute_error(y_test, y_pred)
-    rmse      = np.sqrt(mean_squared_error(y_test, y_pred))
-    exact_acc = np.mean(y_pred_rounded == y_test) * 100
-
-    ist_time = datetime.utcnow() + timedelta(hours=5, minutes=30)
-    last_run_ist = ist_time.strftime('%Y-%m-%d %H:%M:%S')
-
-    optuna_data = {
-        "params": best_params,
-        "last_run_ist": last_run_ist,
-        "metrics": {
-            "r2": round(r2, 4),
-            "mae": round(mae, 4),
-            "rmse": round(rmse, 4),
-            "exact_pct": round(exact_acc, 2)
-        }
+    params_1 = {
+        "n_estimators": 600,
+        "max_depth": 11,
+        "learning_rate": 0.017903596614795746,
+        "num_leaves": 116,
+        "min_child_samples": 10,
+        "subsample": 0.8674424840356335,
+        "subsample_freq": 6,
+        "colsample_bytree": 0.9662520284301941,
+        "reg_alpha": 1.2088107341929515,
+        "reg_lambda": 0.03823277548596726,
+        "random_state": 42,
+        "n_jobs": 1,
+        "verbose": 1,
+        "device_type": "gpu",
+        "gpu_platform_id": 1,
+        "gpu_device_id": 0
     }
-    optuna_file = os.path.join(os.path.dirname(__file__), "optuna_params.json")
-    with open(optuna_file, "w") as f:
-        json.dump(optuna_data, f, indent=4)
 
-    print(f"[OK] Saved Optuna parameters to {optuna_file}")
+    params_2 = {
+        "n_estimators": 1900,
+        "max_depth": 11,
+        "learning_rate": 0.03337919294971768,
+        "num_leaves": 125,
+        "min_child_samples": 10,
+        "subsample": 0.8309655086376062,
+        "subsample_freq": 1,
+        "colsample_bytree": 0.9370465004286387,
+        "reg_alpha": 2.251953295895595,
+        "reg_lambda": 4.369122460386151,
+        "random_state": 42,
+        "n_jobs": 1,
+        "verbose": 1,
+        "device_type": "gpu",
+        "gpu_platform_id": 1,
+        "gpu_device_id": 0
+    }
+
+    print("[INFO] Training Model 1...")
+    model_1 = LGBMRegressor(**params_1)
+    model_1.fit(X_train[mask_g1_train], y_train[mask_g1_train])
+    
+    print("[INFO] Training Model 2...")
+    model_2 = LGBMRegressor(**params_2)
+    model_2.fit(X_train[~mask_g1_train], y_train[~mask_g1_train])
+    
+    # Save as a dict
+    models = {'model_1': model_1, 'model_2': model_2, 'group1_items': group1_items}
+    joblib.dump(models, 'lightgbm_model.joblib')
+    print("[OK] Split Models Trained and Saved Successfully.")
 
 def build_model(X, y, feature_cols, split_idx, model_end_idx):
-    X_model = X.iloc[:model_end_idx]
-    y_model = y.iloc[:model_end_idx]
-    
-    # Load stored params if available
-    optuna_file = os.path.join(os.path.dirname(__file__), "optuna_params.json")
-    params = {'random_state': 42, 'n_jobs': 1, 'verbose': 1, 'device_type': 'gpu', 'gpu_platform_id': 1, 'gpu_device_id': 0}
-    
-    if os.path.exists(optuna_file):
-        try:
-            with open(optuna_file, "r") as f:
-                data = json.load(f)
-                if "params" in data:
-                    params.update(data["params"])
-                    print(f"[OK] Loaded Optuna parameters from {optuna_file}")
-        except Exception as e:
-            print(f"[WARNING] Failed to load optuna parameters: {e}")
-    else:
-        print(f"[WARNING] No optuna_params.json found. Using default LightGBM parameters.")
-
-    print("[WAIT] Training Final LightGBM Model...")
-    
-    progress_file = os.path.join(os.path.dirname(__file__), "training_progress.json")
-    try:
-        with open(progress_file, "w") as f:
-            json.dump({"progress": 0, "status": "model"}, f)
-    except Exception:
-        pass
-        
-    def lgb_progress_callback(env):
-        progress_file = os.path.join(os.path.dirname(__file__), "training_progress.json")
-        pct = int((env.iteration + 1) / env.end_iteration * 100)
-        if pct % 5 == 0 or pct == 100:
-            try:
-                with open(progress_file, "w") as f:
-                    json.dump({"progress": pct, "status": "model"}, f)
-            except Exception:
-                pass
-
-    final_model = LGBMRegressor(**params)
-    final_model.fit(X_model, y_model, callbacks=[lgb_progress_callback])
-    
-    try:
-        with open(progress_file, "w") as f:
-            json.dump({"progress": 100, "status": "idle"}, f)
-    except Exception:
-        pass
-        
-    print("[OK] Final LightGBM Model Trained Successfully.")
-
-    return final_model
+    train_split_models(X, y, split_idx, model_end_idx)
+    return joblib.load('lightgbm_model.joblib')
 
 def get_forecast(target_date, df, model, feature_cols, lookups):
     month = target_date.month
@@ -371,8 +276,9 @@ def get_forecast(target_date, df, model, feature_cols, lookups):
     items = df['item'].unique()
     time_slots = sorted(df['time_slot'].unique())
 
-    scenarios = []
+    res = {}
     for item in items:
+        item_rows = []
         for t in time_slots:
             meal_type = get_meal_type(t)
             item_avg_qty = lookups['item_avg'].get(item, 1.0)
@@ -423,37 +329,41 @@ def get_forecast(target_date, df, model, feature_cols, lookups):
             row['month_sin'] = np.sin(2 * np.pi * month / 12.0)
             row['month_cos'] = np.cos(2 * np.pi * month / 12.0)
 
-            row['item'] = item
-            row['season'] = season
-            row['weather'] = weather
-            row['meal_type'] = meal_type
+            # Categorical encoding columns
+            for cat in ['item', 'season', 'weather', 'meal_type']:
+                prefix = cat
+                val = item if cat == 'item' else (season if cat == 'season' else (weather if cat == 'weather' else meal_type))
+                row[f'{prefix}_{val}'] = 1
 
-            scenarios.append(row)
+            item_rows.append(row)
 
-    scenarios_df = pd.DataFrame(scenarios)
-    scenarios_df_encoded = pd.get_dummies(scenarios_df, columns=['item', 'season', 'weather', 'meal_type'])
+        X_pred = pd.DataFrame(item_rows)
+        for c in feature_cols:
+            if c not in X_pred.columns:
+                X_pred[c] = 0
+        X_pred = X_pred[feature_cols]
 
-    for col in feature_cols:
-        if col not in scenarios_df_encoded.columns:
-            scenarios_df_encoded[col] = 0
+        if hasattr(model, 'keys') and 'model_1' in model:
+            if item in model['group1_items']:
+                target_model = model['model_1']
+            else:
+                target_model = model['model_2']
+        else:
+            target_model = model
 
-    X_pred = scenarios_df_encoded[feature_cols].astype(float)
-    
-    preds = model.predict(X_pred)
-    scenarios_df['Predicted'] = np.round(preds).clip(min=0).astype(int)
-    
-    # Enforce 0 demand for holidays/weekends (Sunday is 6)
-    scenarios_df.loc[scenarios_df['day_of_week'] == 6, 'Predicted'] = 0
-
-    res = {}
-    for item in items:
-        item_df = scenarios_df[scenarios_df['item'] == item]
+        preds = np.round(target_model.predict(X_pred)).clip(min=0)
+        
         hourly = []
-        slot_groups = item_df.groupby('time_slot')['Predicted'].sum().to_dict()
-        for t in time_slots:
-            hourly.append({'time': int(t), 'predicted': int(slot_groups.get(t, 0))})
+        total = 0
+        for i, t in enumerate(time_slots):
+            val = int(preds[i])
+            if day_of_week == 6:  # Enforce 0 demand for holidays/weekends (Sunday is 6)
+                val = 0
+            hourly.append({'time': int(t), 'predicted': val})
+            total += val
+            
         res[item] = {
-            'total': int(item_df['Predicted'].sum()),
+            'total': total,
             'hourly': hourly
         }
     return res

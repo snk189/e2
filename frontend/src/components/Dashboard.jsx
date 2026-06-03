@@ -5,6 +5,7 @@ import iconImg from '../../assets/icon.png';
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { getDemand, getTodayOrders, updateOrderStatus, getDemandByDate, getIngredientsForecast, subscribeToModelUpdates, retrainModel, getModelStatus, triggerOptunaTuning } from '../services/api';
 import EnvironmentSettings from './EnvironmentSettings';
+import { PRICES, COSTS } from '../data/items';
 
 const IconImgComponent = ({ size, className }) => <img src={iconImg} alt="" className={`object-contain ${className || ''}`} style={{ width: size, height: size }} />;
 
@@ -98,10 +99,16 @@ const Dashboard = ({ onLogout }) => {
   };
 
   const sortOrders = (a, b) => {
-    return (a.effective_time || a.timestamp || 0) - (b.effective_time || b.timestamp || 0);
+    const timeDiff = (a.effective_time || a.timestamp || 0) - (b.effective_time || b.timestamp || 0);
+    if (timeDiff !== 0) return timeDiff;
+    if (a.id && b.id) return a.id.localeCompare(b.id);
+    return (a.item || '').localeCompare(b.item || '');
   };
 
-  const formatTime = (ts) => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const formatTime = (ts) => {
+    const time = Number(ts) < 20000000000 ? Number(ts) * 1000 : Number(ts);
+    return new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
 
   useEffect(() => {
     if (activeTab !== 'orders') return;
@@ -295,14 +302,7 @@ const Header = ({ activeTab, setActiveTab, onLogout }) => (
   </header>
 );
 
-const PRICES = {
-  dosa: 60, idly: 40, pulao: 100, pizza: 150, sandwich: 50, burger: 80,
-  tea: 20, coffee: 25, juice: 45, 'ice cream': 50, samosa: 15, 'pani puri': 30
-};
-const COSTS = {
-  dosa: 30, idly: 15, pulao: 50, pizza: 70, sandwich: 20, burger: 35,
-  tea: 5, coffee: 10, juice: 20, 'ice cream': 25, samosa: 5, 'pani puri': 10
-};
+
 
 const IngredientsView = ({ initialIngredients, onRefresh }) => {
   const [expandedRow, setExpandedRow] = useState(null);

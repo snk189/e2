@@ -10,7 +10,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 
 # Import functions from get_predictions
-from get_predictions import prepare_data, extract_features, build_model, get_forecast, run_optuna_tuning
+from get_predictions import prepare_data, extract_features, build_model, get_forecast
 
 # Global states
 global_model = None
@@ -309,8 +309,8 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
 
                 unique_items = df['item'].unique()
 
-                price_map = {'dosa': 60, 'pizza': 150, 'sandwich': 50, 'tea': 20, 'burger': 80, 'idly': 40, 'pulao': 100, 'coffee': 25, 'juice': 45, 'icecream': 50, 'samosa': 15, 'panipuri': 30}
-                cost_map = {'dosa': 25, 'pizza': 70, 'sandwich': 20, 'tea': 5, 'burger': 40, 'idly': 15, 'pulao': 45, 'coffee': 10, 'juice': 20, 'icecream': 25, 'samosa': 5, 'panipuri': 12}
+                price_map = {'dosa': 60, 'pizza': 150, 'sandwich': 50, 'milkshake': 80, 'tea': 20, 'burger': 80, 'idly': 40, 'pulao': 100, 'coffee': 25, 'juice': 45, 'icecream': 50, 'samosa': 15, 'panipuri': 30}
+                cost_map = {'dosa': 25, 'pizza': 70, 'sandwich': 20, 'milkshake': 40, 'tea': 5, 'burger': 40, 'idly': 15, 'pulao': 50, 'coffee': 10, 'juice': 20, 'icecream': 25, 'samosa': 5, 'panipuri': 10}
 
                 total_revenue = 0
                 total_cost = 0

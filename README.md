@@ -1,127 +1,112 @@
-# BiteSpeed — Canteen Management & ML Demand Forecasting System
+# BiteSpeed — Canteen Management & AI-Driven Demand Forecasting System
 
 ## Overview
+BiteSpeed is a cutting-edge, full-stack canteen management platform designed to revolutionize institutional food service. By seamlessly combining a modern web frontend, a robust transactional backend, and an advanced Machine Learning pipeline, BiteSpeed provides real-time demand forecasting, live order orchestration, comprehensive financial analytics, and an integrated supply chain checklist.
 
-BiteSpeed is a full-stack, AI-driven canteen management platform. It seamlessly integrates a **React + Vite** frontend, a **Node.js + Express + PostgreSQL** backend, and a **GPU-accelerated LightGBM** machine learning pipeline. BiteSpeed provides real-time demand forecasting, live order orchestration, and financial analytics for canteen operations.
+The system is architected around three highly optimized roles:
+- **Normal Users**: A frictionless ordering interface supporting immediate dine-in or discounted pre-booking.
+- **Management Staff**: A tactical dashboard for kitchen operations, real-time demand vs. actuals tracking, and ingredient procurement.
+- **Administrators**: A master control console for system-wide configuration, AI hyperparameter tuning, and advanced business intelligence.
 
-The system supports three heavily-optimized roles — **Normal users** (ordering), **Management staff** (kitchen & demand tracking), and **Admin** (full system control & AI tuning) — each routed to a distinct, real-time dashboard tailored strictly to their workflow.
+## System Architecture
 
----
+BiteSpeed operates on a distributed, microservices-inspired architecture comprising three core engines:
 
-## Project Structure
+### 1. Frontend Web & Mobile Client (React + Vite + Tailwind CSS + Capacitor)
+- **Framework**: React.js bundled via Vite for lightning-fast HMR and optimized production builds.
+- **Styling**: Tailwind CSS for a responsive, utility-first UI design.
+- **Cross-Platform**: Integrated with Capacitor to seamlessly wrap the React web app into a native Android APK.
+- **Real-Time Polling**: Smart polling mechanisms fetch live data every 5 seconds without overloading the backend.
 
-```
+### 2. Backend API & Database (Node.js + Express + PostgreSQL)
+- **API Gateway**: A Node.js and Express.js RESTful API serving as the central hub for authentication, order processing, and state management.
+- **Database**: PostgreSQL (v14+) provides robust ACID compliance for critical transactional data, user roles, and order history.
+- **State Management**: Persists environmental settings (`management_settings.json`) used as heuristics for the ML pipeline.
+
+### 3. Machine Learning Inference & Training Server (Python + LightGBM + Optuna)
+- **Async Python HTTP Server**: Hosts the ML models (`model_server.py`) independent of the transactional backend, ensuring heavy computations don't block the Node.js API.
+- **GPU-Accelerated LightGBM**: Utilizes `device_type: 'gpu'` to build deep trees across a massive dataset with minimal latency.
+- **Live Hyperparameter Tuning**: Features an integrated Optuna worker that runs cross-validated trials natively triggered from the Admin UI.
+
+## Directory Structure
+```text
 /e2
-├── backend/                  # Node.js + Express REST API
-│   ├── server.js             # Main API server (port 5000), PostgreSQL integration
-│   ├── management_settings.json  # Persisted environmental factor settings
-│   └── package.json
-│
-├── frontend/                 # React + Vite web app (also compiled to Android APK)
-│   ├── src/
-│   │   ├── App.jsx           # Root component with role-based routing
-│   │   ├── components/
-│   │   │   ├── Auth.jsx              # Login & registration UI
-│   │   │   ├── BookingInterface.jsx  # Normal user ordering interface
-│   │   │   ├── Dashboard.jsx         # Management staff dashboard
-│   │   │   ├── AdminDashboard.jsx    # Admin console (w/ AI Controls)
-│   │   │   └── EnvironmentSettings.jsx  # Environmental factor controls
-│   │   ├── services/
-│   │   │   └── api.js        # Centralized API client
-│   │   └── data/
-│   │       └── items.js      # Menu item definitions
-│   ├── android/              # Capacitor Android project
-│   └── package.json
-│
-├── ml/                       # Machine Learning Python backend
-│   ├── model_server.py       # Async Python HTTP Server for AI inference & tuning
-│   ├── get_predictions.py    # Feature engineering, LightGBM model, and Optuna tuning
-│   └── optuna_history.json   # Live audit trail of hyperparameter tuning
-│
+├── backend/                  # Node.js + Express API & PostgreSQL Integration
+│   ├── server.js             # Main server logic and routing
+│   ├── management_settings.json # Mock heuristic data configuration
+│   └── package.json          # Node dependencies
+├── frontend/                 # React + Vite web app
+│   ├── android/              # Capacitor Android build configuration
+│   ├── src/                  # React components, services, and assets
+│   ├── tailwind.config.js    # Tailwind UI configuration
+│   └── package.json          # Frontend dependencies
+├── ml/                       # Python Machine Learning Backend
+│   ├── model_server.py       # Asynchronous inference & tuning server
+│   ├── get_predictions.py    # Feature engineering & LightGBM logic
+│   ├── lightgbm_model.joblib # Serialized model artifact
+│   └── optuna_history.json   # Live trail of hyperparameters
 ├── old/                      # Archived experimentation scripts
-├── start.bat                 # One-click launcher for all 3 servers
-├── features.md               # Detailed feature documentation
-└── README.md                 # This file
+├── start.bat                 # One-click unified launcher for all services
+├── features.md               # Deep dive into system features
+└── README.md                 # Project architecture & setup documentation
 ```
-
----
 
 ## Prerequisites
 
 | Dependency | Version | Purpose |
 |---|---|---|
-| **Node.js** | v18+ | Backend server & frontend build |
-| **npm** | v9+ | Package management |
-| **Python** | 3.9+ | ML training & inference |
-| **PostgreSQL** | 14+ | Primary database |
+| **Node.js** | v18+ | Backend API and frontend Vite server |
+| **npm** | v9+ | JavaScript package management |
+| **Python** | 3.9+ | ML training, inference, and data processing |
+| **PostgreSQL** | 14+ | Primary relational database (`bitespeed` DB) |
 
-**Python packages**: `lightgbm`, `optuna`, `psycopg2`, `pandas`, `scikit-learn`, `numpy`
-
----
+**Python Dependencies**: `lightgbm`, `optuna`, `psycopg2`, `pandas`, `scikit-learn`, `numpy`, `joblib`.
 
 ## Setup & Running
 
 ### Quick Start (Recommended)
+Launch the entire stack (Node Backend, React Frontend, Python ML Server) synchronously via the master script:
 ```bash
-# From the project root — launches Node Backend, React Frontend, and Python ML Server simultaneously!
 start.bat
 ```
 
 ### Manual Setup
-
-#### 1. Node Backend
+**1. Node.js Backend:**
 ```bash
 cd backend
 npm install
 node server.js
-# Server starts on http://localhost:5000
 ```
-Database: connects to PostgreSQL `bitespeed` (default: user `postgres`, password `admin`).
+*Note: Ensure PostgreSQL is running with a database named `bitespeed`.*
 
-#### 2. React Frontend
+**2. React Frontend:**
 ```bash
 cd frontend
 npm install
 npm run dev
-# App starts on http://localhost:5173
 ```
 
-#### 3. Python AI Server
+**3. Python AI Server:**
 ```bash
 cd ml
+pip install -r requirements.txt # (Ensure dependencies are met)
 python model_server.py
-# Server starts on http://localhost:5001
 ```
 
----
+## Machine Learning Capabilities
 
-## Machine Learning Architecture
-
-### 🚀 LightGBM GPU Engine
-The backbone of BiteSpeed is a highly optimized **LightGBM Regressor**. The model is configured to utilize CUDA/OpenCL natively (`device_type: 'gpu'`), allowing it to build deep, 150-leaf trees exponentially faster than standard CPU bounds.
+### 🚀 Dual LightGBM GPU Engines
+BiteSpeed utilizes a **split-model architecture**, running two independent, highly optimized LightGBM Regressors tailored to the specific variance patterns of different item categories. Both leverage GPU acceleration to exponentially speed up deep tree building (up to 150 leaves).
+- **Model 1 (Solid Foods / Snacks)**: Specifically trained to forecast demand for heavy items and snacks (`idly`, `dosa`, `pulao`, `sandwich`, `burger`, `pizza`, `samosa`, `panipuri`).
+- **Model 2 (Beverages & Desserts)**: Specifically trained to forecast demand for drinks and sweets (`milkshake`, `tea`, `coffee`, `juice`, `icecream`).
 
 ### 🧠 Automated Optuna Tuning
-Instead of static weights, BiteSpeed features an aggressive **Optuna hyperparameter tuning** protocol. 
-Admins can hit "Retrain Model" or "Run Optuna Tuning" straight from the frontend UI. The Python server spins up a background worker to run 40 cross-validated trials across a massive search space (`num_leaves`, `colsample_bytree`, L1/L2 regularization, etc.). 
-- The React UI subscribes to the background Python process to show a **live 0-100% progress bar**.
-- Every iteration is cleanly dumped into `ml/optuna_history.json`.
+Instead of static weights, BiteSpeed employs an aggressive Optuna hyperparameter optimization protocol. Administrators can trigger "Retrain Model" or "Run Optuna Tuning" from the frontend UI. A background Python worker executes Time-Series Cross Validation trials, optimizing parameters like `num_leaves`, `colsample_bytree`, and regularization techniques. Progress is streamed directly to the UI.
 
-### ⚡ Feature Engineering
-BiteSpeed natively tracks and calculates highly complex indicators before feeding them to the model:
-- **Lags & Trends**: Tracks absolute `lag_1` (previous day identical slot) and `lag_7` (previous week identical slot), rolling momentum, and high-variance spikes.
-- **Mock Heuristics**: Calculates proximity indicators like `is_event_festival`, `exam_intensity`, and `attendance_estimate` mathematically to automatically module demand during atypical seasons.
+### ⚡ Advanced Feature Engineering
+The model is fed deeply engineered features to accurately anticipate demand:
+- **Temporal & Cyclic**: Sine/cosine encoding of hours, days, and months.
+- **Lags & Trends**: Tracks absolute identical previous slot data (`lag_1`, `lag_7`), momentum averages, and rolling variance.
+- **Mock Heuristics**: Dynamically ingests `is_event_festival`, `exam_intensity`, and `attendance_estimate` to modulate baseline predictions during atypical periods.
 
----
-
-## Developer Experience
-
-- **Quick start**: `start.bat` is all you need.
-- **Hot reload**: Vite-powered frontend with instant HMR during development.
-- **Auto-refresh**: Dashboards poll the Node backend every 5 seconds for live data.
-- **Android Ready**: Full Capacitor integration enables compiling the React web app directly into a native Android APK.
-
-For a full deep-dive into User Roles and UI capabilities, see [features.md](./features.md).
-
----
-
-*BiteSpeed — smart canteen management*
+For an exhaustive breakdown of user roles, dashboards, and features, refer to [features.md](./features.md).

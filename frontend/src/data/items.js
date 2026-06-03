@@ -12,3 +12,11 @@ export const MENU_ITEMS = [
   { id: 'samosa', name: 'Samosa', description: 'Spicy potato stuffed pastry', price: 'Rs. 15', img: '/images/samosa.jpg', category: 'Snacks' },
   { id: 'panipuri', name: 'Pani Puri', description: 'Spicy tangy street snack', price: 'Rs. 30', img: '/images/panipuri.jpg', category: 'Snacks' },
 ];
+
+export const PRICES = {
+  dosa: 60, pizza: 150, sandwich: 50, milkshake: 80, tea: 20, samosa: 15, panipuri: 30, burger: 80, idly: 40, pulao: 100, coffee: 25, juice: 45, icecream: 50
+};
+
+export const COSTS = {
+  dosa: 25, pizza: 70, sandwich: 20, milkshake: 40, tea: 5, samosa: 5, panipuri: 10, burger: 40, idly: 15, pulao: 50, coffee: 10, juice: 20, icecream: 25
+};

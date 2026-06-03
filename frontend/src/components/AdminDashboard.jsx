@@ -39,7 +39,7 @@ import {
   getModelStats,
   triggerOptunaTuning
 } from '../services/api';
-import { MENU_ITEMS } from '../data/items';
+import { MENU_ITEMS, PRICES, COSTS } from '../data/items';
 
 const CHART_COLORS = [
   '#f43f5e', // rose
@@ -526,13 +526,11 @@ const DemandList = ({ title, items, today = false }) => {
 
 const DataMaintenance = ({ orders, date, setDate, username, setUsername, showAllDays, setShowAllDays, onRefresh, doAction }) => {
   const totals = useMemo(() => {
-    const costMap = { dosa: 25, pizza: 70, sandwich: 20, milkshake: 40, tea: 5, samosa: 5, panipuri: 10, burger: 40, idly: 15, pulao: 50, coffee: 10, juice: 20, icecream: 25 };
     return orders.reduce((acc, order) => {
       const itemId = String(order.item || '').toLowerCase();
       const qty = Number(order.quantity || 0);
-      const menuItem = MENU_ITEMS.find((item) => item.id === itemId);
-      const price = menuItem ? priceValue(menuItem.price) : 0;
-      const cost = costMap[itemId] || price * 0.4;
+      const price = PRICES[itemId] || 0;
+      const cost = COSTS[itemId] || price * 0.4;
       return {
         count: acc.count + qty,
         revenue: acc.revenue + price * qty,
@@ -596,7 +594,12 @@ const DataMaintenance = ({ orders, date, setDate, username, setUsername, showAll
               </tr>
             </thead>
             <tbody>
-              {[...orders].sort((a, b) => (b.effective_time || b.timestamp || 0) - (a.effective_time || a.timestamp || 0)).map((order, index) => (
+              {[...orders].sort((a, b) => {
+                const timeDiff = (b.effective_time || b.timestamp || 0) - (a.effective_time || a.timestamp || 0);
+                if (timeDiff !== 0) return timeDiff;
+                if (a.id && b.id) return a.id.localeCompare(b.id);
+                return (a.item || '').localeCompare(b.item || '');
+              }).map((order, index) => (
                 <tr key={order.id || `${order.item}-${order.timestamp}-${index}`} className={order.is_delivered ? 'opacity-55' : ''}>
                   <td>{order.dateStr || '-'}</td>
                   <td>{formatTime(order.effective_time || order.timestamp)}</td>
@@ -833,7 +836,11 @@ const EmptyState = ({ label }) => (
 
 const priceValue = (price) => parseInt(String(price).replace(/\D/g, ''), 10) || 0;
 const money = (value) => `Rs. ${value}`;
-const formatTime = (timestamp) => (timestamp ? new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--');
+const formatTime = (timestamp) => {
+  if (!timestamp) return '--:--';
+  const time = Number(timestamp) < 20000000000 ? Number(timestamp) * 1000 : Number(timestamp);
+  return new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
 const buildChartData = (items) => {
   const hourMap = {};
   items.forEach((item) => {

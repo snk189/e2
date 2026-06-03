@@ -6972,3 +6972,2398 @@
 [02-06-2026 00:24:51 IST] [INFO] USER: A | GET /api/model_status
 [02-06-2026 00:24:51 IST] [INFO] USER: A | GET /api/model_stats
 [02-06-2026 00:24:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 01:01:08 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 01:01:08 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 01:01:08 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 01:02:08 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 01:02:08 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 01:02:08 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 01:03:08 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 01:03:08 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 01:03:08 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 01:03:41 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 01:03:41 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 01:03:41 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 01:03:41 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 01:03:41 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 01:03:41 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 01:03:43 IST] [INFO] USER: A | Queried demand prediction for date: 2026-06-04
+[03-06-2026 01:03:46 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 01:03:46 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 01:03:46 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 01:03:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 01:03:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 01:03:52 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 01:03:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 01:03:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 01:03:57 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 01:04:01 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 01:04:01 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 01:04:01 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 01:04:06 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 01:04:06 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 01:04:06 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 01:04:11 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 01:04:11 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 01:04:11 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 01:04:16 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 01:04:16 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 01:04:16 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 07:15:09 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:15:12 IST] [INFO] USER: A | Logged in
+[03-06-2026 07:15:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:15:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:15:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:15:12 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 07:15:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:15:12 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 07:15:14 IST] [ERROR] USER: A | POST /api/admin/trigger_optuna | HTTP 500 — Failed to trigger optuna tuning
+[03-06-2026 07:15:18 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:15:18 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:15:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:15:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:15:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:15:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:15:33 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:15:33 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:15:38 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:15:38 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:15:43 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:15:43 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:15:48 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:15:48 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:15:53 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:15:54 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:15:58 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:15:58 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:16:10 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:16:10 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:16:14 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:16:15 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:16:19 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:16:19 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:16:23 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:16:23 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:16:28 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:16:28 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:16:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:16:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:16:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:16:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:16:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:16:43 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:16:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:16:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:16:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:16:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:16:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:16:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:17:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:17:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:17:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:17:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:17:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:17:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:17:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:17:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:17:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:17:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:17:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:17:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:17:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:17:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:17:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:17:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:17:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:17:43 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:17:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:17:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:17:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:17:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:17:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:17:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:18:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:18:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:18:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:18:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:18:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:18:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:18:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:18:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:18:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:18:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:18:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:18:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:18:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:18:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:18:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:18:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:18:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:18:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:18:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:18:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:18:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:18:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:18:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:18:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:19:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:19:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:19:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:19:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:19:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:19:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:19:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:19:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:19:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:19:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:19:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:19:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:19:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:19:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:19:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:19:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:19:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:19:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:19:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:19:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:19:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:19:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:19:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:19:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:20:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:20:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:20:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:20:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:20:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:20:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:20:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:20:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:20:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:20:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:20:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:20:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:20:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:20:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:20:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:20:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:20:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:20:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:20:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:20:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:20:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:20:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:20:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:20:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:21:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:21:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:21:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:21:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:21:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:21:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:21:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:21:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:21:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:21:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:21:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:21:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:21:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:21:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:21:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:21:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:21:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:21:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:21:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:21:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:21:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:21:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:21:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:21:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:22:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:22:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:22:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:22:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:22:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:22:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:22:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:22:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:22:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:22:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:22:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:22:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:22:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:22:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:22:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:22:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:22:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:22:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:22:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:22:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:22:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:22:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:22:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:22:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:23:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:23:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:23:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:23:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:23:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:23:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:23:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:23:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:23:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:23:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:23:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:23:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:23:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:23:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:23:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:23:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:23:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:23:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:23:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:23:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:23:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:23:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:23:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:23:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:24:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:24:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:24:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:24:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:24:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:24:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:24:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:24:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:24:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:24:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:24:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:24:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:24:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:24:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:24:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:24:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:24:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:24:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:24:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:24:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:24:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:24:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:24:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:24:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:25:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:25:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:25:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:25:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:25:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:25:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:25:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:25:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:25:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:25:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:25:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:25:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:25:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:25:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:25:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:25:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:25:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:25:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:25:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:25:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:25:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:25:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:25:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:25:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:26:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:26:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:26:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:26:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:26:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:26:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:26:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:26:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:26:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:26:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:26:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:26:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:26:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:26:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:26:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:26:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:26:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:26:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:26:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:26:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:26:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:26:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:26:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:26:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:27:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:27:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:27:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:27:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:27:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:27:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:27:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:27:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:27:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:27:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:27:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:27:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:27:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:27:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:27:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:27:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:27:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:27:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:27:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:27:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:27:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:27:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:27:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:27:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:28:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:28:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:28:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:28:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:28:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:28:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:28:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:28:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:28:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:28:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:28:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:28:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:28:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:28:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:28:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:28:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:28:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:28:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:28:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:28:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:28:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:28:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:28:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:28:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:29:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:29:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:29:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:29:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:29:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:29:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:29:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:29:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:29:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:29:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:29:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:29:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:29:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:29:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:29:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:29:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:29:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:29:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:29:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:29:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:29:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:29:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:29:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:29:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:30:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:30:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:30:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:30:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:30:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:30:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:30:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:30:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:30:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:30:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:30:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:30:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:30:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:30:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:30:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:30:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:30:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:30:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:30:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:30:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:30:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:30:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:30:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:30:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:31:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:31:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:31:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:31:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:31:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:31:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:31:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:31:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:31:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:31:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:31:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:31:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:31:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:31:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:31:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:31:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:31:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:31:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:31:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:31:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:31:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:31:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:31:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:31:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:32:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:32:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:32:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:32:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:32:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:32:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:32:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:32:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:32:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:32:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:32:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:32:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:32:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:32:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:32:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:32:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:32:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:32:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:32:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:32:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:32:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:32:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:32:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:32:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:33:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:33:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:33:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:33:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:33:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:33:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:33:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:33:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:33:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:33:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:33:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:33:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:33:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:33:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:33:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:33:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:33:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:33:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:33:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:33:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:33:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:33:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:33:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:33:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:34:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:34:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:34:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:34:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:34:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:34:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:34:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:34:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:34:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:34:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:34:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:34:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:34:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:34:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:34:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:34:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:34:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:34:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:34:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:34:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:34:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:34:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:34:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:34:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:35:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:35:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:35:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:35:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:35:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:35:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:35:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:35:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:35:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:35:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:35:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:35:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:35:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:35:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:35:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:35:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:35:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:35:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:35:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:35:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:35:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:35:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:35:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:35:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:36:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:36:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:36:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:36:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:36:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:36:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:36:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:36:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:36:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:36:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:36:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:36:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:36:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:36:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:36:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:36:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:36:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:36:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:36:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:36:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:36:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:36:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:36:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:36:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:37:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:37:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:37:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:37:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:37:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:37:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:37:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:37:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:37:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:37:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:37:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:37:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:37:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:37:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:37:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:37:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:37:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:37:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:37:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:37:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:37:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:37:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:37:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:37:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:38:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:38:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:38:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:38:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:38:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:38:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:38:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:38:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:38:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:38:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:38:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:38:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:38:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:38:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:38:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:38:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:38:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:38:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:38:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:38:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:38:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:38:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:38:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:38:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:39:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:39:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:39:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:39:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:39:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:39:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:39:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:39:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:39:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:39:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:39:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:39:28 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:39:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:39:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:39:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:39:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:39:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:39:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:39:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:39:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:39:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:39:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:39:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:39:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:40:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:40:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:40:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:40:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:40:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:40:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:40:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:40:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:40:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:40:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:40:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:40:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:40:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:40:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:40:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:40:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:40:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:40:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:40:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:40:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:40:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:40:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:40:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:40:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:41:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:41:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:41:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:41:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:41:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:41:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:41:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:41:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:41:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:41:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:41:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:41:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:41:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:41:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:41:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:41:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:41:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:41:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:41:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:41:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:41:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:41:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:41:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:41:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:42:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:42:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:42:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:42:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:42:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:42:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:42:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:42:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:42:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:42:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:42:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:42:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:42:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:42:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:42:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:42:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:42:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:42:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:42:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:42:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:42:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:42:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:42:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:42:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:43:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:43:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:43:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:43:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:43:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:43:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:43:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:43:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:43:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:43:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:43:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:43:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:43:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:43:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:43:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:43:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:43:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:43:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:43:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:43:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:43:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:43:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:43:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:43:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:44:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:44:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:44:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:44:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:44:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:44:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:44:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:44:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:44:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:44:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:44:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:44:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:44:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:44:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:44:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:44:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:44:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:44:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:44:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:44:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:44:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:44:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:44:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:44:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:45:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:45:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:45:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:45:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:45:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:45:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:45:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:45:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:45:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:45:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:45:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:45:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:45:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:45:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:45:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:45:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:45:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:45:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:45:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:45:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:45:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:45:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:45:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:45:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:46:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:46:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:46:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:46:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:46:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:46:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:46:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:46:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:46:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:46:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:46:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:46:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:46:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:46:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:46:38 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:46:38 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:46:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:46:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:46:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:46:48 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:46:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:46:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:46:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:46:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:47:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:47:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:47:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:47:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:47:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:47:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:47:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:47:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:47:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:47:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:47:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:47:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:47:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:47:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:47:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:47:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:47:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:47:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:47:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:47:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:47:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:47:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:47:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:47:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:48:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:48:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:48:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:48:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:48:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:48:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:48:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:48:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:48:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:48:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:48:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:48:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:48:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:48:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:48:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:48:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:48:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:48:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:48:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:48:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:48:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:48:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:48:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:48:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:49:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:49:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:49:08 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:49:08 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:49:14 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:49:14 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:49:18 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:49:18 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:49:26 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:49:26 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:49:28 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:49:28 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:49:33 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:49:33 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:49:38 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:49:38 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:49:43 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:49:43 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:49:49 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:49:49 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:49:53 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:49:53 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:50:06 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:52:05 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:52:06 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:52:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:52:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:52:21 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:52:21 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:54:05 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:54:05 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:54:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:54:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:54:15 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:54:16 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:57:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:57:29 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:57:30 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:57:45 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:57:45 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:57:48 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:57:49 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:57:53 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:57:53 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:57:59 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:57:59 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:58:06 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:58:06 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:58:14 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:58:14 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:58:19 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:58:19 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:58:24 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:58:24 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:58:39 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:58:39 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:58:40 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:58:40 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:58:45 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:58:45 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:58:50 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 07:58:50 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:59:25 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 07:59:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:00:26 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:00:26 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:01:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:01:31 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:02:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:02:26 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:03:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:03:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:04:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:04:25 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:04:54 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:04:54 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:04:58 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:04:58 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:05:03 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:05:03 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:05:08 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:05:08 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:05:13 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:05:13 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:05:18 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:05:18 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:05:23 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:05:23 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:05:29 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:05:29 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:05:33 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:05:33 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:05:38 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:05:43 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:05:45 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:05:45 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:05:48 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:05:48 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:05:55 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:05:55 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:06:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:06:25 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:07:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:07:25 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:07:25 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:08:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:08:25 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:08:25 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:09:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:09:25 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:09:25 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:10:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:10:03 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:10:03 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:10:05 IST] [INFO] USER: A | POST /api/retrain_model
+[03-06-2026 08:10:08 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:10:08 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:10:13 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:10:13 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:10:30 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:10:31 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:10:34 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:10:34 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:10:40 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:10:40 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:10:43 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:10:43 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:10:48 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:10:48 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:10:53 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:10:53 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:10:58 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:10:59 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:11:03 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:11:03 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:11:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:11:25 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:11:25 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:12:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:12:25 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:12:25 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:13:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:13:25 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:13:25 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:14:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:14:25 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:14:25 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:15:26 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:15:26 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:15:26 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:16:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:16:25 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:16:26 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:16:58 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:16:58 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:16:58 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:17:00 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:17:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:17:02 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:17:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:17:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:17:07 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:17:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:17:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:17:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:17:12 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:17:14 IST] [INFO] USER: A | Queried demand prediction for date: 2026-06-04
+[03-06-2026 08:17:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:17:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:17:17 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:17:23 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:17:23 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:17:23 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:17:28 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:17:28 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:17:28 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:17:33 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:17:33 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:17:33 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:17:38 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:17:38 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:17:38 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:17:43 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:17:43 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:17:43 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:17:47 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:17:47 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:17:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:17:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:17:52 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:17:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:17:53 IST] [INFO] USER: A | Queried demand prediction for date: 2026-06-15
+[03-06-2026 08:17:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:17:57 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:17:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:18:03 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:18:03 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:18:04 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:18:08 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:18:08 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:18:08 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:18:13 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:18:13 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:18:13 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:18:18 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:18:18 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:18:18 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:18:23 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:18:23 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:18:23 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:18:28 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:18:28 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:18:28 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:18:33 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:18:33 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:18:33 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:18:38 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:18:38 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:18:38 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:18:43 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:18:43 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:18:43 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:18:48 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:18:48 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:18:48 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:18:53 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:18:53 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:18:54 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:18:57 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:18:57 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:18:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:19:00 IST] [INFO] USER: A | Queried demand prediction for date: 2026-06-04
+[03-06-2026 08:19:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:19:02 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:19:02 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:19:08 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:19:08 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:19:08 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:19:13 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:19:13 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:19:13 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:19:18 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:19:18 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:19:18 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:19:23 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:19:23 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:19:23 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:19:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:19:27 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:19:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:19:33 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:19:33 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:19:33 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:19:38 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:19:38 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:19:38 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:19:43 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:19:43 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:19:43 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:19:48 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:19:48 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:19:48 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:19:53 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:19:53 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:19:53 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:19:58 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:19:58 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:19:58 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:20:03 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:20:03 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:20:03 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:20:08 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:20:08 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:20:08 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:20:13 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:20:13 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:20:13 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:20:18 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:20:18 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:20:18 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:20:23 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:20:23 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:20:23 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:20:38 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:20:38 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:20:38 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:20:39 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:20:40 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:20:41 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:20:42 IST] [INFO] USER: A | Queried demand prediction for date: 2026-06-04
+[03-06-2026 08:20:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:20:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:20:42 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:20:48 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:20:48 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:20:48 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:20:53 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:20:53 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:20:53 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:20:58 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:20:58 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:20:58 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:21:03 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:21:03 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:03 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:21:08 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:21:08 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:08 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:21:10 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:10 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:10 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:11 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:11 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:11 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:11 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:11 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:21:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:12 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:21:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:12 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:13 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:13 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:13 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:13 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:18 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:21:18 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:18 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:21:23 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:21:23 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:23 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:21:28 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:21:28 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:28 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:21:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:21:32 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:21:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:21:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:37 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:21:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:38 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:38 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:39 IST] [INFO] USER: A | Logged out
+[03-06-2026 08:21:39 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:46 IST] [INFO] USER: A | Logged in
+[03-06-2026 08:21:46 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:21:46 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:21:46 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:21:46 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:46 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:21:46 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:51 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:21:51 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:21:51 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:21:56 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:21:56 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:21:56 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:22:01 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:22:01 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:22:01 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:22:06 IST] [INFO] USER: A | Queried demand prediction for date: 2026-06-04
+[03-06-2026 08:22:06 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:22:06 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:22:06 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:22:11 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:22:11 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:22:11 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:22:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:22:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:22:17 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:22:22 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:22:22 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:22:22 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:22:27 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:22:27 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:22:27 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:22:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:22:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:22:32 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:22:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:22:37 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:22:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:22:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:22:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:22:43 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 08:22:46 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 08:22:46 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 08:22:46 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:09:11 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:09:18 IST] [INFO] USER: A | Logged in
+[03-06-2026 12:09:19 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:09:19 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:09:19 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:09:19 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:09:19 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:09:19 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:09:23 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:09:23 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:09:23 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:09:29 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:09:29 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:09:29 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:09:34 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:09:34 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:09:34 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:09:39 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:09:39 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:09:39 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:09:44 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:09:44 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:09:44 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:09:49 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:09:49 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:09:49 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:09:54 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:09:54 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:09:54 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:09:59 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:09:59 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:09:59 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:10:04 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:10:04 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:10:04 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:10:09 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:10:09 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:10:09 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:10:14 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:10:14 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:10:14 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:10:19 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:10:19 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:10:19 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:10:24 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:10:24 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:10:24 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:10:29 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:10:29 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:10:29 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:10:34 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:10:34 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:10:34 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:10:39 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:10:39 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:10:39 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:10:44 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:10:44 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:10:44 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:10:49 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:10:49 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:10:49 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:10:54 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:10:54 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:10:54 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:10:59 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:10:59 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:10:59 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:11:04 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:11:04 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:11:04 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:11:08 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:11:09 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:11:09 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:11:09 IST] [INFO] USER: A | POST /api/retrain_model
+[03-06-2026 12:11:13 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:11:14 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:11:18 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:11:19 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:11:23 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:11:24 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:11:28 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:11:29 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:11:33 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:11:34 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:11:38 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:11:39 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:11:43 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:11:44 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:11:48 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:11:49 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:11:53 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:11:53 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:11:59 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:11:59 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:12:04 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:12:04 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:12:08 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:12:09 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:12:13 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:12:13 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:12:19 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:12:19 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:12:24 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:12:24 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:12:35 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:12:35 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:12:39 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:12:40 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:12:45 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:12:45 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:12:48 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:12:49 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:12:53 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:12:54 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:13:06 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:13:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:13:08 IST] [INFO] USER: A | Queried demand prediction for date: 2026-06-04
+[03-06-2026 12:13:08 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:13:08 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:13:08 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:13:08 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:13:09 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:13:09 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:13:09 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:13:14 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:13:14 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:13:14 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:13:18 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:13:19 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:13:19 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:13:24 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:13:24 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:13:25 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:13:29 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:13:29 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:13:29 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:13:34 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:13:34 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:13:35 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:13:39 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:13:39 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:13:39 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:13:44 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:13:44 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:13:45 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:13:49 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:13:49 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:13:49 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:13:54 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:13:54 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:13:54 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:13:59 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:13:59 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:14:00 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:14:04 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:14:04 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:14:05 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:14:09 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:14:09 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:14:09 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:14:14 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:14:14 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:14:15 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:14:18 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:14:19 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:14:19 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:14:24 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:14:24 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:14:24 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:14:29 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:14:29 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:14:29 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:14:34 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:14:34 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:14:34 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:14:39 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:14:39 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:14:40 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:14:44 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:14:44 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:14:44 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:14:49 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:14:49 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:14:49 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:14:54 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:14:54 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:14:54 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:14:59 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:14:59 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:14:59 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:15:04 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:15:04 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:15:04 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:15:09 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:15:09 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:15:10 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:15:14 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:15:14 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:15:14 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:15:19 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:15:19 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:15:19 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:15:24 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:15:24 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:15:24 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:15:28 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:15:29 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:15:29 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:15:34 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:15:34 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:15:34 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:15:39 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:15:39 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:15:40 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:15:44 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:15:44 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:15:44 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:15:49 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:15:49 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:15:49 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:15:54 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:15:54 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:15:54 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:15:58 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:15:59 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:15:59 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:16:04 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:16:04 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:16:04 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:16:09 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:16:09 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:16:09 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:16:14 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:16:14 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:16:15 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:16:19 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:16:19 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:16:19 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:16:24 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:16:25 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:16:25 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:16:29 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:16:29 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:16:29 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:16:34 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:16:34 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:16:34 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:16:39 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:16:39 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:16:39 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:16:44 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:16:44 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:16:44 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:16:49 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:16:49 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:16:49 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:16:54 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:16:54 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:16:55 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:17:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:17:25 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:17:25 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:18:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:18:26 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:18:26 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:27:24 IST] [ERROR] USER: A | Viewed Today/Tomorrow demand forecast | HTTP 500 — Failed to get demand data
+[03-06-2026 12:27:24 IST] [ERROR] USER: A | GET /api/model_status | HTTP 500 — Failed to get model status
+[03-06-2026 12:27:28 IST] [INFO] USER: A | Logged out
+[03-06-2026 12:27:29 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:27:41 IST] [INFO] USER: A | Logged in
+[03-06-2026 12:27:41 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:27:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:27:42 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:27:42 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:27:42 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:27:43 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:27:46 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:27:46 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:27:47 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:27:52 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:27:52 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:27:52 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:27:56 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:27:56 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:27:56 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:28:03 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:28:03 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:28:03 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:28:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:28:08 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:28:08 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:28:13 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:28:13 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:28:13 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:28:17 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:28:17 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:28:17 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:28:24 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:28:24 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:28:24 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:31:17 IST] [ERROR] USER: A | GET /api/model_status | HTTP 500 — Failed to get model status
+[03-06-2026 12:31:17 IST] [ERROR] USER: A | Viewed Today/Tomorrow demand forecast | HTTP 500 — Failed to get demand data
+[03-06-2026 12:31:18 IST] [INFO] USER: A | Logged out
+[03-06-2026 12:31:19 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:31:22 IST] [INFO] USER: A | Logged in
+[03-06-2026 12:31:23 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:31:23 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:31:23 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:31:23 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:31:23 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:31:24 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:31:29 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:31:29 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:31:29 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:31:33 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:31:33 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:31:33 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:31:38 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:31:38 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:31:39 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:31:43 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:31:43 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:31:43 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:31:48 IST] [INFO] USER: A | Queried demand prediction for date: 2026-06-15
+[03-06-2026 12:31:48 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:31:49 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:31:49 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:31:53 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:31:53 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:31:53 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:31:59 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:31:59 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:31:59 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:32:03 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:32:03 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:32:03 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:32:08 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:32:09 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:32:09 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:32:13 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:32:13 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:32:13 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:32:18 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:32:18 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:32:18 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:32:19 IST] [INFO] USER: A | Queried demand prediction for date: 2026-06-04
+[03-06-2026 12:32:23 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:32:23 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:32:23 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:32:29 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:32:29 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:32:29 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:32:33 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:32:33 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 12:32:34 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:32:38 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 12:32:39 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 12:32:39 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:36:26 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:36:26 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:36:26 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:36:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:36:43 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:36:43 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:36:43 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:36:43 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:36:44 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:36:48 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:36:48 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:36:48 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:36:50 IST] [INFO] USER: A | Queried demand prediction for date: 2026-06-05
+[03-06-2026 14:36:53 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:36:53 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:36:53 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:36:58 IST] [INFO] USER: A | Viewed menu intelligence report
+[03-06-2026 14:36:58 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:36:58 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:36:58 IST] [INFO] USER: A | Viewed menu intelligence report
+[03-06-2026 14:36:59 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:37:00 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 14:37:02 IST] [INFO] USER: A | Viewed pending registration requests
+[03-06-2026 14:37:05 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:37:07 IST] [INFO] USER: A | Viewed blocked users list
+[03-06-2026 14:37:07 IST] [INFO] USER: A | Viewed rejected users list
+[03-06-2026 14:37:08 IST] [INFO] USER: A | Viewed canteen settings
+[03-06-2026 14:37:08 IST] [INFO] USER: A | Viewed canteen settings
+[03-06-2026 14:37:10 IST] [INFO] USER: A | Logged out
+[03-06-2026 14:37:12 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:37:16 IST] [INFO] USER: Bb | Logged in
+[03-06-2026 14:37:23 IST] [INFO] USER: Bb | Placed order: [dosax1]
+[03-06-2026 14:37:25 IST] [INFO] USER: Bb | Logged out
+[03-06-2026 14:37:26 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:37:31 IST] [INFO] USER: A | Logged in
+[03-06-2026 14:37:31 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:37:32 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:37:32 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:37:32 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:37:32 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:37:33 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:37:36 IST] [INFO] USER: A | Logged out
+[03-06-2026 14:37:37 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:37:41 IST] [INFO] USER: Aa | Logged in
+[03-06-2026 14:37:41 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 14:37:41 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 14:38:17 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 14:38:17 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:38:17 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:38:17 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:38:19 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[03-06-2026 14:38:20 IST] [INFO] USER: Aa | Viewed canteen settings
+[03-06-2026 14:38:21 IST] [INFO] USER: Aa | Viewed canteen settings
+[03-06-2026 14:38:22 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 14:38:22 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:38:22 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:38:22 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:38:26 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:38:31 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:38:36 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:38:41 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:38:47 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:38:51 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:38:57 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:39:01 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:39:04 IST] [INFO] USER: Aa | Logged out
+[03-06-2026 14:39:05 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:39:09 IST] [INFO] USER: A | Logged in
+[03-06-2026 14:39:09 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:39:10 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:39:10 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:39:10 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:39:10 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:39:11 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:39:14 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:39:15 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:39:15 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:39:19 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:39:20 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:39:20 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:39:24 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:39:25 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:39:25 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:39:30 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:39:30 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:39:30 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:39:33 IST] [INFO] USER: A | Logged out
+[03-06-2026 14:39:34 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:42:35 IST] [INFO] USER: Bb | Logged in
+[03-06-2026 14:43:25 IST] [INFO] USER: Bb | Placed order: [dosax1, panipurix4]
+[03-06-2026 14:43:27 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:43:32 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:43:34 IST] [INFO] USER: Bb | Logged out
+[03-06-2026 14:43:35 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:43:36 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:43:39 IST] [INFO] USER: Bb | Logged in
+[03-06-2026 14:43:39 IST] [INFO] USER: Aa | Logged in
+[03-06-2026 14:43:40 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 14:43:40 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 14:43:41 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:43:47 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:43:51 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:43:56 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:44:02 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:44:06 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:44:11 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:44:12 IST] [INFO] USER: Aa | Updated order status for order ID: 1780478005|Bb|panipuri → preparing
+[03-06-2026 14:44:12 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 14:44:16 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:44:21 IST] [INFO] USER: Aa | Updated order status for order ID: 1780478005|Bb|dosa → preparing
+[03-06-2026 14:44:21 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 14:44:21 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:44:27 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:44:28 IST] [INFO] USER: Aa | Updated order status for order ID: 1780478005|Bb|panipuri → ready
+[03-06-2026 14:44:28 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 14:44:31 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:44:34 IST] [INFO] USER: Aa | Updated order status for order ID: 1780478005|Bb|panipuri → preparing
+[03-06-2026 14:44:34 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 14:44:35 IST] [INFO] USER: Aa | Updated order status for order ID: 1780478005|Bb|dosa → ready
+[03-06-2026 14:44:36 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 14:44:37 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:44:41 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:44:44 IST] [INFO] USER: Aa | Updated order status for order ID: 1780478005|Bb|panipuri → ready
+[03-06-2026 14:44:44 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 14:44:47 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:44:48 IST] [INFO] USER: Aa | Updated order status for order ID: 1780478005|Bb|dosa → delivered
+[03-06-2026 14:44:48 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 14:44:52 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:44:54 IST] [INFO] USER: Aa | Updated order status for order ID: 1780478005|Bb|panipuri → preparing
+[03-06-2026 14:44:54 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 14:44:57 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:45:02 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:45:04 IST] [INFO] USER: Aa | Updated order status for order ID: 1780478005|Bb|dosa → ready
+[03-06-2026 14:45:04 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 14:45:06 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:45:11 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:45:12 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 14:45:12 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:45:13 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:45:13 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:45:16 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:45:17 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:45:22 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:45:22 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:45:27 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:45:27 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:45:31 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:45:32 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:45:37 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:45:37 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:45:40 IST] [INFO] USER: Aa | Queried demand prediction for date: 2026-06-04
+[03-06-2026 14:45:41 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:45:42 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 14:45:46 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:45:47 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[03-06-2026 14:45:52 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:45:56 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:46:02 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:46:05 IST] [INFO] USER: Aa | Queried ingredient requirements for date: 2026-06-04
+[03-06-2026 14:46:06 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:46:08 IST] [INFO] USER: Aa | Viewed canteen settings
+[03-06-2026 14:46:09 IST] [INFO] USER: Aa | Viewed canteen settings
+[03-06-2026 14:46:12 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:46:13 IST] [INFO] USER: Aa | Logged out
+[03-06-2026 14:46:14 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:46:16 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:46:18 IST] [INFO] USER: A | Logged in
+[03-06-2026 14:46:18 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:46:18 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:46:18 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:46:18 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:46:19 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:46:19 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:46:21 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:46:23 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:46:23 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:46:23 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:46:26 IST] [INFO] USER: A | Viewed menu intelligence report
+[03-06-2026 14:46:26 IST] [INFO] USER: A | Viewed menu intelligence report
+[03-06-2026 14:46:26 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:46:31 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:46:34 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 14:46:37 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:46:39 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 14:46:41 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:46:44 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 14:46:47 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:46:49 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 14:46:51 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:46:54 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 14:46:56 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:46:59 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 14:47:00 IST] [INFO] USER: A | Deleted data record ID: 1780478005|Bb|panipuri
+[03-06-2026 14:47:00 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 14:47:02 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:47:04 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 14:47:06 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:47:06 IST] [INFO] USER: A | Deleted data record ID: 1780478005|Bb|dosa
+[03-06-2026 14:47:07 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 14:47:09 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 14:47:12 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:47:14 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 14:47:16 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:47:19 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 14:47:20 IST] [INFO] USER: A | Deleted data record ID: 1780477642|Bb|dosa
+[03-06-2026 14:47:20 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 14:47:21 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:47:24 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 14:47:25 IST] [INFO] USER: A | Viewed pending registration requests
+[03-06-2026 14:47:27 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:47:30 IST] [INFO] USER: A | Logged out
+[03-06-2026 14:47:31 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:47:31 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:47:36 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:47:37 IST] [INFO] USER: KK | Requested registration (type: n)
+[03-06-2026 14:47:41 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:47:47 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:47:49 IST] [INFO] USER: A | Logged in
+[03-06-2026 14:47:50 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:47:50 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 14:47:50 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:47:50 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:47:50 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 14:47:51 IST] [INFO] USER: A | Viewed pending registration requests
+[03-06-2026 14:47:51 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 14:47:51 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:47:54 IST] [INFO] USER: A | Rejected registration for user: KK
+[03-06-2026 14:47:54 IST] [INFO] USER: A | Viewed pending registration requests
+[03-06-2026 14:47:56 IST] [INFO] USER: A | Viewed blocked users list
+[03-06-2026 14:47:56 IST] [INFO] USER: A | Viewed rejected users list
+[03-06-2026 14:47:56 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:48:00 IST] [INFO] USER: A | Viewed blocked users list
+[03-06-2026 14:48:01 IST] [INFO] USER: A | Viewed rejected users list
+[03-06-2026 14:48:01 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:48:03 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:48:07 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:48:08 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:48:10 IST] [INFO] USER: A | Manually added user: shree (type: n)
+[03-06-2026 14:48:11 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:48:12 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:48:13 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:48:17 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:48:18 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:48:22 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:48:23 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:48:27 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:48:28 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:48:32 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 14:48:33 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:48:38 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:48:43 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:48:48 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:48:53 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:48:58 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:49:00 IST] [INFO] USER: A | Changed password for user: user1
+[03-06-2026 14:49:01 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:49:04 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:49:09 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:49:14 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:49:19 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:49:24 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:49:29 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:49:34 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:49:39 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:49:44 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:49:49 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:49:54 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:49:59 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:50:25 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 14:51:25 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 15:18:29 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 15:18:30 IST] [INFO] USER: A | Logged out
+[03-06-2026 15:18:31 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 15:18:38 IST] [INFO] USER: A | Logged in
+[03-06-2026 15:18:38 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 15:18:39 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 15:18:39 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 15:18:39 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 15:18:39 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 15:18:40 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 15:18:40 IST] [INFO] USER: A | Logged out
+[03-06-2026 15:18:42 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 15:20:40 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 15:22:55 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:11:49 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:11:54 IST] [INFO] USER: Aa | Logged in
+[03-06-2026 16:11:54 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:11:55 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:12:27 IST] [INFO] USER: Bb | Logged in
+[03-06-2026 16:12:29 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:12:34 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:12:39 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:12:45 IST] [INFO] USER: Unknown_User | Viewed today's orders
+[03-06-2026 16:12:50 IST] [INFO] USER: Aa | Updated order status for order ID: 1780466258|user53|panipuri → preparing
+[03-06-2026 16:12:50 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:12:53 IST] [INFO] USER: Aa | Updated order status for order ID: 1780466258|user53|panipuri → pending
+[03-06-2026 16:12:53 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:17:49 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:17:52 IST] [INFO] USER: Aa | Logged in
+[03-06-2026 16:17:53 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:17:53 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:18:02 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:18:12 IST] [INFO] USER: Bb | Placed order: [panipurix2, samosax1]
+[03-06-2026 16:18:35 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:18:39 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:18:44 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:18:48 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:18:49 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:18:52 IST] [INFO] USER: Aa | Logged in
+[03-06-2026 16:18:53 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:18:53 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:18:54 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:18:59 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:19:04 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:19:10 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:19:14 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:19:16 IST] [INFO] USER: Aa | Updated order status for order ID: 1780483691|Bb|samosa → preparing
+[03-06-2026 16:19:17 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:19:19 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:19:19 IST] [INFO] USER: Aa | Updated order status for order ID: 1780483691|Bb|panipuri → preparing
+[03-06-2026 16:19:20 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:19:24 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:19:26 IST] [INFO] USER: Aa | Updated order status for order ID: 1780483691|Bb|panipuri → ready
+[03-06-2026 16:19:26 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:19:29 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:19:33 IST] [INFO] USER: Aa | Logged out
+[03-06-2026 16:19:34 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:19:34 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:19:39 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:19:40 IST] [INFO] USER: A | Logged in
+[03-06-2026 16:19:40 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:19:41 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:19:41 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:19:41 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:19:41 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:19:41 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:19:42 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 16:19:43 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03, user: B
+[03-06-2026 16:19:44 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03, user: Bb
+[03-06-2026 16:19:44 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:19:46 IST] [INFO] USER: A | Deleted data record ID: 1780483691|Bb|panipuri
+[03-06-2026 16:19:46 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03, user: Bb
+[03-06-2026 16:19:48 IST] [INFO] USER: A | Deleted data record ID: 1780483691|Bb|samosa
+[03-06-2026 16:19:48 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03, user: Bb
+[03-06-2026 16:19:49 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03, user: Bb
+[03-06-2026 16:19:49 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:19:50 IST] [INFO] USER: A | Viewed orders by date: all, user: Bb
+[03-06-2026 16:19:52 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03, user: Bb
+[03-06-2026 16:19:53 IST] [INFO] USER: A | Logged out
+[03-06-2026 16:19:54 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:19:55 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:19:59 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:20:04 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:20:09 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:20:14 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:20:19 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:20:24 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:20:29 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:20:34 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:20:39 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:20:44 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:20:49 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:20:54 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:20:59 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:21:04 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:21:09 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:21:14 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:21:19 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:21:24 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:21:29 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:21:34 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:21:39 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:21:44 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:21:49 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:21:54 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:21:59 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:22:04 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:22:09 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:22:14 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:22:19 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:22:25 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:22:29 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:22:34 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:22:39 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:22:44 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:22:49 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:22:54 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:22:59 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:23:04 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:23:09 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:23:14 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:23:19 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:23:24 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:23:29 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:23:34 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:23:39 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:23:44 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:23:49 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:23:54 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:23:55 IST] [INFO] USER: A | Logged in
+[03-06-2026 16:23:56 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:23:56 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:23:56 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:23:56 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:23:56 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:23:57 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:23:58 IST] [INFO] USER: A | Viewed menu intelligence report
+[03-06-2026 16:23:59 IST] [INFO] USER: A | Viewed menu intelligence report
+[03-06-2026 16:23:59 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 16:23:59 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:24:04 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 16:24:04 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:24:04 IST] [INFO] USER: A | Logged out
+[03-06-2026 16:24:06 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:24:09 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:24:11 IST] [INFO] USER: Aa | Logged in
+[03-06-2026 16:24:12 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:24:12 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:24:13 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:24:14 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:24:14 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:24:14 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:24:14 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:24:18 IST] [INFO] USER: Aa | Logged out
+[03-06-2026 16:24:18 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:24:19 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:24:20 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:24:24 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:24:29 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:24:30 IST] [INFO] USER: Aa | Logged in
+[03-06-2026 16:24:30 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:24:31 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:24:34 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:24:39 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:24:44 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:24:49 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:24:54 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:24:59 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:25:04 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:25:09 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:25:14 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:25:19 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:25:24 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:25:29 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:25:34 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:25:37 IST] [INFO] USER: Aa | Logged out
+[03-06-2026 16:25:39 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:25:39 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:25:43 IST] [INFO] USER: A | Logged in
+[03-06-2026 16:25:43 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:25:43 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:25:43 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:25:43 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:25:44 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:25:44 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:25:44 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:25:46 IST] [INFO] USER: A | Logged out
+[03-06-2026 16:25:48 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:25:49 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:25:52 IST] [INFO] USER: Aa | Logged in
+[03-06-2026 16:25:53 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:25:53 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:25:54 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:25:54 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:25:55 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:25:55 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:25:55 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:25:59 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:25:59 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:26:00 IST] [INFO] USER: Aa | Logged out
+[03-06-2026 16:26:02 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:26:04 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:26:05 IST] [INFO] USER: A | Logged in
+[03-06-2026 16:26:06 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:26:06 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:26:06 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:26:07 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:26:07 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:26:07 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:26:09 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:26:11 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:26:11 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:26:11 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:26:14 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:26:16 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:26:16 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:26:16 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:26:19 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:26:21 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:26:21 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:26:21 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:26:30 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:26:32 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:26:34 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:26:37 IST] [INFO] USER: A | Logged in
+[03-06-2026 16:26:37 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:26:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:26:37 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:26:38 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:26:38 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:26:38 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:26:39 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:26:42 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:26:42 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:26:43 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:26:43 IST] [INFO] USER: A | Logged out
+[03-06-2026 16:26:44 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:26:45 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:26:49 IST] [INFO] USER: Aa | Logged in
+[03-06-2026 16:26:49 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:26:49 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:26:50 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:26:51 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:26:51 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:26:51 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:26:52 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:26:54 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:26:56 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:26:59 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:27:01 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:27:04 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:27:06 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:27:09 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:27:11 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:27:14 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:27:16 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:27:19 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:27:21 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:27:24 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:27:26 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:27:29 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:27:31 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:27:34 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:27:36 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:27:39 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:27:41 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:27:44 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:27:46 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:27:49 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:27:51 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:27:54 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:27:59 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:28:04 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:28:09 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:28:14 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:28:19 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:28:24 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:28:25 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:28:29 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:28:34 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:28:40 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:29:25 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:30:03 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:30:03 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:30:07 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:30:12 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:30:17 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:30:22 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:30:25 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:30:27 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:30:32 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:30:37 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:30:42 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:30:47 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:30:52 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:30:57 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:31:02 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:31:07 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:31:12 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:31:17 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:31:22 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:31:25 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:31:27 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:31:32 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:31:37 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:31:42 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:31:47 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:31:52 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:32:43 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:32:45 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:32:47 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:32:50 IST] [INFO] USER: Aa | Logged in
+[03-06-2026 16:32:50 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:32:51 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:32:52 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:32:54 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:32:54 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:32:54 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:32:54 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:32:57 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:32:58 IST] [INFO] USER: Aa | Logged out
+[03-06-2026 16:32:59 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:33:02 IST] [INFO] USER: A | Logged in
+[03-06-2026 16:33:02 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:33:02 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:33:03 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:33:03 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:33:03 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:33:03 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:33:03 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:33:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:33:07 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:33:08 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:33:08 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:33:12 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:33:12 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:33:13 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:33:13 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:33:17 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:33:18 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:33:19 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:33:19 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:33:22 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:33:23 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:33:23 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:33:23 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:33:27 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:33:28 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:33:29 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:33:29 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:33:32 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:33:33 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:33:33 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:33:33 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:33:37 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:33:38 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:33:39 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:33:39 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:33:42 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:33:43 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:33:43 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:33:43 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:33:47 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:33:48 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:33:49 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:33:49 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:33:52 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:33:53 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:33:53 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:33:53 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:33:57 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:33:58 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:33:59 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:33:59 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:34:02 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:34:03 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:34:03 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:34:03 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:34:07 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:34:08 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:34:08 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:34:09 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:34:12 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:34:17 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:34:22 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:34:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:34:26 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:34:26 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:34:27 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:34:32 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:34:37 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:34:42 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:34:47 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:34:52 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:34:57 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:35:02 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:35:07 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:35:12 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:35:17 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:35:22 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:35:26 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:35:26 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:35:26 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:35:27 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:35:32 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:35:37 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:35:42 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:35:47 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:35:52 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:35:58 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:36:03 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:36:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:36:26 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:36:26 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:36:46 IST] [INFO] USER: Unknown_User | Viewed today's orders
+[03-06-2026 16:37:25 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:37:26 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:37:26 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:38:05 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:38:05 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:38:06 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:38:07 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:38:08 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:38:08 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:38:08 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:38:09 IST] [INFO] USER: A | Logged out
+[03-06-2026 16:38:11 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:38:18 IST] [INFO] USER: Aa | Logged in
+[03-06-2026 16:38:18 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:38:19 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:38:20 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:38:20 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:38:21 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:38:21 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:38:23 IST] [INFO] USER: Aa | Logged out
+[03-06-2026 16:38:24 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:38:27 IST] [INFO] USER: A | Logged in
+[03-06-2026 16:38:28 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:38:28 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:38:28 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:38:28 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:38:29 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:38:29 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:38:30 IST] [INFO] USER: A | Logged out
+[03-06-2026 16:38:32 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:38:56 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:39:05 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:41:00 IST] [INFO] USER: Bb | Logged in
+[03-06-2026 16:41:37 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:41:41 IST] [INFO] USER: Aa | Logged in
+[03-06-2026 16:41:41 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:41:42 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:41:42 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:41:47 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:41:48 IST] [INFO] USER: Aa | Updated order status for order ID: 1780453870|user322|tea → preparing
+[03-06-2026 16:41:48 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:41:51 IST] [INFO] USER: Aa | Updated order status for order ID: 1780453870|user322|tea → ready
+[03-06-2026 16:41:51 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:41:52 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:41:57 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:42:02 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:42:02 IST] [INFO] USER: Aa | Viewed today's orders
+[03-06-2026 16:42:03 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:42:03 IST] [INFO] USER: Aa | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:42:03 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:42:07 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:42:07 IST] [INFO] USER: Aa | GET /api/model_status
+[03-06-2026 16:42:09 IST] [INFO] USER: Aa | Queried ingredient requirements for date: today
+[03-06-2026 16:42:12 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:42:17 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:42:18 IST] [INFO] USER: Aa | Viewed canteen settings
+[03-06-2026 16:42:18 IST] [INFO] USER: Aa | Viewed canteen settings
+[03-06-2026 16:42:22 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:42:22 IST] [INFO] USER: Aa | Logged out
+[03-06-2026 16:42:24 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:42:27 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:42:27 IST] [INFO] USER: A | Logged in
+[03-06-2026 16:42:28 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:42:28 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:42:28 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:42:28 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:42:28 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:42:29 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:42:32 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:42:33 IST] [INFO] USER: A | GET /api/model_status
+[03-06-2026 16:42:33 IST] [INFO] USER: A | GET /api/model_stats
+[03-06-2026 16:42:33 IST] [INFO] USER: A | Viewed Today/Tomorrow demand forecast
+[03-06-2026 16:42:35 IST] [INFO] USER: A | Viewed menu intelligence report
+[03-06-2026 16:42:35 IST] [INFO] USER: A | Viewed menu intelligence report
+[03-06-2026 16:42:37 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:42:42 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:42:47 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:42:50 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03
+[03-06-2026 16:42:52 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:42:54 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03, user: B
+[03-06-2026 16:42:55 IST] [INFO] USER: A | Viewed orders by date: 2026-06-03, user: Bb
+[03-06-2026 16:42:57 IST] [INFO] USER: A | Viewed pending registration requests
+[03-06-2026 16:42:57 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:42:59 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 16:43:02 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:43:04 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 16:43:07 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:43:09 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 16:43:12 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:43:14 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 16:43:17 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:43:19 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 16:43:22 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:43:24 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 16:43:27 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:43:29 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 16:43:32 IST] [INFO] USER: Bb | Viewed order history
+[03-06-2026 16:43:34 IST] [INFO] USER: A | Viewed all registered users
+[03-06-2026 20:49:46 IST] [ERROR] USER: Unknown_User | Viewed Today/Tomorrow demand forecast | HTTP 500 — Failed to get demand data
+[03-06-2026 20:49:49 IST] [ERROR] USER: Unknown_User | Viewed Today/Tomorrow demand forecast | HTTP 500 — Failed to get demand data
+[03-06-2026 20:49:54 IST] [ERROR] USER: Unknown_User | Viewed Today/Tomorrow demand forecast | HTTP 500 — Failed to get demand data
+[03-06-2026 20:50:01 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 20:54:51 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 20:54:52 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
+[03-06-2026 20:54:55 IST] [INFO] USER: Bb | Logged in
+[03-06-2026 20:54:59 IST] [INFO] USER: Bb | Logged out
+[03-06-2026 20:55:01 IST] [INFO] USER: Unknown_User | Viewed Today/Tomorrow demand forecast
