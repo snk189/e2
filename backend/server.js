@@ -1057,16 +1057,6 @@ app.post('/api/admin/remove_data', async (req, res) => {
 });
 
 
-app.post('/api/admin/trigger_optuna', async (req, res) => {
-    try {
-        const pythonData = await fetchPrediction('/trigger_optuna');
-        res.status(200).json(pythonData);
-    } catch (error) {
-        console.error('Error triggering optuna:', error);
-        res.status(500).json({ error: 'Failed to trigger optuna tuning' });
-    }
-});
-
 app.post('/api/admin/trigger_retrain', async (req, res) => {
     try {
         const pythonData = await fetchPrediction('/retrain');

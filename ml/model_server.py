@@ -178,10 +178,6 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps({'is_training': is_training, 'progress': progress}).encode('utf-8'))
             return
-        elif parsed_url.path == '/trigger_optuna':
-            threading.Thread(target=run_optuna_background).start()
-            res_data = {'status': 'Optuna tuning started in background'}
-            
         elif parsed_url.path == '/stats':
             stats = {}
             if os.path.exists('optuna_params.json'):
@@ -412,70 +408,14 @@ def startup_worker():
     
     if not loaded:
         print("[SERVER] Model not found on disk. Forcing an initial train to boot up...")
-        if settings.get('auto_optuna', False):
-            print("[SERVER] auto_optuna is ON. Running Optuna before initial train...")
-            run_optuna_background()
         train_and_load_model()
         return
-
-    optuna_needs_run = False
-    if settings.get('auto_optuna', False):
-        if os.path.exists('optuna_params.json'):
-            try:
-                from datetime import datetime, timezone, timedelta
-                with open('optuna_params.json', 'r') as f:
-                    optuna_data = json.load(f)
-                last_run_str = optuna_data.get('last_run_ist', '')
-                if last_run_str:
-                    ist = timezone(timedelta(hours=5, minutes=30))
-                    last_run_time = datetime.strptime(last_run_str, "%Y-%m-%d %H:%M:%S")
-                    last_run_time = last_run_time.replace(tzinfo=ist)
-                    now_ist = datetime.now(ist)
-                    if (now_ist - last_run_time).days >= 7:
-                        optuna_needs_run = True
-                else:
-                    optuna_needs_run = True
-            except Exception as e:
-                print("[SERVER] Error checking optuna age:", e)
-                optuna_needs_run = True
-        else:
-            optuna_needs_run = True
-
-    if optuna_needs_run:
-        print("[SERVER] Optuna tuning is >1 week old or missing. Running Optuna (auto_optuna is ON)...")
-        run_optuna_background()
-        if settings.get('auto_train', False):
-            print("[SERVER] Optuna finished. Training model (auto_train is ON)...")
-            train_and_load_model()
+        
+    if settings.get('auto_train', False):
+        print("[SERVER] Triggering startup model retrain (auto_train is ON)...")
+        train_and_load_model()
     else:
-        if settings.get('auto_optuna', False):
-            print("[SERVER] Optuna params are recent (<1 week). Skipping Optuna.")
-        
-        if settings.get('auto_train', False):
-            print("[SERVER] Triggering startup model retrain (auto_train is ON)...")
-            train_and_load_model()
-        else:
-            print("[SERVER] Startup auto_train and auto_optuna logic skipped (disabled in ml_settings.json).")
-
-def run_optuna_background():
-    global global_df, global_feature_cols, global_lookups, is_training
-    if is_training:
-        print("[SERVER] Process already in progress, skipping optuna...")
-        return
-        
-    try:
-        is_training = 'optuna'
-        print("[SERVER] Starting background Optuna tuning...")
-        from get_predictions import prepare_data, extract_features, run_optuna_tuning
-        df = fetch_orders_from_db()
-        df, lookups, split_idx, model_end_idx = prepare_data(df)
-        X, y, feature_cols, encoded_cat_cols = extract_features(df)
-        run_optuna_tuning(X, y, split_idx, model_end_idx)
-        print("[SERVER] Background Optuna tuning finished.")
-    except Exception as e:
-        print(f"[SERVER] Background Optuna tuning failed: {e}")
-    finally:
-        is_training = False
+        print("[SERVER] Startup auto_train logic skipped (disabled in ml_settings.json).")
 
 if __name__ == '__main__':
     threading.Thread(target=startup_worker, daemon=True).start()
