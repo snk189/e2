@@ -29,7 +29,7 @@ def fetch_orders_from_db():
         database = os.environ.get('PGDATABASE', 'bitespeed')
         
         engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
-        df = pd.read_sql('SELECT * FROM orders', engine)
+        df = pd.read_sql('SELECT * FROM orders WHERE quantity > 0', engine)
         return df
     except Exception as e:
         print(f"[SERVER] Error fetching from DB: {e}")
@@ -301,6 +301,26 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
                 yesterday_actual = yesterday_df.groupby('item')['quantity'].sum().to_dict()
                 today_actual_hourly = today_df.groupby(['item', 'time_slot'])['quantity'].sum().to_dict()
 
+                try:
+                    import requests
+                    live_orders = requests.get('http://localhost:5000/api/admin/today_orders', timeout=2).json()
+                    if isinstance(live_orders, list):
+                        today_actual = {}
+                        today_actual_hourly = {}
+                        for o in live_orders:
+                            key = o.get('item', '').lower()
+                            qty = o.get('quantity', 0)
+                            today_actual[key] = today_actual.get(key, 0) + qty
+                            eff_time = o.get('effective_time') or o.get('order_timestamp')
+                            if eff_time:
+                                hr = datetime.fromtimestamp(eff_time).hour
+                                if hr < 8: hr = 8
+                                if hr > 18: hr = 18
+                                today_actual_hourly[(key, hr)] = today_actual_hourly.get((key, hr), 0) + qty
+                except Exception:
+                    pass
+
+
                 today_target = datetime.now()
                 tomorrow_target = today_target + timedelta(days=1)
 
@@ -315,8 +335,8 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
                 total_revenue = 0
                 total_cost = 0
                 for item_key, qty in today_actual.items():
-                    total_revenue += qty * price_map.get(item_key, 0)
-                    total_cost += qty * cost_map.get(item_key, 0)
+                    total_revenue += qty * price_map.get(item_key.lower(), 0)
+                    total_cost += qty * cost_map.get(item_key.lower(), 0)
                 net_profit = total_revenue - total_cost
                 financials = {
                     "totalRevenue": int(total_revenue),
@@ -341,8 +361,8 @@ class ModelRequestHandler(BaseHTTPRequestHandler):
 
                     item_act = int(today_actual.get(item, 0))
                     item_yest = int(yesterday_actual.get(item, 0))
-                    selling_price = price_map.get(item, 0)
-                    cost_price = cost_map.get(item, 0)
+                    selling_price = price_map.get(item.lower(), 0)
+                    cost_price = cost_map.get(item.lower(), 0)
                     item_profit = (selling_price - cost_price) * item_act
 
                     today_list.append({

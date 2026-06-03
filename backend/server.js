@@ -735,6 +735,8 @@ app.get('/api/admin/today_orders', async (req, res) => {
             const is_prebooking = parseInt(row.is_prebooking) === 1;
             const effective_time = is_prebooking && row.prebooking_datetime ? parseInt(row.prebooking_datetime) : parseInt(row.order_timestamp);
             
+            const effectiveDate = new Date(effective_time * 1000);
+            
             if (effective_time >= startOfDay && effective_time < endOfDay) {
                 todayOrders.push({
                     id: `${row.order_timestamp}|${row.user_id}|${row.item}`,
@@ -781,6 +783,8 @@ app.get('/api/admin/orders_by_date', async (req, res) => {
         result.rows.forEach((row, i) => {
             const is_prebooking = parseInt(row.is_prebooking) === 1;
             const effective_time = is_prebooking && row.prebooking_datetime ? parseInt(row.prebooking_datetime) : parseInt(row.order_timestamp);
+            
+            const effectiveDate = new Date(effective_time * 1000);
             
             const matchesUsername = queryUsername ? (row.user_id === queryUsername) : true;
             const matchesDate = queryDateStr ? (effective_time >= startOfDay && effective_time < endOfDay) : true;

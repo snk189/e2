@@ -3,7 +3,7 @@ import { BarChart3, CheckCircle2, ChevronLeft, ChevronRight, ClipboardList, LogO
 import iconImg from '../../assets/icon.png';
 
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { getDemand, getTodayOrders, updateOrderStatus, getDemandByDate, getIngredientsForecast, subscribeToModelUpdates, retrainModel, getModelStatus, triggerOptunaTuning } from '../services/api';
+import { getDemand, getTodayOrders, updateOrderStatus, getDemandByDate, getIngredientsForecast, subscribeToModelUpdates, retrainModel, getModelStatus } from '../services/api';
 import EnvironmentSettings from './EnvironmentSettings';
 import { PRICES, COSTS } from '../data/items';
 
@@ -527,15 +527,6 @@ const DemandView = ({ demand, loading, onRefresh, todayOrders, error }) => {
     return () => clearInterval(intervalId);
   }, []);
 
-  const handleOptuna = async () => {
-    try {
-      await triggerOptunaTuning();
-      setModelStatus('optuna');
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const handleRetrain = async () => {
     try {
       await retrainModel();
@@ -663,11 +654,7 @@ const DemandView = ({ demand, loading, onRefresh, todayOrders, error }) => {
             <div className="flex-1" />
 
             <div className="flex items-center gap-3 bg-[var(--surface)] px-4 py-2 rounded-lg border border-[var(--outline-variant)]">
-              {modelStatus === 'optuna' ? (
-                <span className="flex items-center gap-2 text-xs font-bold text-indigo-500">
-                  <RefreshCw size={14} className="animate-spin" /> Running Optuna ({modelProgress}%)...
-                </span>
-              ) : modelStatus === 'model' || modelStatus === 'training' || modelStatus === true ? (
+              {modelStatus === 'model' || modelStatus === 'training' || modelStatus === true ? (
                 <span className="flex items-center gap-2 text-xs font-bold text-blue-500">
                   <RefreshCw size={14} className="animate-spin" /> Retraining Model ({modelProgress}%)...
                 </span>
@@ -677,9 +664,6 @@ const DemandView = ({ demand, loading, onRefresh, todayOrders, error }) => {
                 </span>
               )}
               <div className="h-4 w-px bg-[var(--outline-variant)] mx-1" />
-              <button className="text-xs font-bold text-[var(--on-surface-variant)] hover:text-[var(--primary)] flex items-center gap-1 transition-colors disabled:opacity-50" onClick={handleOptuna} disabled={modelStatus !== 'idle'} type="button">
-                <Settings size={12} /> Tune
-              </button>
               <button className="text-xs font-bold text-[var(--on-surface-variant)] hover:text-[var(--primary)] flex items-center gap-1 transition-colors disabled:opacity-50" onClick={handleRetrain} disabled={modelStatus !== 'idle'} type="button">
                 <RefreshCw size={12} className={modelStatus !== 'idle' ? "animate-spin" : ""} /> Retrain
               </button>

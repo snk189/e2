@@ -36,8 +36,7 @@ import {
   getMenuIntelligence,
   retrainModel,
   getModelStatus,
-  getModelStats,
-  triggerOptunaTuning
+  getModelStats
 } from '../services/api';
 import { MENU_ITEMS, PRICES, COSTS } from '../data/items';
 
@@ -248,15 +247,6 @@ const AdminDemand = ({ demandData, onRefresh }) => {
   }, []);
 
   
-  const handleOptuna = async () => {
-    try {
-      await triggerOptunaTuning();
-      setModelStatus('optuna');
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const handleRetrain = async () => {
     try {
       await retrainModel();
@@ -296,11 +286,7 @@ const AdminDemand = ({ demandData, onRefresh }) => {
             <p className="section-copy">Forecast accuracy, tomorrow planning, and financial health in one command surface.</p>
           </div>
           <div className="flex items-center gap-3">
-            {modelStatus === 'optuna' ? (
-              <span className="flex items-center gap-2 text-xs font-bold text-indigo-500">
-                <RefreshCw size={14} className="animate-spin" /> Running Optuna Tuning ({modelProgress}%)...
-              </span>
-            ) : modelStatus === 'model' || modelStatus === 'training' || modelStatus === true ? (
+            {modelStatus === 'model' || modelStatus === 'training' || modelStatus === true ? (
               <span className="flex items-center gap-2 text-xs font-bold text-blue-500">
                 <RefreshCw size={14} className="animate-spin" /> Retraining model ({modelProgress}%)...
               </span>
@@ -309,9 +295,6 @@ const AdminDemand = ({ demandData, onRefresh }) => {
                 <CheckCircle2 size={14} /> System Idle
               </span>
             )}
-            <button className="cn-button cn-button-secondary" onClick={handleOptuna} disabled={modelStatus !== 'idle'} type="button">
-              <Settings size={14} /> Run Optuna Tuning
-            </button>
             <button className="cn-button cn-button-primary" onClick={handleRetrain} disabled={modelStatus !== 'idle'} type="button">
               <RefreshCw size={14} className={modelStatus !== 'idle' ? "animate-spin" : ""} /> Retrain Model
             </button>
@@ -483,12 +466,14 @@ const DemandList = ({ title, items, today = false }) => {
                 <div className="mt-4 border-t border-[var(--outline-variant)]/30 pt-4 animate-in slide-in-from-top-2">
                   <p className="text-sm font-bold mb-4 text-[var(--on-surface-variant)] uppercase tracking-wider">Hourly Breakdown (8:00 - 18:00)</p>
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                    {item.hourly.map((h, i) => {
-                      const hDiff = (h.actual || 0) - (h.predicted || 0);
-                      const ratio = Math.min(1, Math.max(0, (h.predicted || 0) / 500));
-                      const hue = 120 * (1 - ratio);
-                      const bgColor = `hsla(${hue}, 80%, 75%, 0.25)`;
-                      const borderColor = `hsla(${hue}, 80%, 70%, 0.6)`;
+                    {(() => {
+                      const maxPred = Math.max(1, ...item.hourly.map(hr => hr.predicted || 0));
+                      return item.hourly.map((h, i) => {
+                        const hDiff = (h.actual || 0) - (h.predicted || 0);
+                        const ratio = Math.min(1, Math.max(0, (h.predicted || 0) / maxPred));
+                        const hue = 120 * (1 - ratio);
+                        const bgColor = `hsla(${hue}, 80%, 75%, 0.25)`;
+                        const borderColor = `hsla(${hue}, 80%, 70%, 0.6)`;
                       
                       return (
                         <div key={i} className="flex flex-col items-center justify-center rounded-xl py-3 px-2 shadow-sm transition-colors duration-300" style={{ backgroundColor: bgColor, border: `1px solid ${borderColor}` }}>
@@ -512,7 +497,8 @@ const DemandList = ({ title, items, today = false }) => {
                           )}
                         </div>
                       );
-                    })}
+                    });
+                  })()}
                   </div>
                 </div>
               )}

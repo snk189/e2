@@ -308,14 +308,7 @@ export const updateOrderStatus = async (id, status) => {
     }
 };
 
-export const triggerOptunaTuning = async () => {
-    try {
-        const response = await axios.post(`${BASE_URL}/admin/trigger_optuna`);
-        return response.data;
-    } catch (error) {
-        throw error.response?.data || { error: 'Failed to trigger Optuna tuning' };
-    }
-};
+
 
 export const triggerModelRetrain = async () => {
     try {
